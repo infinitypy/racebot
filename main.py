@@ -2,6 +2,7 @@ import os
 from discord.ext import commands
 import datetime
 import sheets
+
 from webserver import keep_alive
 
 client = commands.Bot(command_prefix='~')
@@ -19,14 +20,15 @@ async def hello(ctx):
 
 @client.command()
 async def invite(ctx):
-    await ctx.send('https://discord.com/oauth2/authorize?client_id=893291225568919562&permissions=3072&scope=bot')
+    await ctx.send('https://discord.com/oauth2/authorize?'
+                   'client_id=893291225568919562&permissions=3072&scope=bot')
 
 
 @client.command()
 async def race(ctx, num, race_id=None):
     try:
         if int(num) > 0:
-            await ctx.send(sheets.get_race_name(int(num), race_id))
+            await ctx.send(sheets.race(int(num), race_id))
         else:
             print('bad input')
     except ValueError:
@@ -55,6 +57,15 @@ async def rtime(ctx, start, end, stime, abr=None):
                            '** if you perfect clean round ' + str(longest_round))
         else:
             print('bad input')
+    except ValueError:
+        print('bad input')
+
+
+@client.command()
+async def info(ctx, num):
+    try:
+        if int(num) > 0:
+            await ctx.send('\n'.join(sheets.info(int(num))))
     except ValueError:
         print('bad input')
 
