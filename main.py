@@ -2,8 +2,7 @@ import os
 from discord.ext import commands
 import datetime
 import sheets
-
-# from webserver import keep_alive
+from webserver import keep_alive
 
 client = commands.Bot(command_prefix='~')
 
@@ -60,7 +59,6 @@ async def rtime(ctx, start, end, stime, abr=None):
         print('bad input')
 
 
-# keep_alive()
-# my_secret = os.environ['TOKEN']
-my_secret = 'ODkzMjkxMjI1NTY4OTE5NTYy.YVZUSA.qCUMnKzLJsIu0X_TCEI5BnvST8k'
+keep_alive()
+my_secret = os.environ['TOKEN']
 client.run(my_secret)
