@@ -1,6 +1,5 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from decimal import Decimal
 
 scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
          "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
@@ -11,11 +10,11 @@ race_info = sheet.worksheet("raceinfo")
 round_info = sheet.worksheet("rounds")
 
 
-def get_race_name(num, id):
-    col = 3 if id is not None else 2
+def get_race_name(num, race_id):
     if num == 129:
         return ':corn::tada:'
     else:
+        col = 3 if race_id is not None else 2
         return race_info.cell(num + 1, col).value
 
 
@@ -24,17 +23,14 @@ def length(num, abr):
     return round_info.cell(num + 1, col).value
 
 
-def last_bloon_time(start, end, stime, abr):
+def rtime(start, end, stime, abr):
     col = 2 if abr is not None else 1
-    bonusdelay = 0
+    bonus_delay = 0
     if start == 0:
         start = 1
-        bonusdelay = 0.2
-    
+        bonus_delay = 0.2
     rounds = round_info.range(start + 1, col, end + 1, col)
-    rounds_adj = []
-    for i, r in enumerate(rounds):
-        rounds_adj.append(float(r.value) + (i * 0.2))
+    rounds_adj = [float(r.value) + (i * 0.2) for i, r in enumerate(rounds)]
     longest = max(rounds_adj)
     longest_round = rounds_adj.index(longest)
-    return round(longest + stime + bonusdelay + 0.0167 - 0.2 , 2), longest_round + start
+    return round(longest + stime + bonus_delay + 0.0167 - 0.2, 2), longest_round + start
