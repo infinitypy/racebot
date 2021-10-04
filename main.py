@@ -3,7 +3,7 @@ from discord.ext import commands
 import datetime
 import sheets, leaderboard
 
-#from webserver import keep_alive
+from webserver import keep_alive
 
 client = commands.Bot(command_prefix='~')
 
@@ -81,8 +81,12 @@ async def info(ctx, num):
         print('bad input')
 
 @client.command()
-async def lb(ctx, first, last):
-    await ctx.send("```" + leaderboard.getleaderboard(int(first), int(last)) + "```")
+async def lb(ctx, racenum=None, first=None, last=None):
+    if racenum == None: racenum = 146
+    if first == None: first = 1
+    if last == None: last = 50
+
+    await ctx.send("```" + leaderboard.getleaderboard(int(racenum), int(first), int(last)) + "```")
 
 
 

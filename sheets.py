@@ -11,7 +11,7 @@ round_info = sheet.worksheet('rounds')
 
 
 def race(num, race_id):
-    if num == 129:
+    if num == 129 and race_id is not None:
         return ':corn::tada:'
     else:
         col = 3 if race_id is not None else 2
