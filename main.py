@@ -5,7 +5,7 @@ import sheets, leaderboard
 
 #from webserver import keep_alive
 
-client = commands.Bot(command_prefix='~')
+client = commands.Bot(command_prefix='r!')
 
 
 @client.event
