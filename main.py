@@ -3,7 +3,7 @@ from discord.ext import commands
 import datetime
 import sheets, leaderboard
 
-from webserver import keep_alive
+#from webserver import keep_alive
 
 client = commands.Bot(command_prefix='~')
 
@@ -80,16 +80,23 @@ async def info(ctx, num):
     except ValueError:
         print('bad input')
 
+
 @client.command()
 async def lb(ctx, racenum=None, first=None, last=None):
-    if racenum == None: racenum = 146
-    if first == None: first = 1
-    if last == None: last = 50
+    if racenum and first and not last:
+        last = first
+        first = racenum
+        racenum = 146
+    if not racenum:
+        racenum = 146
+    if not first and not last:
+        first = 1
+        last = 50
+    title = "Race #" + str(racenum) + ": **" + sheets.race(int(racenum)) + "**"
+    await ctx.send(title + "```" + leaderboard.get_leaderboard(int(racenum), int(first), int(last)) + "```")
 
-    await ctx.send("```" + leaderboard.getleaderboard(int(racenum), int(first), int(last)) + "```")
 
-
-
-keep_alive()
-my_secret = os.environ['TOKEN']
+#keep_alive()
+#my_secret = os.environ['TOKEN']
+my_secret = 'ODkzOTY2NjkwNzY4MDA3MTc4.YVjJXA.pUDjmTzfKqHfF_al8r_Eontv34E'
 client.run(my_secret)
