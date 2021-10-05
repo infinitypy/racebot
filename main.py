@@ -7,6 +7,7 @@ import sheets, leaderboard
 
 client = commands.Bot(command_prefix='r!')
 NUM_RACES = 146
+LAST_ID = '5b7f82e318c7cbe32fa01e4e'
 
 
 @client.event
@@ -42,9 +43,9 @@ async def race(ctx, num, race_id=None):
         if int(num) > 0:
             await ctx.send(sheets.race(int(num), race_id))
         else:
-            print('bad input')
+            await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
     except ValueError:
-        print('bad input')
+        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
 
 
 @client.command()
@@ -53,9 +54,9 @@ async def length(ctx, num, abr=None):
         if 0 < int(num) <= 140:
             await ctx.send('Round ' + num + ' is ' + sheets.length(int(num), abr) + 's')
         else:
-            print('bad input')
+            await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
     except ValueError:
-        print('bad input')
+        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
 
 
 @client.command()
@@ -70,7 +71,7 @@ async def rtime(ctx, start, end, stime, abr=None):
         else:
             print('bad input')
     except ValueError:
-        print('bad input')
+        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
 
 
 @client.command()
@@ -79,7 +80,7 @@ async def info(ctx, num):
         if int(num) > 0:
             await ctx.send('\n'.join(sheets.info(int(num))))
     except ValueError:
-        print('bad input')
+        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
 
 
 @client.command()
@@ -98,45 +99,69 @@ async def lb(ctx, racenum=None, first=None, last=None):
 
 
 @client.command()
-async def id(ctx, racenum, rank=None):
+async def id(ctx, race_num=None, rank=None):
     if not rank:
-        rank = racenum
-        racenum = NUM_RACES
-    name, _, user_id = leaderboard.get_id(int(racenum), rank)
-    await ctx.send(name + '\'s user ID: ' + user_id)
+        if not race_num:
+            await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+            return
+        rank = race_num
+        race_num = NUM_RACES
+    try:
+        user_id, name, _ = leaderboard.get_id(int(race_num), rank)
+        global LAST_ID
+        LAST_ID = user_id
+        await ctx.send(name + '\'s user ID: ' + user_id)
+    except Exception:
+        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
 
 
 @client.command()
-async def nicks(ctx, user_id):
-    nicknames = '\n'.join(list(map(str, leaderboard.get_nicks(user_id))))
-    await ctx.send("```" + nicknames + "```")
+async def nicks(ctx, user_id=None):
+    if not user_id:
+        global LAST_ID
+        user_id = LAST_ID
+    output = leaderboard.get_nicks(user_id)
+    if not output:
+        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        return
+    nicknames = '\n'.join(list(map(str, output)))
+    await ctx.send('Nicknames for **' + str(user_id) + '**```' + nicknames + '```')
 
 
 @client.command()
-async def ranka(ctx, user_id):
-    if user_id == '5b7f82e318c7cbe32fa01e4e':
-        await ctx.send("Average rank in 89 tracked races: 1.0")
-    else:
-        number, avg = leaderboard.get_average_rank(user_id)
-        await ctx.send("Average rank in " + str(number) + " tracked races: " + str(round(avg, 1)))
+async def ranka(ctx, user_id=None):
+    if not user_id:
+        global LAST_ID
+        user_id = LAST_ID
+    number, ranksum = leaderboard.get_average_rank(user_id)
+    if not number:
+        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        return
+    await ctx.send("Average rank in " + str(number) + " tracked races: " + str(round(ranksum / number, 1)))
 
 
 @client.command()
-async def rankw(ctx, user_id):
-    if user_id == '5b7f82e318c7cbe32fa01e4e':
-        await ctx.send("No bad performances")
-    else:
-        racenum, rank = leaderboard.get_worst_rank(user_id)
-        await ctx.send("Worst tracked performance in race " + str(racenum) + " with rank " + str(rank))
+async def rankw(ctx, user_id=None):
+    if not user_id:
+        global LAST_ID
+        user_id = LAST_ID
+    racenum, rank = leaderboard.get_worst_rank(user_id)
+    if not racenum:
+        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        return
+    await ctx.send("Worst tracked performance in race " + str(racenum) + " with rank " + str(rank))
 
 
 @client.command()
-async def rankb(ctx, user_id):
-    if user_id == '5b7f82e318c7cbe32fa01e4e':
-        await ctx.send("Best tracked performance in race 146 with rank 1")
-    else:
-        racenum, rank = leaderboard.get_best_rank(user_id)
-        await ctx.send("Best tracked performance in race " + str(racenum) + " with rank " + str(rank))
+async def rankb(ctx, user_id=None):
+    if not user_id:
+        global LAST_ID
+        user_id = LAST_ID
+    racenum, rank = leaderboard.get_best_rank(user_id)
+    if not racenum:
+        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        return
+    await ctx.send("Best tracked performance in race " + str(racenum) + " with rank " + str(rank))
 
 
 #keep_alive()

@@ -1,32 +1,24 @@
-import requests
-import json
 import datetime
-
 import sheets
+import writelbtosheet
 
-all_races = {}
 all_ids = [cell.value for cell in sheets.race_info.range(2, 3, 147, 3)]
+loaded_races = writelbtosheet.fulldata.row_values(1)
+full_data = writelbtosheet.fulldata.get_values('B2:EQ101', major_dimension='COLUMNS')
+print(loaded_races)
 
 
-def load_race(race_num):
-    race_id = all_ids[race_num - 1]
-    race_url = 'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_' + race_id + '.json'
-    try:
-        data = requests.get(race_url).json()
-    except Exception:
-        return False
-    entries = json.loads(data["data"])['scores']['equal']
-    if not entries:
-        return False
-    all_races[race_num] = [(entry['metadata'].split(',')[0], entry['score'], entry['userID']) for entry in entries]
-    return True
+def string_to_tuple(entry):
+    return tuple(map(str, entry.split(',')))
 
 
 def get_leaderboard(race_num, first, last):
-    if race_num not in all_races:
-        if not load_race(race_num):
+    if str(race_num) not in loaded_races:
+        if not writelbtosheet.load_race(race_num):
             return "No data"
-    stuff = all_races[race_num]
+        full_data[race_num - 1] = [cell.value for cell in
+                                   writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
+    stuff = [string_to_tuple(entry) for entry in full_data[race_num - 1]]
     times = []
 
     for i in range(len(stuff)):
@@ -44,72 +36,77 @@ def get_leaderboard(race_num, first, last):
 
 
 def get_id(race_num, rank):
-    if race_num not in all_races:
-        if not load_race(race_num):
+    if str(race_num) not in loaded_races:
+        if not writelbtosheet.load_race(race_num):
             return "No data"
+        full_data[race_num - 1] = [cell.value for cell in
+                                   writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
     if rank.isdigit():
-        return all_races[race_num][int(rank) - 1]
+        return string_to_tuple(full_data[race_num - 1][int(rank) - 1])
     else:
-        for entry in all_races[race_num]:
-            if entry[0] == rank:
-                return entry
+        for entry in full_data[race_num - 1]:
+            if string_to_tuple(entry)[1].lower() == rank.lower():
+                return string_to_tuple(entry)
 
 
 def get_nicks(user_id):
     race_nicks = set()
-    for i in range(1, 146 + 1):
-        if i not in all_races:
-            if not load_race(i):
-                print(i)
+    for race_num in range(1, 146 + 1):
+        if str(race_num) not in loaded_races:
+            if not writelbtosheet.load_race(race_num):
                 continue
-        if all_races[i]:
-            for entry in all_races[i]:
-                if entry[2] == user_id:
-                    race_nicks.add(entry[0])
-                    break
+            full_data[race_num - 1] = [cell.value for cell in
+                                       writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
+        for entry in full_data[race_num - 1]:
+            if string_to_tuple(entry)[0] == user_id:
+                race_nicks.add(string_to_tuple(entry)[1])
+                break
     return race_nicks
 
 
 def get_average_rank(user_id):
     ranks = []
-    for i in range(1, 146 + 1):
-        if i != 107 and i != 143:
-            if i not in all_races:
-                if not load_race(i):
+    for race_num in range(1, 146 + 1):
+        if race_num != 107 and race_num != 143:
+            if str(race_num) not in loaded_races:
+                if not writelbtosheet.load_race(race_num):
                     continue
-            if all_races[i]:
-                for rank, entry in enumerate(all_races[i]):
-                    if entry[2] == user_id:
-                        ranks.append(rank + 1)
-                        break
-    return len(ranks), sum(ranks) / len(ranks)
+                full_data[race_num - 1] = [cell.value for cell in
+                                           writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
+            for rank, entry in enumerate(full_data[race_num - 1]):
+                if string_to_tuple(entry)[0] == user_id:
+                    ranks.append(rank + 1)
+                    break
+    return len(ranks), sum(ranks)
 
 
 def get_worst_rank(user_id):
     worst = (0, -1)
-    for i in range(1, 146 + 1):
-        if i != 107 and i != 143:
-            if i not in all_races:
-                if not load_race(i):
+    for race_num in range(1, 146 + 1):
+        if race_num != 107 and race_num != 143:
+            if str(race_num) not in loaded_races:
+                if not writelbtosheet.load_race(race_num):
                     continue
-            if all_races[i]:
-                for rank, entry in enumerate(all_races[i]):
-                    if entry[2] == user_id and rank + 1 >= worst[1]:
-                        worst = (i, rank + 1)
-                        break
+                full_data[race_num - 1] = [cell.value for cell in
+                                           writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
+            for rank, entry in enumerate(full_data[race_num - 1]):
+                if string_to_tuple(entry)[0] == user_id and rank + 1 >= worst[1]:
+                    worst = (race_num, rank + 1)
+                    break
     return worst
 
 
 def get_best_rank(user_id):
-    worst = (0, 101)
-    for i in range(1, 146 + 1):
-        if i != 107 and i != 143:
-            if i not in all_races:
-                if not load_race(i):
+    best = (0, 101)
+    for race_num in range(1, 146 + 1):
+        if race_num != 107 and race_num != 143:
+            if str(race_num) not in loaded_races:
+                if not writelbtosheet.load_race(race_num):
                     continue
-            if all_races[i]:
-                for rank, entry in enumerate(all_races[i]):
-                    if entry[2] == user_id and rank + 1 <= worst[1]:
-                        worst = (i, rank + 1)
-                        break
-    return worst
+                full_data[race_num - 1] = [cell.value for cell in
+                                           writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
+            for rank, entry in enumerate(full_data[race_num - 1]):
+                if string_to_tuple(entry)[0] == user_id and rank + 1 <= best[1]:
+                    best = (race_num, rank + 1)
+                    break
+    return best
