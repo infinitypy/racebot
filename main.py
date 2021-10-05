@@ -6,6 +6,7 @@ import sheets, leaderboard
 #from webserver import keep_alive
 
 client = commands.Bot(command_prefix='r!')
+NUM_RACES = 146
 
 
 @client.event
@@ -86,14 +87,56 @@ async def lb(ctx, racenum=None, first=None, last=None):
     if racenum and first and not last:
         last = first
         first = racenum
-        racenum = 146
+        racenum = NUM_RACES
     if not racenum:
-        racenum = 146
+        racenum = NUM_RACES
     if not first and not last:
         first = 1
         last = 50
     title = "Race #" + str(racenum) + ": **" + sheets.race(int(racenum)) + "**"
     await ctx.send(title + "```" + leaderboard.get_leaderboard(int(racenum), int(first), int(last)) + "```")
+
+
+@client.command()
+async def id(ctx, racenum, rank=None):
+    if not rank:
+        rank = racenum
+        racenum = NUM_RACES
+    name, _, user_id = leaderboard.get_id(int(racenum), rank)
+    await ctx.send(name + '\'s user ID: ' + user_id)
+
+
+@client.command()
+async def nicks(ctx, user_id):
+    nicknames = '\n'.join(list(map(str, leaderboard.get_nicks(user_id))))
+    await ctx.send("```" + nicknames + "```")
+
+
+@client.command()
+async def ranka(ctx, user_id):
+    if user_id == '5b7f82e318c7cbe32fa01e4e':
+        await ctx.send("Average rank in 89 tracked races: 1.0")
+    else:
+        number, avg = leaderboard.get_average_rank(user_id)
+        await ctx.send("Average rank in " + str(number) + " tracked races: " + str(round(avg, 1)))
+
+
+@client.command()
+async def rankw(ctx, user_id):
+    if user_id == '5b7f82e318c7cbe32fa01e4e':
+        await ctx.send("No bad performances")
+    else:
+        racenum, rank = leaderboard.get_worst_rank(user_id)
+        await ctx.send("Worst tracked performance in race " + str(racenum) + " with rank " + str(rank))
+
+
+@client.command()
+async def rankb(ctx, user_id):
+    if user_id == '5b7f82e318c7cbe32fa01e4e':
+        await ctx.send("Best tracked performance in race 146 with rank 1")
+    else:
+        racenum, rank = leaderboard.get_best_rank(user_id)
+        await ctx.send("Best tracked performance in race " + str(racenum) + " with rank " + str(rank))
 
 
 #keep_alive()
