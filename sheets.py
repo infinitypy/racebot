@@ -50,3 +50,4 @@ def info(num):
         if stats[i]:
             output.append(race_info.cell(1, i + 4).value + ': ' + stats[i])
     return output
+    
