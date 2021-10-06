@@ -22,7 +22,7 @@ def get_leaderboard(race_num, first, last):
 
     leaderboard = ''
     for i in range(last - first + 1):
-        leaderboard += "\n" + str(i + first).ljust(2)+ ' ' + stuff[i][2] + ' ' + stuff[i][1]
+        leaderboard += "\n" + str(i + first).ljust(2)+ ' ' + stuff[i+first-1][2] + ' ' + stuff[i+first-1][1]
     
     return str(leaderboard)
 

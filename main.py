@@ -125,7 +125,7 @@ async def nicks(ctx, user_id=None):
         await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
         return
     nicknames = '\n'.join(list(map(str, output)))
-    await ctx.send('Nicknames for **' + str(user_id) + '**```' + nicknames + '```')
+    await ctx.send('Nicknames for **' + str(user_id) + '**```\n' + nicknames + '```')
 
 
 @client.command()
