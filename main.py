@@ -117,18 +117,11 @@ async def id(ctx, race_num=None, rank=None):
 
 @client.command()
 async def nicks(ctx, user_id=None):
+    user_id = sheets.known(user_id)
 
     if not user_id:
         global LAST_ID
         user_id = LAST_ID
-
-    knownplayers = sheets.players.col_values(1)
-    knownplayers = [x.lower() for x in knownplayers]
-    knownids = sheets.players.col_values(2)
-    if user_id.lower() in knownplayers:
-        for i in range(len(knownplayers)):
-            if knownplayers[i] == user_id.lower():
-                user_id = knownids[i]
 
     output = leaderboard.get_nicks(user_id)
     if not output:
@@ -140,6 +133,8 @@ async def nicks(ctx, user_id=None):
 
 @client.command()
 async def ranka(ctx, user_id=None):
+    user_id = sheets.known(user_id)
+
     if not user_id:
         global LAST_ID
         user_id = LAST_ID
@@ -152,6 +147,8 @@ async def ranka(ctx, user_id=None):
 
 @client.command()
 async def rankw(ctx, user_id=None):
+    user_id = sheets.known(user_id)
+
     if not user_id:
         global LAST_ID
         user_id = LAST_ID
@@ -164,6 +161,8 @@ async def rankw(ctx, user_id=None):
 
 @client.command()
 async def rankb(ctx, user_id=None):
+    user_id = sheets.known(user_id)
+
     if not user_id:
         global LAST_ID
         user_id = LAST_ID

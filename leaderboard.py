@@ -43,6 +43,7 @@ def get_id(race_num, rank):
 
 def get_nicks(user_id):
     race_nicks = []
+
     for race_num in range(1, 146 + 1):
         if str(race_num) not in loaded_races:
             if not writelbtosheet.load_race(race_num):
@@ -52,8 +53,10 @@ def get_nicks(user_id):
         for entry in full_data[race_num - 1]:
             if string_to_tuple(entry)[0] == user_id:
                 if string_to_tuple(entry)[1] not in race_nicks:
-                    race_nicks.append(string_to_tuple(entry)[1])
+                    race_nicks.append(string_to_tuple(entry)[1])              
                 break
+
+
     return race_nicks
 
 
