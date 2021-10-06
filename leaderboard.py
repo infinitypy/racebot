@@ -5,7 +5,7 @@ import writelbtosheet
 all_ids = [cell.value for cell in sheets.race_info.range(2, 3, 147, 3)]
 loaded_races = writelbtosheet.fulldata.row_values(1)
 full_data = writelbtosheet.fulldata.get_values('B2:EQ101', major_dimension='COLUMNS')
-print(loaded_races)
+#print(loaded_races)
 
 
 def string_to_tuple(entry):
@@ -19,19 +19,11 @@ def get_leaderboard(race_num, first, last):
         full_data[race_num - 1] = [cell.value for cell in
                                    writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
     stuff = [string_to_tuple(entry) for entry in full_data[race_num - 1]]
-    times = []
-
-    for i in range(len(stuff)):
-        if str(stuff[i][1])[-1] == '9':
-            times.append(str(stuff[i][1])[0:-1] + '8')
-        else:
-            times.append(str(stuff[i][1]))
 
     leaderboard = ''
     for i in range(last - first + 1):
-        leaderboard += "\n" + str(i + first).ljust(2) + ' ' + str(
-            datetime.timedelta(milliseconds=999999999 - int(times[i + first - 1])))[3:-4] + ' ' + \
-                       str(stuff[i + first - 1][0])
+        leaderboard += "\n" + str(i + first).ljust(2)+ ' ' + stuff[i][2] + ' ' + stuff[i][1]
+    
     return str(leaderboard)
 
 
