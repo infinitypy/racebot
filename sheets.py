@@ -8,6 +8,8 @@ client = gspread.authorize(creds)
 sheet = client.open_by_key('1iG4mtopJVlF7g3gv6sNrYspyonSQGSHuDOb-QMNVnPc')
 race_info = sheet.worksheet('raceinfo')
 round_info = sheet.worksheet('rounds')
+players = sheet.worksheet('playerinfo')
+
 
 
 def race(num, display_race_id=None):
@@ -50,4 +52,3 @@ def info(num):
         if stats[i]:
             output.append(race_info.cell(1, i + 4).value + ': ' + stats[i])
     return output
-    
