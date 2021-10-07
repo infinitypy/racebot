@@ -1,7 +1,7 @@
 import os
 from discord.ext import commands
 import datetime
-import sheets, leaderboard, misc
+import sheets, leaderboard, misc, getprofiles
 
 #from webserver import keep_alive
 
@@ -166,6 +166,11 @@ async def rankb(ctx, user_id=None):
 async def pasta(ctx):
     test = misc.random_pasta()
     await ctx.send(test)
+
+@client.command()
+async def profile(ctx, user_id):
+    user_id = sheets.known(user_id)
+    await ctx.send(getprofiles.getprofile(user_id))
 
 
 #keep_alive()
