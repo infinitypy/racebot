@@ -1,7 +1,7 @@
 import os
 from discord.ext import commands
 import datetime
-import sheets, leaderboard, misc, getprofiles
+import sheets, leaderboard, misc, profiles
 
 #from webserver import keep_alive
 
@@ -170,7 +170,7 @@ async def pasta(ctx):
 @client.command()
 async def profile(ctx, user_id):
     user_id = sheets.known(user_id)
-    await ctx.send(getprofiles.getprofile(user_id))
+    await ctx.send(profiles.getprofile(user_id))
 
 
 #keep_alive()
