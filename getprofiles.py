@@ -19,7 +19,7 @@ def getprofile(userid):
     fiftyp = medals.get('Silver', 0)
     seveny = medals.get('Bronze', 0)
     
-    formattedinfo = '```Race Stats for ' + name + '\nuserid: ' + uid + '\n1st: ' + str(first) + '\n2nd: ' + str(second) + '\n3rd: ' + str(third) + '\ntop 50: ' + str(fifty) + '\ntop 1%: ' + str(one) + '\ntop 10%: ' + str(ten) + '\ntop 25%: ' + str(twfive) + '\ntop 50%: ' + str(fiftyp) + '\ntop 75%: ' + str(seveny) + '```'
+    formattedinfo = '```Race Stats for ' + name + '\nuserid: ' + uid + '\n1st: ' + str(first) + '\n2nd: ' + str(second) + '\n3rd: ' + str(third) + '\ntop 50: ' + str(fifty) + '\ntop 1%: ' + str(one) + '\ntop 10%: ' + str(ten) + '\ntop 25%: ' + str(twfive) + '\ntop 50%: ' + str(fiftyp) + '\ntop 75%: ' + str(seveny) + '\n\nTotal: ' + str(first+second+third+fifty+one+ten+twfive+fiftyp+seveny) + '```'
 
 
     return formattedinfo
