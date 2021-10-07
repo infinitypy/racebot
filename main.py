@@ -1,7 +1,7 @@
 import os
 from discord.ext import commands
 import datetime
-import sheets, leaderboard
+import sheets, leaderboard, misc
 
 #from webserver import keep_alive
 
@@ -13,17 +13,6 @@ LAST_ID = '5b7f82e318c7cbe32fa01e4e'
 @client.event
 async def on_ready():
     print(f'{client.user} is online')
-
-
-@client.command()
-async def femdom(ctx):
-    await ctx.send('if I may offer input, ezili seems restrained rather than an actual bottom, if you get her to open up then she will absolutely destroy you'
-'\ngwen strikes me as the type to act tough on the field but enjoy cuddles and rainbows and stuff')
-
-
-@client.command()
-async def dominaciónfemenina(ctx):
-    await ctx.send('si puedo aportar, ezili parece retraida mas que un fondo, si logras que se abra, ella te destruira\ngwen me parece que es el tipo que intenta actuar duro pero en el fondo adora los cariños y arcoiris y esas cosas')
 
 
 @client.command()
@@ -171,6 +160,12 @@ async def rankb(ctx, user_id=None):
         await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
         return
     await ctx.send("Best tracked performance in race " + str(racenum) + " with rank " + str(rank))
+
+
+@client.command()
+async def pasta(ctx):
+    test = misc.random_pasta()
+    await ctx.send(test)
 
 
 #keep_alive()
