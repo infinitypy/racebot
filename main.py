@@ -74,45 +74,44 @@ async def info(ctx, num):
 
 
 @client.command()
-async def lb(ctx, racenum=None, first=None, last=None):
-    if racenum and first and not last:
+async def lb(ctx, race_num=None, first=None, last=None):
+    if race_num and first and not last:
         last = first
-        first = racenum
-        racenum = NUM_RACES
-    if not racenum:
-        racenum = NUM_RACES
+        first = race_num
+        race_num = len(leaderboard.all_ids)
+    if not race_num:
+        race_num = len(leaderboard.all_ids)
     if not first and not last:
         first = 1
         last = 50
-    title = "Race #" + str(racenum) + ": **" + sheets.race(int(racenum)) + "**"
-    await ctx.send(title + "```" + leaderboard.get_leaderboard(int(racenum), int(first), int(last)) + "```")
+    title = "Race #" + str(race_num) + ": **" + sheets.race(int(race_num)) + "**"
+    await ctx.send(title + "```" + leaderboard.get_leaderboard(int(race_num), int(first), int(last)) + "```")
 
 
 @client.command()
-async def id(ctx, race_num=None, rank=None):
-    if not rank:
+async def id(ctx, race_num=None, user_rank=None):
+    if not user_rank:
         if not race_num:
             await ctx.send(ROF)
             return
-        rank = race_num
+        user_rank = race_num
         race_num = NUM_RACES
     try:
-        user_id, name, _ = leaderboard.get_id(int(race_num), rank)
+        user_id, name, _ = leaderboard.get_id(int(race_num), user_rank)
         global LAST_ID
         LAST_ID = user_id
-        await ctx.send(name + '\'s user ID: ' + user_id)
+        await ctx.send('**' + name + '**\'s user ID:')
+        await ctx.send(user_id)
     except Exception:
         await ctx.send(ROF)
 
 
 @client.command()
 async def nicks(ctx, identifier=None):
-    user_id = sheets.known(identifier)
-
-    if not user_id:
+    if not identifier:
         global LAST_ID
-        user_id = LAST_ID
-
+        identifier = LAST_ID
+    user_id = sheets.known(identifier)
     output = leaderboard.get_nicks(user_id[0])
     if not output:
         await ctx.send(ROF)
@@ -122,16 +121,31 @@ async def nicks(ctx, identifier=None):
 
 
 @client.command()
-async def ranka(ctx, user_id=None):
-    if not user_id:
+async def rank(ctx, identifier=None):
+    if not identifier:
         global LAST_ID
-        user_id = LAST_ID
-    user_id = sheets.known(user_id)
+        identifier = LAST_ID
+    user_id = sheets.known(identifier)
+    output = leaderboard.get_rank(len(leaderboard.all_ids), user_id[0])
+    if not output:
+        await ctx.send(ROF)
+        return
+    await ctx.send('**' + user_id[1] + '**\'s current rank in race ' +
+                   str(len(leaderboard.all_ids)) + ': ' + str(output))
+
+
+@client.command()
+async def ranka(ctx, identifier=None):
+    if not identifier:
+        global LAST_ID
+        identifier = LAST_ID
+    user_id = sheets.known(identifier)
     number, ranksum = leaderboard.get_average_rank(user_id[0])
     if not number:
         await ctx.send(ROF)
         return
-    await ctx.send(user_id[1] + "'s average rank in " + str(number) + " tracked races: " + str(round(ranksum / number, 1)))
+    await ctx.send('**' + user_id[1] + '**\'s average rank in ' + str(number) +
+                   ' tracked races: ' + str(round(ranksum / number, 1)))
 
 
 @client.command()
@@ -140,11 +154,12 @@ async def rankw(ctx, user_id=None):
         global LAST_ID
         user_id = LAST_ID
     user_id = sheets.known(user_id)
-    race_num, rank = leaderboard.get_worst_rank(user_id[0])
+    race_num, user_rank = leaderboard.get_worst_rank(user_id[0])
     if not race_num:
         await ctx.send(ROF)
         return
-    await ctx.send(user_id[1] + "'s worst tracked performance in race " + str(race_num) + " with rank " + str(rank))
+    await ctx.send('**' + user_id[1] + '**\'s worst tracked performance in race ' +
+                   str(race_num) + ' with rank ' + str(user_rank))
 
 
 @client.command()
@@ -153,11 +168,12 @@ async def rankb(ctx, user_id=None):
         global LAST_ID
         user_id = LAST_ID
     user_id = sheets.known(user_id)
-    race_num, rank = leaderboard.get_best_rank(user_id[0])
+    race_num, user_rank = leaderboard.get_best_rank(user_id[0])
     if not race_num:
         await ctx.send(ROF)
         return
-    await ctx.send(user_id[1] + "'s best tracked performance in race " + str(race_num) + " with rank " + str(rank))
+    await ctx.send('**' + user_id[1] + '**\'s best tracked performance in race ' +
+                   str(race_num) + ' with rank ' + str(user_rank))
 
 
 @client.command()

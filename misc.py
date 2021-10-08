@@ -1,8 +1,8 @@
 import random
 
 pastas = [
-    'if I may offer input, ezili seems restrained rather than an actual bottom, if you get her to open up then'
-    'she willabsolutely destroy you\ngwen strikes me as the type to act tough on the field but enjoy cuddles'
+    'if I may offer input, ezili seems restrained rather than an actual bottom, if you get her to open up then '
+    'she will absolutely destroy you\ngwen strikes me as the type to act tough on the field but enjoy cuddles '
     'and rainbows and stuff',
     'si puedo aportar, ezili parece retraida mas que un fondo, si logras que se abra, ella te destruira\n'
     'gwen me parece que es el tipo que intenta actuar duro pero en el fondo adora los cariños y arcoiris y esas cosas',
@@ -97,7 +97,44 @@ pastas = [
     'you can send rounds faster with 1 more alc selling\nalso 1st and 2nd place use the same strat... they work '
     'together\nand both of them use cheatengine\nthat is a 3rd party application that can slow your game 5 times more '
     'then you see in this video...\n\nthey can not beat me so they coop and cheat hahaha.. noobs gonna noob\ni feel '
-    'honored they go true such trouble just to beat me'
+    'honored they go true such trouble just to beat me',
+    'If I may disturb you good sir I couldn\'t help but notice you are having trouble finding the time the race '
+    'rewards are distributed. While this prestigious discord does have access to this information, unfortunately as '
+    'you did not defeat <@!217726724752932864> in battle we cannot freely impart this knowledge to you. As a result '
+    'you have been confined to this humble, yet cozy corner of the server to spend the rest of your days.\nIf you have '
+    'any qualms with the result of this decision you may take it up with our wonderful staff at support@ninjakiwi.com.'
+    '\nWe have an incredible track record of always solving each and every issue that is brought to us and we hope to '
+    'hear from you shortly.\n\nThrough the tedious and accurate mathematical testing of our support staff we have come '
+    'to the conclusion that buying each and every one of those road spikes cost too much for any one person to have '
+    'attained legitimately. Since this is the case we won\'t be answering any more queries. Have a nice day.',
+    'Does anyone know when the race rewards come out? I checked but this server doesn\'t seem to have a channel that '
+    'has this information.\n\nGuys, I think we\'re being ignored.\nI feel like the people in this server don\'t want '
+    'us to know when the race rewards come out given that there isn\'t even a channel dedicated to answering such '
+    'simple questions.',
+    'Are you kidding ??? What the ** are you talking about man ? You are a biggest looser i ever seen in my life ! You '
+    'was doing PIPI in your pampers when i was beating racers much more stronger then you! You are not proffesional, '
+    'because proffesionals knew how to lose and congratulate opponents, you are like a girl crying after i beat you! '
+    'Be brave, be honest to yourself and stop this trush talkings!!! Everybody know that i am very good racer, i can '
+    'outmicro anyone in the world in single free attempt! And "c"hoc "b"ox is nobody for me, just a player who are '
+    'crying every single time when loosing, ( remember what you say about ThickBoi42069) !!! Stop playing with my '
+    'name, i deserve to have a good name during whole my race carrier, I am Officially inviting you to IRL race micro '
+    'match with the Prize fund! Both of us will invest 5000$ and winner takes it all!\n\nI suggest all other people '
+    'who\'s intrested in this situation, just take a look at my results in BADv2 and Out Of Control, and that should '
+    'be enough... No need to listen for every crying babe, RandyZ524 is always play Fair ! And if someone will '
+    'continue Officially talk about me like that, we will meet in Court! God bless with true! True will never die ! '
+    'Liers will kicked off...',
+    'It is, in fact, nothing short of the truth that upon a cursory, followed by thoughtful consideration of the text '
+    'upon which Rohan Spibo bequeathed with opinionated meaning with respect to the "Overclock" activated ability '
+    'upgrade of the Engineer, I have found myself in fundamental agreement with both the conclusion and the reasoning '
+    'of such; in particular, that it is the drastic and unprecedented shift in the metagame of the sixth game as '
+    'opposed to fifth game that gives rise to the current observation of sheer strength from the newly-added '
+    'Engineer\'s ability.',
+    'The only racer I know to exist as an independent entity is myself. The subjectivity of all sensory basis of '
+    'reality necessarily implies that no profile on the leaderboard can be guaranteed not to be one of my alts.',
+    'Gaming is not about “fun”. As a gamer I’ll have you know that a game is 100x more “fun” if you actually KNOW HOW '
+    'TO PLAY IT. I can’t breathe a WORD of advice on how to be a good player on this sub without getting a bunch of '
+    'kids going absolutely insane over it. If the person I’m talking to wants to stay trash forever, however they can '
+    'ignore my advice. It’s fine with me.'
 ]
 random.shuffle(pastas)
 pasta_index = 0

@@ -13,7 +13,7 @@ sheet = client.open_by_key('16WGnLuUGxalfNEFND-YUfplhXIZMxJ1zzkESc3ISgn4')
 fulldata = sheet.worksheet('main')
 
 all_races = {}
-all_ids = [cell.value for cell in sheets.race_info.range(2, 3, 147, 3)]
+all_ids = sheets.race_info.col_values(3)[1:]
 
 
 def lb(race_num):
@@ -50,6 +50,8 @@ def load_race(race_num):
     if not leaderboard:
         return False
     else:
+        if race_num >= fulldata.col_count:
+            fulldata.add_cols(race_num - fulldata.col_count + 1)
         batch_size = 100
         fulldata.update_cell(1, race_num + 1, str(race_num))
         for j in range(0, len(leaderboard), batch_size):
@@ -57,8 +59,4 @@ def load_race(race_num):
             for index, cell in enumerate(partial):
                 cell.value = leaderboard[j:j + batch_size][index]
             fulldata.update_cells(partial)
-
-# for z in range(len(145)):
-#    testing = lb(z+1)
-#    for i in range(len(testing)):
-#        fulldata.update_cell(i+2, z+2, testing[i])
+        return True
