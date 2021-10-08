@@ -113,12 +113,12 @@ async def nicks(ctx, user_id=None):
         global LAST_ID
         user_id = LAST_ID
 
-    output = leaderboard.get_nicks(user_id)
+    output = leaderboard.get_nicks(user_id[0])
     if not output:
         await ctx.send(ROF)
         return
     nicknames = '\n'.join(list(map(str, output)))
-    await ctx.send('Nicknames for **' + str(user_id) + '**```\n' + nicknames + '```')
+    await ctx.send('Nicknames for **' + str(user_id[1]) + '**```\n' + nicknames + '```')
 
 
 @client.command()
@@ -128,11 +128,11 @@ async def ranka(ctx, user_id=None):
     if not user_id:
         global LAST_ID
         user_id = LAST_ID
-    number, ranksum = leaderboard.get_average_rank(user_id)
+    number, ranksum = leaderboard.get_average_rank(user_id[0])
     if not number:
         await ctx.send(ROF)
         return
-    await ctx.send("Average rank in " + str(number) + " tracked races: " + str(round(ranksum / number, 1)))
+    await ctx.send(user_id[1] + "'s average rank in " + str(number) + " tracked races: " + str(round(ranksum / number, 1)))
 
 
 @client.command()
@@ -142,11 +142,11 @@ async def rankw(ctx, user_id=None):
     if not user_id:
         global LAST_ID
         user_id = LAST_ID
-    race_num, rank = leaderboard.get_worst_rank(user_id)
-    if not race_num:
+    racenum, rank = leaderboard.get_worst_rank(user_id[0])
+    if not racenum:
         await ctx.send(ROF)
         return
-    await ctx.send("Worst tracked performance in race " + str(race_num) + " with rank " + str(rank))
+    await ctx.send(user_id[1] + "'s worst tracked performance in race " + str(racenum) + " with rank " + str(rank))
 
 
 @client.command()
@@ -156,11 +156,11 @@ async def rankb(ctx, user_id=None):
     if not user_id:
         global LAST_ID
         user_id = LAST_ID
-    race_num, rank = leaderboard.get_best_rank(user_id)
-    if not race_num:
+    racenum, rank = leaderboard.get_best_rank(user_id[0])
+    if not racenum:
         await ctx.send(ROF)
         return
-    await ctx.send("Best tracked performance in race " + str(race_num) + " with rank " + str(rank))
+    await ctx.send(user_id[1] + "'s best tracked performance in race " + str(racenum) + " with rank " + str(rank))
 
 
 @client.command()
@@ -172,7 +172,7 @@ async def pasta(ctx):
 @client.command()
 async def profile(ctx, user_id):
     user_id = sheets.known(user_id)
-    await ctx.send(profiles.getprofile(user_id))
+    await ctx.send(profiles.getprofile(user_id[0]))
 
 
 #keep_alive()

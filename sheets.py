@@ -10,17 +10,22 @@ race_info = sheet.worksheet('raceinfo')
 round_info = sheet.worksheet('rounds')
 players = sheet.worksheet('playerinfo')
 
-def known(uid):
+def known(name):
     knownplayers = players.col_values(1)
-    knownplayers = [x.lower() for x in knownplayers]
     knownids = players.col_values(2)
-    if uid.lower() in knownplayers:
-        for i in range(len(knownplayers)):
-            if knownplayers[i] == uid.lower():
-                return knownids[i]
-    else:
-        return uid
+    playeraliases = players.col_values(3)
 
+    full = {}
+    temp = ''
+    for i in range(len(knownplayers)):
+        temp = knownplayers[i] + "," + playeraliases[i]
+        full[knownids[i]] = temp.split(',')
+
+    for pid, pname in full.items():
+        for i in range(len(pname)):
+            if pname[i].lower() == name.lower():
+                return(pid, pname[0])
+    return name, name
 
 def race(num, display_race_id=None):
     if num == 129 and display_race_id is None:
