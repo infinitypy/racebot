@@ -8,6 +8,7 @@ import sheets, leaderboard, misc, profiles
 client = commands.Bot(command_prefix='r!')
 NUM_RACES = 146
 LAST_ID = '5b7f82e318c7cbe32fa01e4e'
+ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
 
 
 @client.event
@@ -32,9 +33,9 @@ async def race(ctx, num, race_id=None):
         if int(num) > 0:
             await ctx.send(sheets.race(int(num), race_id))
         else:
-            await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+            await ctx.send(ROF)
     except ValueError:
-        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        await ctx.send(ROF)
 
 
 @client.command()
@@ -43,9 +44,9 @@ async def length(ctx, num, abr=None):
         if 0 < int(num) <= 140:
             await ctx.send('Round ' + num + ' is ' + sheets.length(int(num), abr) + 's')
         else:
-            await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+            await ctx.send(ROF)
     except ValueError:
-        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        await ctx.send(ROF)
 
 
 @client.command()
@@ -60,7 +61,7 @@ async def rtime(ctx, start, end, stime, abr=None):
         else:
             print('bad input')
     except ValueError:
-        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        await ctx.send(ROF)
 
 
 @client.command()
@@ -69,7 +70,7 @@ async def info(ctx, num):
         if int(num) > 0:
             await ctx.send('\n'.join(sheets.info(int(num))))
     except ValueError:
-        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        await ctx.send(ROF)
 
 
 @client.command()
@@ -91,7 +92,7 @@ async def lb(ctx, racenum=None, first=None, last=None):
 async def id(ctx, race_num=None, rank=None):
     if not rank:
         if not race_num:
-            await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+            await ctx.send(ROF)
             return
         rank = race_num
         race_num = NUM_RACES
@@ -101,7 +102,7 @@ async def id(ctx, race_num=None, rank=None):
         LAST_ID = user_id
         await ctx.send(name + '\'s user ID: ' + user_id)
     except Exception:
-        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        await ctx.send(ROF)
 
 
 @client.command()
@@ -114,7 +115,7 @@ async def nicks(ctx, user_id=None):
 
     output = leaderboard.get_nicks(user_id)
     if not output:
-        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        await ctx.send(ROF)
         return
     nicknames = '\n'.join(list(map(str, output)))
     await ctx.send('Nicknames for **' + str(user_id) + '**```\n' + nicknames + '```')
@@ -129,7 +130,7 @@ async def ranka(ctx, user_id=None):
         user_id = LAST_ID
     number, ranksum = leaderboard.get_average_rank(user_id)
     if not number:
-        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+        await ctx.send(ROF)
         return
     await ctx.send("Average rank in " + str(number) + " tracked races: " + str(round(ranksum / number, 1)))
 
@@ -141,11 +142,11 @@ async def rankw(ctx, user_id=None):
     if not user_id:
         global LAST_ID
         user_id = LAST_ID
-    racenum, rank = leaderboard.get_worst_rank(user_id)
-    if not racenum:
-        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+    race_num, rank = leaderboard.get_worst_rank(user_id)
+    if not race_num:
+        await ctx.send(ROF)
         return
-    await ctx.send("Worst tracked performance in race " + str(racenum) + " with rank " + str(rank))
+    await ctx.send("Worst tracked performance in race " + str(race_num) + " with rank " + str(rank))
 
 
 @client.command()
@@ -155,17 +156,18 @@ async def rankb(ctx, user_id=None):
     if not user_id:
         global LAST_ID
         user_id = LAST_ID
-    racenum, rank = leaderboard.get_best_rank(user_id)
-    if not racenum:
-        await ctx.send('https://cdn.discordapp.com/emojis/859285402749632522.png?size=96')
+    race_num, rank = leaderboard.get_best_rank(user_id)
+    if not race_num:
+        await ctx.send(ROF)
         return
-    await ctx.send("Best tracked performance in race " + str(racenum) + " with rank " + str(rank))
+    await ctx.send("Best tracked performance in race " + str(race_num) + " with rank " + str(rank))
 
 
 @client.command()
 async def pasta(ctx):
     test = misc.random_pasta()
     await ctx.send(test)
+
 
 @client.command()
 async def profile(ctx, user_id):
