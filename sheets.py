@@ -18,12 +18,12 @@ def known(name):
     full = {}
     temp = ''
     for i in range(len(knownplayers)):
-        temp = knownplayers[i] + "," + playeraliases[i].lower()
+        temp = knownplayers[i] + "," + playeraliases[i]
         full[knownids[i]] = temp.split(',')
 
     for pid, pname in full.items():
         for i in range(len(pname)):
-            if pname[i] == name.lower():
+            if pname[i].lower() == name.lower():
                 return(pid, pname[0])
     return name, name
 
