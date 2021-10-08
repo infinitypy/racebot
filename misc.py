@@ -1,4 +1,7 @@
 import random
+import os
+
+import discord
 
 pastas = [
     'if I may offer input, ezili seems restrained rather than an actual bottom, if you get her to open up then '
@@ -148,3 +151,9 @@ def random_pasta():
     pasta = pastas[pasta_index]
     pasta_index += 1
     return pasta
+
+
+def send_as_txt(ctx, message):
+    f = open('output.txt', 'w')
+    f.write(message)
+    f.close()

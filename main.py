@@ -1,4 +1,6 @@
 import os
+
+import discord
 from discord.ext import commands
 import datetime
 import sheets, leaderboard, misc, profiles
@@ -84,8 +86,11 @@ async def lb(ctx, race_num=None, first=None, last=None):
     if not first and not last:
         first = 1
         last = 50
-    title = "Race #" + str(race_num) + ": **" + sheets.race(int(race_num)) + "**"
-    await ctx.send(title + "```" + leaderboard.get_leaderboard(int(race_num), int(first), int(last)) + "```")
+    title = 'Race #' + str(race_num) + ': **' + sheets.race(int(race_num)) + '**'
+    output = leaderboard.get_leaderboard(int(race_num), int(first), int(last)).strip()
+    misc.send_as_txt(ctx, output)
+    await ctx.send(title, file=discord.File('output.txt'))
+    os.remove('output.txt')
 
 
 @client.command()
