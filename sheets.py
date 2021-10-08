@@ -18,7 +18,7 @@ def known(name):
     full = {}
     temp = ''
     for i in range(len(knownplayers)):
-        temp = knownplayers[i].lower() + "," + playeraliases[i].lower()
+        temp = knownplayers[i] + "," + playeraliases[i].lower()
         full[knownids[i]] = temp.split(',')
 
     for pid, pname in full.items():
