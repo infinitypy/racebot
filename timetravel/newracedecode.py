@@ -1,12 +1,13 @@
 import requests
 
 
-def decode(data):
-    data = data.encode()
-    for i in range(len(data)-14):
-        data[i+14] = data[i+14] - 21
-        data[i+14] = data[i+14] - ((i-28)%6)
-        return data.decode()
+def decode(stuff):
+    for i in range(14, len(stuff)):
+        stuff[i] = chr(ord(stuff[i]) - 21)
+        stuff[i] = chr(ord(stuff[i]) - ((i - 14) % 6))
+    return stuff[14:]
 
-data = requests.get('https://static-api.nkstatic.com/nkapi/skusettings/4db0c10e1647310be1eb71b77f2df364.json').json()
-print(data)
+
+data = requests.get('https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/Exponential_4')
+decoded = ''.join(decode(list(data.text)))
+print(decoded)

@@ -63,7 +63,41 @@ pastas = [
     'connector strips. It was invented by entrepreneur Peter Moule, who appeared on the BBC television programme '
     '*Dragons\' Den* in 2007. He secured a deal with two \"dragons\", Duncan Bannatyne and James Caan, for £150,000 '
     'funding and soon made a deal for sales worth £25 million. Bannatyne describes Chocbox as one of his best '
-    'investments from the show.'
+    'investments from the show.',
+    'Hello, as you may be aware, someone was discussion roomed for completing all the expert maps Black Border. By '
+    'itself, we are perfectly fine with people showing their achievements, however on closer inspection it was '
+    'revealed in another server that the person who posted this openly talked about using alt BTD6 accounts with '
+    'infinite MM hacks to practice races as well as talked about unflagging accounts after using mods. As such, I have '
+    'solely decided to ban this person who is causing a commotion in this server. It is simply hypocritical from some '
+    'of the community to allow people to use hacked accounts to gain advantage in competitive areas just to flaunt '
+    'while completely trying to destroy people who are using for example, pirated versions that are basically '
+    'identical copies of the legitimate version for simply being in a a situation where they cannot financially pay '
+    'for BTD6. Fyi, Raven was debating whether to let the person go until staff were available since they were being '
+    'relatively co-operative, it is me who insisted on him staying in the room and me who is banning the person. '
+    'Another part of the reason why I am banning is that the person is acting as if they are completely innocent '
+    'while deliberately trying to demonise the moderators in this server for doing the unacceptable things I mentioned '
+    'above. That is all. Anyone who talks about how anyone involved in moderation is being unfair about this in chat I '
+    'will personally ban for one week for trying to cause a ruckus in the server.',
+    'The monkey bank in general sucks as if you want to go for a passive style it is simply more effective to rush '
+    'straight for a bia. As while it is mathematically better to get a bank with 1 plantation on the side and then get '
+    'a r17 bia without banking out it directly gives the advantage to the enemy for multiple reasons. First You will '
+    'have only a small amount of budget to afford defense and still be able to pull it off and at the same time you '
+    'absolutely cannot rush the enemy allowing them to even sell defenses and get better farms then you while still '
+    'being able to rush. Exemples would be equalizing with a r16 bia while forcing defense r16 which is an important '
+    'round for ai layering. Or selling defense to get a r15 bia and overshadow your r14 bank.\n\nOutside of this '
+    'specific scenario which has a use in 1 single scenario (DFA vs NFE) bank sucks, getting a bank without the gimmik '
+    'of upgrading to a bia without banking out is straight up just losing 1k$ even if you gain 30 eco it\'s not worth '
+    'as getting a bia would give 80 eco in 1 round and once again overshadow your effort. You can argue that bank is '
+    'useful in moab drain games where both players are stuck with low eco and low farms r20+ but those situations '
+    'don\'t happen in competitive anymore.',
+    'I suppose I will have to tell to the server owners about your absurd behavior and abuse of your powers and '
+    'abilities, furthermore, I don\'t think you are a good mod if you treat people of the server harshly and taking '
+    'roles of players of the server, I don\'t think you deserve to be a moderator after this action, this wasn\'t '
+    'intended to be a good deed and I don\'t understand why you would do that.',
+    'you can send rounds faster with 1 more alc selling\nalso 1st and 2nd place use the same strat... they work '
+    'together\nand both of them use cheatengine\nthat is a 3rd party application that can slow your game 5 times more '
+    'then you see in this video...\n\nthey can not beat me so they coop and cheat hahaha.. noobs gonna noob\ni feel '
+    'honored they go true such trouble just to beat me'
 ]
 random.shuffle(pastas)
 pasta_index = 0
