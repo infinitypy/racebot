@@ -15,11 +15,8 @@ decoded = json.loads(decoded['races/'+racename])
 
 info = decoded['challenge']['towers']
 formattedinfo = {}
-temp = []
 
 for i in range(len(info)):
-    temp.append((info[i]['max'], info[i]['path1NumBlockedTiers'], info[i]['path2NumBlockedTiers'], info[i]['path3NumBlockedTiers'], info[i]['isHero']))
-    formattedinfo[info[i]['tower']] = temp
-    temp = []
+    formattedinfo[info[i]['tower']] = (info[i]['max'], info[i]['path1NumBlockedTiers'], info[i]['path2NumBlockedTiers'], info[i]['path3NumBlockedTiers'], info[i]['isHero'])
 
 print(formattedinfo)
