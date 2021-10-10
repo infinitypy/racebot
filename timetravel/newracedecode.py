@@ -1,11 +1,25 @@
-import requests
+import requests, json
 
-def decode(data):
-    data = list(data)
-    for i in range(len(data)):
-        data[i] = data[i] -21
-        data[i] = chr(data[i] - ((i - 14) % 6))
-    return ''.join(data[14:])
-    
-data = requests.get('https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/Exponential_4')
-print(decode(data.content))
+def decode(bytes):
+    string = ''
+    for i, byte in enumerate(bytes[14:]):
+        string += chr(byte - 21 - i % 6)
+    return string
+
+racename = 'Exponential_4'
+
+data = requests.get('https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/'+racename)
+decoded = json.loads(decode(data.content))
+decoded = json.loads(decoded['data'])
+decoded = json.loads(decoded['races/'+racename])
+
+info = decoded['challenge']['towers']
+formattedinfo = {}
+temp = []
+
+for i in range(len(info)):
+    temp.append((info[i]['max'], info[i]['path1NumBlockedTiers'], info[i]['path2NumBlockedTiers'], info[i]['path3NumBlockedTiers'], info[i]['isHero']))
+    formattedinfo[info[i]['tower']] = temp
+    temp = []
+
+print(formattedinfo)
