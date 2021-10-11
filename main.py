@@ -3,7 +3,7 @@ import os
 import discord
 from discord.ext import commands
 import datetime
-import sheets, leaderboard, misc, profiles
+import sheets, leaderboard, misc, profiles, timetravel.newracedecode
 
 #from webserver import keep_alive
 
@@ -88,9 +88,7 @@ async def lb(ctx, race_num=None, first=None, last=None):
         last = 50
     title = 'Race #' + str(race_num) + ': **' + sheets.race(int(race_num)) + '**'
     output = leaderboard.get_leaderboard(int(race_num), int(first), int(last)).strip()
-    misc.send_as_txt(ctx, output)
-    await ctx.send(title, file=discord.File('output.txt'))
-    os.remove('output.txt')
+    await ctx.send(str(title+'```'+output+'```'))
 
 
 @client.command()
@@ -192,6 +190,9 @@ async def profile(ctx, user_id):
     user_id = sheets.known(user_id)
     await ctx.send(profiles.getprofile(user_id[0]))
 
+@client.command()
+async def nkinfo(ctx, name):
+    await ctx.send(timetravel.newracedecode.raceinfo(name))
 
 #keep_alive()
 #my_secret = os.environ['TOKEN']
