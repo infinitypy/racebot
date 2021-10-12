@@ -6,6 +6,7 @@ from discord.ext import commands
 import datetime
 import sheets, leaderboard, misc, profiles, timetravel.newracedecode
 import matplotlib.pyplot as plot
+import numpy as np
 
 #from webserver import keep_alive
 
@@ -92,8 +93,9 @@ async def lb(ctx, race_num=None, first=None, last=None):
     output = leaderboard.get_leaderboard(int(race_num))
     if output:
         output_str = ''
-        for i in range(last - first + 1):
-            output_str += "\n" + str(i + first).ljust(2) + ' ' + output[i + first - 1][2] + ' ' + output[i + first - 1][1]
+        for i in range(int(last) - int(first) + 1):
+            output_str += "\n" + str(i + int(first)).ljust(2) + ' ' + \
+                          output[i + int(first) - 1][2] + ' ' + output[i + int(first) - 1][1]
     else:
         output_str = 'No data'
     await ctx.send(title + '```' + output_str + '```')
@@ -156,10 +158,16 @@ async def ranka(ctx, identifier=None):
     if not ranks:
         await ctx.send(ROF)
         return
+    x = [entry[0] for entry in ranks]
+    y = [entry[1] for entry in ranks]
     plot.clf()
     plot.axis([1, len(leaderboard.all_ids), 1, 100])
     plot.grid(color='grey', alpha=0.5)
-    plot.plot([entry[0] for entry in ranks], [entry[1] for entry in ranks], 'k.')
+    plot.plot(x, y, 'k.')
+
+    z = np.polyfit(x, y, 1)
+    p = np.poly1d(z)
+    plot.plot(x, p(x), 'r--')
     plot.savefig('output.png')
     await ctx.send('**' + user_id[1] + '**\'s average rank in ' + str(len(ranks)) +
                    ' tracked races: ' + str(round(statistics.median([entry[1] for entry in ranks]), 1)),
