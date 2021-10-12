@@ -158,7 +158,8 @@ async def ranka(ctx, identifier=None):
         return
     plot.clf()
     plot.axis([1, len(leaderboard.all_ids), 1, 100])
-    plot.plot([entry[0] for entry in ranks], [entry[1] for entry in ranks], 'bo')
+    plot.grid(color='grey', alpha=0.5)
+    plot.plot([entry[0] for entry in ranks], [entry[1] for entry in ranks], 'k.')
     plot.savefig('output.png')
     await ctx.send('**' + user_id[1] + '**\'s average rank in ' + str(len(ranks)) +
                    ' tracked races: ' + str(round(statistics.median([entry[1] for entry in ranks]), 1)),
