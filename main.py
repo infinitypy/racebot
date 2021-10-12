@@ -170,7 +170,8 @@ async def ranka(ctx, identifier=None):
     plot.plot(x, p(x), 'r--')
     plot.savefig('output.png')
     await ctx.send('**' + user_id[1] + '**\'s average rank in ' + str(len(ranks)) +
-                   ' tracked races: ' + str(round(statistics.median([entry[1] for entry in ranks]), 1)),
+                   ' tracked races: ' + str(round(statistics.median([entry[1] for entry in ranks]), 1)) +
+                   '\nPredicted ranking in race 148: ' + str(round(p(148))),
                    file=discord.File('output.png'))
 
 
