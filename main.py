@@ -1,9 +1,11 @@
 import os
+import statistics
 
 import discord
 from discord.ext import commands
 import datetime
 import sheets, leaderboard, misc, profiles, timetravel.newracedecode
+import matplotlib.pyplot as plot
 
 #from webserver import keep_alive
 
@@ -87,8 +89,14 @@ async def lb(ctx, race_num=None, first=None, last=None):
         first = 1
         last = 50
     title = 'Race #' + str(race_num) + ': **' + sheets.race(int(race_num)) + '**'
-    output = leaderboard.get_leaderboard(int(race_num), int(first), int(last)).strip()
-    await ctx.send(str(title+'```'+output+'```'))
+    output = leaderboard.get_leaderboard(int(race_num))
+    if output:
+        output_str = ''
+        for i in range(last - first + 1):
+            output_str += "\n" + str(i + first).ljust(2) + ' ' + output[i + first - 1][2] + ' ' + output[i + first - 1][1]
+    else:
+        output_str = 'No data'
+    await ctx.send(title + '```' + output_str + '```')
 
 
 @client.command()
@@ -129,6 +137,7 @@ async def rank(ctx, identifier=None):
         global LAST_ID
         identifier = LAST_ID
     user_id = sheets.known(identifier)
+    print(len(leaderboard.all_ids))
     output = leaderboard.get_rank(len(leaderboard.all_ids), user_id[0])
     if not output:
         await ctx.send(ROF)
@@ -143,12 +152,17 @@ async def ranka(ctx, identifier=None):
         global LAST_ID
         identifier = LAST_ID
     user_id = sheets.known(identifier)
-    number, ranksum = leaderboard.get_average_rank(user_id[0])
-    if not number:
+    ranks = leaderboard.get_all_rank(user_id[0])
+    if not ranks:
         await ctx.send(ROF)
         return
-    await ctx.send('**' + user_id[1] + '**\'s average rank in ' + str(number) +
-                   ' tracked races: ' + str(round(ranksum / number, 1)))
+    plot.clf()
+    plot.axis([1, len(leaderboard.all_ids), 1, 100])
+    plot.plot([entry[0] for entry in ranks], [entry[1] for entry in ranks], 'bo')
+    plot.savefig('output.png')
+    await ctx.send('**' + user_id[1] + '**\'s average rank in ' + str(len(ranks)) +
+                   ' tracked races: ' + str(round(statistics.median([entry[1] for entry in ranks]), 1)),
+                   file=discord.File('output.png'))
 
 
 @client.command()
