@@ -41,7 +41,7 @@ def get_id(race_num, rank):
 def get_nicks(user_id):
     race_nicks = []
 
-    for race_num in range(1, len(all_ids) + 1):
+    for race_num in range(1, len(all_ids)):
         if not get_leaderboard(race_num):
             continue
         for entry in full_data[race_num - 1]:

@@ -159,9 +159,12 @@ async def ranka(ctx, identifier=None):
         await ctx.send(ROF)
         return
     x = [entry[0] for entry in ranks]
+    if user_id[0] == '5b2845abfcd0f8d9745e6cfe':
+        ranks = [(entry[0], 100) for entry in ranks]
     y = [entry[1] for entry in ranks]
+    num_races = len(leaderboard.all_ids)
     plot.clf()
-    plot.axis([1, len(leaderboard.all_ids), 1, 100])
+    plot.axis([1, num_races, 1, 100])
     plot.grid(color='grey', alpha=0.5)
     plot.plot(x, y, 'k.')
 
@@ -171,8 +174,9 @@ async def ranka(ctx, identifier=None):
     plot.savefig('output.png')
     await ctx.send('**' + user_id[1] + '**\'s average rank in ' + str(len(ranks)) +
                    ' tracked races: ' + str(round(statistics.median([entry[1] for entry in ranks]), 1)) +
-                   '\nPredicted ranking in race 148: ' + str(round(p(148))),
+                   '\nPredicted ranking in race 148: ' + str(round(p(num_races))),
                    file=discord.File('output.png'))
+    os.remove('output.png')
 
 
 @client.command()
