@@ -216,7 +216,7 @@ async def pasta(ctx):
 @client.command()
 async def profile(ctx, user_id):
     user_id = sheets.known(user_id)
-    await ctx.send(profiles.getprofile(user_id[0]))
+    await ctx.send(profiles.get_profile(user_id[0]))
 
 @client.command()
 async def nkinfo(ctx, name):
