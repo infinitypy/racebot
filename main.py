@@ -8,7 +8,7 @@ import sheets, leaderboard, misc, profiles, timetravel.newracedecode
 import matplotlib.pyplot as plot
 import numpy as np
 
-#from webserver import keep_alive
+# from webserver import keep_alive
 
 client = commands.Bot(command_prefix='r!')
 NUM_RACES = 146
@@ -214,15 +214,24 @@ async def pasta(ctx):
 
 
 @client.command()
+async def skillissue(ctx, name=None):
+    skill_issue = misc.random_issue()
+    header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
+    await ctx.send(header + skill_issue)
+
+
+@client.command()
 async def profile(ctx, user_id):
     user_id = sheets.known(user_id)
     await ctx.send(profiles.get_profile(user_id[0]))
+
 
 @client.command()
 async def nkinfo(ctx, name):
     await ctx.send(timetravel.newracedecode.raceinfo(name))
 
-#keep_alive()
-#my_secret = os.environ['TOKEN']
+
+# keep_alive()
+# my_secret = os.environ['TOKEN']
 my_secret = 'ODkzOTY2NjkwNzY4MDA3MTc4.YVjJXA.pUDjmTzfKqHfF_al8r_Eontv34E'
 client.run(my_secret)
