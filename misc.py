@@ -2,8 +2,8 @@ import random
 import statistics
 from fuzzywuzzy import fuzz
 
-skill_isses = open('skillissues.txt', 'r', encoding='utf8').readlines()
-random.shuffle(skill_isses)
+skill_issues = open('skillissues.txt', 'r', encoding='utf8').readlines()
+random.shuffle(skill_issues)
 issue_index = 0
 
 lines = open('pastas.txt', 'r', encoding='utf8').readlines()
@@ -41,12 +41,13 @@ def random_issue(name):
         if max([statistics.mean(ring_ratios), statistics.mean(rof_ratios)]) >= 80:
             return "second longest intermediate map"
     global issue_index
-    if issue_index >= len(skill_isses):
-        random.shuffle(skill_isses)
+    if issue_index >= len(skill_issues):
+        random.shuffle(skill_issues)
         issue_index = 0
-    issue = skill_isses[issue_index]
+    issue = skill_issues[issue_index]
     issue_index += 1
     return issue
+
 
 def send_as_txt(message):
     f = open('output.txt', 'w')

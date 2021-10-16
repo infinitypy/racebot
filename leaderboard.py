@@ -2,6 +2,7 @@ import sheets
 import writelbtosheet
 
 all_ids = sheets.race_info.col_values(3)[1:]
+print(all_ids[-1])
 loaded_races = writelbtosheet.fulldata.row_values(1)
 full_data = writelbtosheet.fulldata.get_values('B2:ER101', major_dimension='COLUMNS')
 
@@ -16,7 +17,10 @@ def column(num, res=''):
 
 def get_leaderboard(race_num):
     if race_num is len(all_ids):
-        return [entry.split(',') for entry in writelbtosheet.lb(race_num)]
+        output = writelbtosheet.lb(race_num)
+        if not output:
+            return None
+        return [entry.split(',') for entry in output]
     global loaded_races, full_data
     if str(race_num) not in loaded_races:
         if not writelbtosheet.load_race(race_num):
@@ -29,13 +33,16 @@ def get_leaderboard(race_num):
 
 def get_id(race_num, rank):
     if not get_leaderboard(race_num):
-        return 'No data'
+        return None
     if rank.isdigit():
-        return string_to_tuple(full_data[race_num - 1][int(rank) - 1])
+        return string_to_tuple(full_data[race_num - 1][int(rank) - 1])[:2]
     else:
+        user_id = sheets.known(rank)
+        if user_id[0] != user_id[1]:
+            return user_id
         for entry in full_data[race_num - 1]:
-            if string_to_tuple(entry)[1].lower() == rank.lower():
-                return string_to_tuple(entry)
+            if string_to_tuple(entry)[1].lower() == user_id.lower():
+                return string_to_tuple(entry)[:2]
 
 
 def get_nicks(user_id):

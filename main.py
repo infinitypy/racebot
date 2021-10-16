@@ -1,17 +1,21 @@
+import datetime
 import os
 import statistics
 
 import discord
-from discord.ext import commands
-import datetime
-import sheets, leaderboard, misc, profiles, timetravel.newracedecode
 import matplotlib.pyplot as plot
 import numpy as np
+from discord.ext import commands
+
+import leaderboard
+import misc
+import profiles
+import sheets
+import timetravel.newracedecode
 
 # from webserver import keep_alive
 
-client = commands.Bot(command_prefix='r!')
-NUM_RACES = 146
+client = commands.Bot(command_prefix=['r!', 'R!'])
 LAST_ID = '5b7f82e318c7cbe32fa01e4e'
 ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
 
@@ -103,28 +107,24 @@ async def lb(ctx, race_num=None, first=None, last=None):
 
 @client.command()
 async def id(ctx, race_num=None, user_rank=None):
-    if not user_rank:
-        if not race_num:
-            await ctx.send(ROF)
-            return
-        user_rank = race_num
-        race_num = NUM_RACES
-    try:
-        user_id, name, _ = leaderboard.get_id(int(race_num), user_rank)
-        global LAST_ID
-        LAST_ID = user_id
-        await ctx.send('**' + name + '**\'s user ID:')
-        await ctx.send(user_id)
-    except Exception:
+    if not user_rank and not race_num:
+        output = sheets.from_discord_id(str(ctx.message.author.id))
+        print(output)
+    else:
+        if not user_rank:
+            user_rank = race_num
+            race_num = len(leaderboard.all_ids)
+        output = leaderboard.get_id(int(race_num), user_rank)
+    if not output:
         await ctx.send(ROF)
+        return
+    await ctx.send('**' + output[1] + '**\'s user ID:')
+    await ctx.send(output[0])
 
 
 @client.command()
 async def nicks(ctx, identifier=None):
-    if not identifier:
-        global LAST_ID
-        identifier = LAST_ID
-    user_id = sheets.known(identifier)
+    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
     output = leaderboard.get_nicks(user_id[0])
     if not output:
         await ctx.send(ROF)
@@ -135,11 +135,7 @@ async def nicks(ctx, identifier=None):
 
 @client.command()
 async def rank(ctx, identifier=None):
-    if not identifier:
-        global LAST_ID
-        identifier = LAST_ID
-    user_id = sheets.known(identifier)
-    print(len(leaderboard.all_ids))
+    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
     output = leaderboard.get_rank(len(leaderboard.all_ids), user_id[0])
     if not output:
         await ctx.send(ROF)
@@ -150,10 +146,7 @@ async def rank(ctx, identifier=None):
 
 @client.command()
 async def ranka(ctx, identifier=None):
-    if not identifier:
-        global LAST_ID
-        identifier = LAST_ID
-    user_id = sheets.known(identifier)
+    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
     ranks = leaderboard.get_all_rank(user_id[0])
     if not ranks:
         await ctx.send(ROF)
@@ -180,11 +173,8 @@ async def ranka(ctx, identifier=None):
 
 
 @client.command()
-async def rankw(ctx, user_id=None):
-    if not user_id:
-        global LAST_ID
-        user_id = LAST_ID
-    user_id = sheets.known(user_id)
+async def rankw(ctx, identifier=None):
+    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
     race_num, user_rank = leaderboard.get_worst_rank(user_id[0])
     if not race_num:
         await ctx.send(ROF)
@@ -194,11 +184,8 @@ async def rankw(ctx, user_id=None):
 
 
 @client.command()
-async def rankb(ctx, user_id=None):
-    if not user_id:
-        global LAST_ID
-        user_id = LAST_ID
-    user_id = sheets.known(user_id)
+async def rankb(ctx, identifier=None):
+    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
     race_num, user_rank = leaderboard.get_best_rank(user_id[0])
     if not race_num:
         await ctx.send(ROF)

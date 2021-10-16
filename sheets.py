@@ -28,12 +28,21 @@ def known(identifier):
     return identifier, identifier
 
 
+def from_discord_id(disc_id):
+    disc_ids = players.col_values(4)
+    if disc_id not in disc_ids:
+        return None
+    known_players = players.col_values(1)
+    known_ids = players.col_values(2)
+    index = disc_ids.index(disc_id)
+    return known_ids[index], known_players[index]
+
+
 def race(num, display_race_id=None):
     if num == 129 and display_race_id is None:
         return ':corn::tada:'
-    else:
-        col = 3 if display_race_id is not None else 2
-        return race_info.cell(num + 1, col).value
+    col = 3 if display_race_id is not None else 2
+    return race_info.cell(num + 1, col).value
 
 
 def length(num, abr):

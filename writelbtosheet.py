@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import requests
@@ -18,15 +20,16 @@ all_ids = sheets.race_info.col_values(3)[1:]
 
 def lb(race_num):
     times = []
-    newtimes = []
+    new_times = []
     complete = []
 
     race_id = all_ids[race_num - 1]
-    race_url = 'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_' + race_id + '.json'
+    race_url = 'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_{}.json'\
+        .format(race_id)
     try:
         data = requests.get(race_url).json()
-    except Exception:
-        return False
+    except JSONDecodeError:
+        return None
     entries = json.loads(data["data"])['scores']['equal']
     stuff = [(entry['metadata'].split(',')[0], entry['score'], entry['userID']) for entry in entries]
 
@@ -37,10 +40,10 @@ def lb(race_num):
             times.append(str(stuff[i][1]))
 
     for i in range(len(times)):
-        newtimes.append(str(datetime.timedelta(milliseconds=999999999 - int(times[i])))[3:-3])
+        new_times.append(str(datetime.timedelta(milliseconds=999999999 - int(times[i])))[3:-3])
 
     for i in range(len(stuff)):
-        complete.append(stuff[i][2] + ',' + stuff[i][0] + ',' + newtimes[i])
+        complete.append(stuff[i][2] + ',' + stuff[i][0] + ',' + new_times[i])
 
     return complete
 
