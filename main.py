@@ -59,7 +59,9 @@ async def length(ctx, num, abr=None):
 
 
 @client.command()
-async def rtime(ctx, start, end, stime, abr=None):
+async def rtime(ctx, start, end, stime = None, abr=None):
+    if not stime and not abr:
+        stime = 0
     try:
         if 0 <= int(start) <= 140 and 0 < int(end) <= 141 and \
                 int(start) < int(end) and float(stime) >= 0:

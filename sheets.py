@@ -56,10 +56,10 @@ def rtime(start, end, stime, abr):
     if start == 0:
         start = 1
         bonus_delay = 0.2
-    rounds = round_info.range(start + 1, col, end + 1, col)
-    rounds_adj = [float(r.value) + (i * 0.2) for i, r in enumerate(rounds)]
+    rounds = round_info.range(start + 2, col, end + 1, col)
+    rounds_adj = [float(r.value) + ((i + 1) * 0.2) for i, r in enumerate(rounds)]
     longest = max(rounds_adj)
-    longest_round = rounds_adj.index(longest)
+    longest_round = rounds_adj.index(longest) + 1
     return round(longest + stime + bonus_delay + 0.0167 - 0.2, 2), longest_round + start
 
 
