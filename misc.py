@@ -1,4 +1,5 @@
 import random
+import statistics
 from fuzzywuzzy import fuzz
 
 skill_isses = open('skillissues.txt', 'r', encoding='utf8').readlines()
@@ -33,10 +34,11 @@ def random_issue(name):
     if name:
         ring_of_fire = "ring of fire"
         rof = "rof"
-        ratio = max([fuzz.ratio(ring_of_fire, name.lower()), fuzz.ratio(rof, name.lower()),
-                     fuzz.partial_token_set_ratio(ring_of_fire, name), fuzz.partial_token_set_ratio(rof, name),
-                     fuzz.partial_token_sort_ratio(ring_of_fire, name), fuzz.partial_token_sort_ratio(rof, name)])
-        if ratio >= 70:
+        ring_ratios = [fuzz.ratio(ring_of_fire, name.lower()), fuzz.partial_token_set_ratio(ring_of_fire, name),
+                       fuzz.partial_token_sort_ratio(ring_of_fire, name), ]
+        rof_ratios = [fuzz.ratio(rof, name.lower()), fuzz.partial_token_set_ratio(rof, name),
+                      fuzz.partial_token_sort_ratio(rof, name)]
+        if max([statistics.mean(ring_ratios), statistics.mean(rof_ratios)]) >= 80:
             return "second longest intermediate map"
     global issue_index
     if issue_index >= len(skill_isses):
