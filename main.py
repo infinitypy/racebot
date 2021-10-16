@@ -214,7 +214,11 @@ async def pasta(ctx):
 
 
 @client.command()
-async def diagnosis(ctx, name=None):
+async def diagnosis(ctx, *args):
+    if args:
+        name = ' '.join(args)
+    else:
+        name = None
     skill_issue = misc.random_issue(name)
     header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
     await ctx.send(header + skill_issue)
