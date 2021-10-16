@@ -43,7 +43,8 @@ def lb(race_num):
         new_times.append(str(datetime.timedelta(milliseconds=999999999 - int(times[i])))[3:-3])
 
     for i in range(len(stuff)):
-        complete.append(stuff[i][2] + ',' + stuff[i][0] + ',' + new_times[i])
+        complete.append('{}, {}, {}'
+                        .format(stuff[i][2], stuff[i][0], new_times[i]))
 
     return complete
 

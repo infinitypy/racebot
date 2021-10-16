@@ -65,8 +65,8 @@ async def rtime(ctx, start, end, stime, abr=None):
                 int(start) < int(end) and float(stime) >= 0:
             longest, longest_round = sheets.rtime(int(start), int(end), float(stime), abr)
             final_time = str(datetime.timedelta(seconds=longest))[3:-4]
-            await ctx.send('You will get **' + final_time +
-                           '** if you perfect clean round ' + str(longest_round))
+            await ctx.send('You will get **{}** if you perfect clean round {}'
+                           .format(final_time, longest_round))
         else:
             print('bad input')
     except ValueError:
@@ -93,16 +93,17 @@ async def lb(ctx, race_num=None, first=None, last=None):
     if not first and not last:
         first = 1
         last = 50
-    title = 'Race #' + str(race_num) + ': **' + sheets.race(int(race_num)) + '**'
+    title = 'Race # {}: **{}**'.format(race_num, sheets.race(int(race_num)))
     output = leaderboard.get_leaderboard(int(race_num))
     if output:
         output_str = ''
         for i in range(int(last) - int(first) + 1):
-            output_str += "\n" + str(i + int(first)).ljust(2) + ' ' + \
-                          output[i + int(first) - 1][2] + ' ' + output[i + int(first) - 1][1]
+            output_str += '\n{} {} {}'\
+                .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][2], output[i + int(first) - 1][1])
     else:
         output_str = 'No data'
-    await ctx.send(title + '```' + output_str + '```')
+    await ctx.send('{}```{}```'
+                   .format(title, output_str))
 
 
 @client.command()
@@ -118,7 +119,8 @@ async def id(ctx, race_num=None, user_rank=None):
     if not output:
         await ctx.send(ROF)
         return
-    await ctx.send('**' + output[1] + '**\'s user ID:')
+    await ctx.send('**{}**\'s user ID:'
+                   .format(output[1]))
     await ctx.send(output[0])
 
 
@@ -130,7 +132,8 @@ async def nicks(ctx, identifier=None):
         await ctx.send(ROF)
         return
     nicknames = '\n'.join(list(map(str, output)))
-    await ctx.send('Nicknames for **' + str(user_id[1]) + '**```\n' + nicknames + '```')
+    await ctx.send('Nicknames for **{}**```\n{}```'
+                   .format(user_id[1], nicknames))
 
 
 @client.command()
@@ -140,8 +143,8 @@ async def rank(ctx, identifier=None):
     if not output:
         await ctx.send(ROF)
         return
-    await ctx.send('**' + user_id[1] + '**\'s current rank in race ' +
-                   str(len(leaderboard.all_ids)) + ': ' + str(output))
+    await ctx.send('**{}**\'s current rank in race {}: {}'
+                   .format(user_id[1], len(leaderboard.all_ids), output))
 
 
 @client.command()
@@ -165,9 +168,9 @@ async def ranka(ctx, identifier=None):
     p = np.poly1d(z)
     plot.plot(x, p(x), 'r--')
     plot.savefig('output.png')
-    await ctx.send('**' + user_id[1] + '**\'s average rank in ' + str(len(ranks)) +
-                   ' tracked races: ' + str(round(statistics.median([entry[1] for entry in ranks]), 1)) +
-                   '\nPredicted ranking in race 148: ' + str(round(p(num_races))),
+    await ctx.send('**{}**\'s average rank in {} tracked races: {}\nPredicted ranking in race 148: {}'
+                   .format(user_id[1], len(ranks), round(statistics.median([entry[1] for entry in ranks])),
+                           round(p(num_races))),
                    file=discord.File('output.png'))
     os.remove('output.png')
 
@@ -179,8 +182,8 @@ async def rankw(ctx, identifier=None):
     if not race_num:
         await ctx.send(ROF)
         return
-    await ctx.send('**' + user_id[1] + '**\'s worst tracked performance in race ' +
-                   str(race_num) + ' with rank ' + str(user_rank))
+    await ctx.send('**{}**\'s worst tracked performance in race {} with rank {}'
+                   .format(user_id[1], race_num, user_rank))
 
 
 @client.command()
@@ -190,8 +193,8 @@ async def rankb(ctx, identifier=None):
     if not race_num:
         await ctx.send(ROF)
         return
-    await ctx.send('**' + user_id[1] + '**\'s best tracked performance in race ' +
-                   str(race_num) + ' with rank ' + str(user_rank))
+    await ctx.send('**{}**\'s best tracked performance in race {} with rank {}'
+                   .format(user_id[1], race_num, user_rank))
 
 
 @client.command()
@@ -202,13 +205,9 @@ async def pasta(ctx):
 
 @client.command()
 async def diagnosis(ctx, *args):
-    if args:
-        name = ' '.join(args)
-    else:
-        name = None
-    skill_issue = misc.random_issue(name)
+    name = ' '.join(args) if args else None
     header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
-    await ctx.send(header + skill_issue)
+    await ctx.send(header + misc.random_issue(name))
 
 
 @client.command()
