@@ -23,7 +23,7 @@ random.shuffle(ids_list)
 pasta_index = 0
 
 
-def random_pasta(identifier=None):
+def random_pasta(identifier):
     if identifier:
         for ids in ids_list:
             if identifier in ids.split(','):

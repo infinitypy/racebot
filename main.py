@@ -201,9 +201,12 @@ async def rankb(ctx, identifier=None):
 
 @client.command()
 async def pasta(ctx, *args):
-    identifier = ''.join(args) if args else None
-    for c in string.punctuation:
-        identifier = identifier.replace(c, '')
+    if args:
+        identifier = ''.join(args)
+        for c in string.punctuation:
+            identifier = identifier.replace(c, '')
+    else:
+        identifier = None
     test = misc.random_pasta(identifier)
     await ctx.send(test)
 
