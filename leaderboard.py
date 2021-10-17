@@ -2,7 +2,6 @@ import sheets
 import writelbtosheet
 
 all_ids = sheets.race_info.col_values(3)[1:]
-print(all_ids[-1])
 loaded_races = writelbtosheet.fulldata.row_values(1)
 full_data = writelbtosheet.fulldata.get_values('B2:ER101', major_dimension='COLUMNS')
 

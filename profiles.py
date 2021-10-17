@@ -5,7 +5,6 @@ def get_profile(user_id):
     user_url = 'https://priority-static-api.nkstatic.com/storage/static/11/{}/public-stats'\
         .format(user_id)
     data = requests.get(user_url, headers={'User-Agent': 'btd6-'}).json()
-    print(data)
     name = data['playerName']
     medals = data['raceMedals']
 

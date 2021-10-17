@@ -1,6 +1,7 @@
 import datetime
 import os
 import statistics
+import string
 
 import discord
 import matplotlib.pyplot as plot
@@ -70,7 +71,7 @@ async def rtime(ctx, start, end, stime = None, abr=None):
             await ctx.send('You will get **{}** if you perfect clean round {}'
                            .format(final_time, longest_round))
         else:
-            print('bad input')
+            await ctx.send(ROF)
     except ValueError:
         await ctx.send(ROF)
 
@@ -112,7 +113,6 @@ async def lb(ctx, race_num=None, first=None, last=None):
 async def id(ctx, race_num=None, user_rank=None):
     if not user_rank and not race_num:
         output = sheets.from_discord_id(str(ctx.message.author.id))
-        print(output)
     else:
         if not user_rank:
             user_rank = race_num
@@ -200,8 +200,11 @@ async def rankb(ctx, identifier=None):
 
 
 @client.command()
-async def pasta(ctx):
-    test = misc.random_pasta()
+async def pasta(ctx, *args):
+    identifier = ''.join(args) if args else None
+    for c in string.punctuation:
+        identifier = identifier.replace(c, '')
+    test = misc.random_pasta(identifier)
     await ctx.send(test)
 
 
