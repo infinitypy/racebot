@@ -4,10 +4,12 @@ f.close()
 
 
 def get_id(d_id):
+    d_id = str(d_id)
     return mappings[d_id] if d_id in mappings else None
 
 
 def set_id(d_id, u_id):
+    d_id = str(d_id)
     replace = d_id in mappings
     mappings[d_id] = u_id
     write_mappings()
@@ -15,6 +17,7 @@ def set_id(d_id, u_id):
 
 
 def remove_id(d_id):
+    d_id = str(d_id)
     remove = d_id in mappings
     if remove:
         del mappings[d_id]

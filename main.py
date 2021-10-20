@@ -186,9 +186,9 @@ async def ranka(ctx, identifier=None):
     p = np.poly1d(z)
     plot.plot(x, p(x), 'r--')
     plot.savefig('output.png')
-    await ctx.send('**{}**\'s average rank in {} tracked races: {}\nPredicted ranking in race 148: {}'
+    await ctx.send('**{}**\'s average rank in {} tracked races: {}\nPredicted ranking in race {}: {}'
                    .format(user_id[1], len(ranks), round(statistics.median([entry[1] for entry in ranks])),
-                           round(p(num_races))),
+                           num_races + 1, round(p(num_races))),
                    file=discord.File('output.png'))
     os.remove('output.png')
 
@@ -247,7 +247,7 @@ async def nkinfo(ctx, name):
 
 @client.command()
 async def getid(ctx):
-    output = discorduserids.get_id(str(ctx.message.author.id))
+    output = discorduserids.get_id(ctx.message.author.id)
     if not output:
         await ctx.send(ROF)
         return
@@ -260,15 +260,15 @@ async def setid(ctx, u_id=None):
     if not u_id:
         await ctx.send(ROF)
         return
-    replaced = discorduserids.set_id(str(ctx.message.author.id), u_id)
+    replaced = discorduserids.set_id(ctx.message.author.id, u_id)
     await ctx.send('{} user ID: **{}**'
                    .format('Replacement' if replaced else 'New', u_id))
 
 
 @client.command()
 async def unlink(ctx):
-    removed = discorduserids.remove_id(str(ctx.message.author.id))
-    output = '**{}** successfully unlinked'.format(str(ctx.message.author.id)) if removed else 'Nothing linked'
+    removed = discorduserids.remove_id(ctx.message.author.id)
+    output = '**{}** successfully unlinked'.format(ctx.message.author.id) if removed else 'Nothing linked'
     await ctx.send(output)
 
 
