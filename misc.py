@@ -2,11 +2,15 @@ import random
 import statistics
 from fuzzywuzzy import fuzz
 
-skill_issues = open('skillissues.txt', 'r', encoding='utf8').readlines()
+f = open('skillissues.txt', 'r', encoding='utf8')
+skill_issues = f.readlines()
+f.close()
 random.shuffle(skill_issues)
 issue_index = 0
 
-lines = open('pastas.txt', 'r', encoding='utf8').readlines()
+f = open('pastas.txt', 'r', encoding='utf8')
+lines = f.readlines()
+f.close()
 pastas = {}
 identifiers = lines[0][1:].strip()
 running = ""

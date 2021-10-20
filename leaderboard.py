@@ -22,11 +22,12 @@ def get_leaderboard(race_num):
         return [entry.split(',') for entry in output]
     global loaded_races, full_data
     if str(race_num) not in loaded_races:
-        if not writelbtosheet.load_race(race_num):
-            return None
-        full_data = writelbtosheet.fulldata.get_values('B2:' + column(race_num) + '101', major_dimension='COLUMNS')
-        full_data[race_num - 1] = [cell.value for cell in
-                                   writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
+        return None
+        #if not writelbtosheet.load_race(race_num):
+        #    return None
+        #full_data = writelbtosheet.fulldata.get_values('B2:' + column(race_num) + '101', major_dimension='COLUMNS')
+        #full_data[race_num - 1] = [cell.value for cell in
+        #                           writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
     return [string_to_tuple(entry) for entry in full_data[race_num - 1]]
 
 

@@ -12,6 +12,7 @@ import leaderboard
 import misc
 import profiles
 import sheets
+import discorduserids
 import timetravel.newracedecode
 
 # from webserver import keep_alive
@@ -128,7 +129,12 @@ async def id(ctx, race_num=None, user_rank=None):
 
 @client.command()
 async def nicks(ctx, identifier=None):
-    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
+    if not identifier:
+        identifier = discorduserids.get_id(ctx.message.author.id)
+        if not identifier:
+            await ctx.send(ROF)
+            return
+    user_id = sheets.known(identifier)
     output = leaderboard.get_nicks(user_id[0])
     if not output:
         await ctx.send(ROF)
@@ -140,7 +146,12 @@ async def nicks(ctx, identifier=None):
 
 @client.command()
 async def rank(ctx, identifier=None):
-    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
+    if not identifier:
+        identifier = discorduserids.get_id(ctx.message.author.id)
+        if not identifier:
+            await ctx.send(ROF)
+            return
+    user_id = sheets.known(identifier)
     output = leaderboard.get_rank(len(leaderboard.all_ids), user_id[0])
     if not output:
         await ctx.send(ROF)
@@ -151,7 +162,12 @@ async def rank(ctx, identifier=None):
 
 @client.command()
 async def ranka(ctx, identifier=None):
-    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
+    if not identifier:
+        identifier = discorduserids.get_id(ctx.message.author.id)
+        if not identifier:
+            await ctx.send(ROF)
+            return
+    user_id = sheets.known(identifier)
     ranks = leaderboard.get_all_rank(user_id[0])
     if not ranks:
         await ctx.send(ROF)
@@ -179,7 +195,12 @@ async def ranka(ctx, identifier=None):
 
 @client.command()
 async def rankw(ctx, identifier=None):
-    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
+    if not identifier:
+        identifier = discorduserids.get_id(ctx.message.author.id)
+        if not identifier:
+            await ctx.send(ROF)
+            return
+    user_id = sheets.known(identifier)
     race_num, user_rank = leaderboard.get_worst_rank(user_id[0])
     if not race_num:
         await ctx.send(ROF)
@@ -190,13 +211,65 @@ async def rankw(ctx, identifier=None):
 
 @client.command()
 async def rankb(ctx, identifier=None):
-    user_id = sheets.known(identifier) if identifier else sheets.from_discord_id(str(ctx.message.author.id))
+    if not identifier:
+        identifier = discorduserids.get_id(ctx.message.author.id)
+        if not identifier:
+            await ctx.send(ROF)
+            return
+    user_id = sheets.known(identifier)
     race_num, user_rank = leaderboard.get_best_rank(user_id[0])
     if not race_num:
         await ctx.send(ROF)
         return
     await ctx.send('**{}**\'s best tracked performance in race {} with rank {}'
                    .format(user_id[1], race_num, user_rank))
+
+
+@client.command()
+async def profile(ctx, identifier=None):
+    if not identifier:
+        identifier = discorduserids.get_id(ctx.message.author.id)
+        if not identifier:
+            await ctx.send(ROF)
+            return
+    user_id = sheets.known(identifier)
+    output = profiles.get_profile(user_id[0])
+    if not output:
+        await ctx.send(ROF)
+        return
+    await ctx.send(profiles.get_profile(user_id[0]))
+
+
+@client.command()
+async def nkinfo(ctx, name):
+    await ctx.send(timetravel.newracedecode.raceinfo(name))
+
+
+@client.command()
+async def getid(ctx):
+    output = discorduserids.get_id(str(ctx.message.author.id))
+    if not output:
+        await ctx.send(ROF)
+        return
+    await ctx.send('User ID:')
+    await ctx.send(output)
+
+
+@client.command()
+async def setid(ctx, u_id=None):
+    if not u_id:
+        await ctx.send(ROF)
+        return
+    replaced = discorduserids.set_id(str(ctx.message.author.id), u_id)
+    await ctx.send('{} user ID: **{}**'
+                   .format('Replacement' if replaced else 'New', u_id))
+
+
+@client.command()
+async def unlink(ctx):
+    removed = discorduserids.remove_id(str(ctx.message.author.id))
+    output = '**{}** successfully unlinked'.format(str(ctx.message.author.id)) if removed else 'Nothing linked'
+    await ctx.send(output)
 
 
 @client.command()
@@ -216,17 +289,6 @@ async def diagnosis(ctx, *args):
     name = ' '.join(args) if args else None
     header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
     await ctx.send(header + misc.random_issue(name))
-
-
-@client.command()
-async def profile(ctx, user_id):
-    user_id = sheets.known(user_id)
-    await ctx.send(profiles.get_profile(user_id[0]))
-
-
-@client.command()
-async def nkinfo(ctx, name):
-    await ctx.send(timetravel.newracedecode.raceinfo(name))
 
 
 # keep_alive()
