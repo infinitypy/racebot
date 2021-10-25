@@ -19,7 +19,14 @@ def get_leaderboard(race_num):
         output = writelbtosheet.lb(race_num)
         if not output:
             return None
-        return [entry.split(',') for entry in output]
+        split_entries = [entry.split(',') for entry in output]
+        for entry in split_entries:
+            res = sheets.known(str(entry[0]))
+            if res[0] == res[1]:
+                entry[0] = ' ID: ' + res[1][0:3] + '...'
+            else:
+                entry[0] = res[1]
+        return split_entries
     global loaded_races, full_data
     if str(race_num) not in loaded_races:
         return None

@@ -31,20 +31,20 @@ def lb(race_num):
     except JSONDecodeError:
         return None
     entries = json.loads(data["data"])['scores']['equal']
-    stuff = [(entry['metadata'].split(',')[0], entry['score'], entry['userID']) for entry in entries]
+    stuff = [(entry['score'], entry['userID']) for entry in entries]
 
     for i in range(len(stuff)):
-        if str(stuff[i][1])[-1] == '9':
-            times.append(str(stuff[i][1])[0:-1] + '8')
+        if str(stuff[i][0])[-1] == '9':
+            times.append(str(stuff[i][0])[0:-1] + '8')
         else:
-            times.append(str(stuff[i][1]))
+            times.append(str(stuff[i][0]))
 
     for i in range(len(times)):
         new_times.append(str(datetime.timedelta(milliseconds=999999999 - int(times[i])))[3:-3])
 
     for i in range(len(stuff)):
-        complete.append('{}, {}, {}'
-                        .format(stuff[i][2], stuff[i][0], new_times[i]))
+        complete.append('{}, {}'
+                        .format(stuff[i][1], new_times[i]))
 
     return complete
 

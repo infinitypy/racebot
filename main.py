@@ -102,10 +102,15 @@ async def lb(ctx, race_num=None, first=None, last=None):
     if output:
         output_str = ''
         for i in range(int(last) - int(first) + 1):
-            output_str += '\n{} {} {}'\
-                .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][2], output[i + int(first) - 1][1])
+            if len(output[0]) == 3:
+                output_str += '\n{} {} {}'\
+                    .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][2], output[i + int(first) - 1][1])
+            else:
+                output_str += '\n{} {} {}' \
+                    .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][1], output[i + int(first) - 1][0])
     else:
         output_str = 'No data'
+    print(output_str)
     await ctx.send('{}```{}```'
                    .format(title, output_str))
 
@@ -293,5 +298,5 @@ async def diagnosis(ctx, *args):
 
 # keep_alive()
 # my_secret = os.environ['TOKEN']
-my_secret = 'ODkzOTY2NjkwNzY4MDA3MTc4.YVjJXA.pUDjmTzfKqHfF_al8r_Eontv34E'
+my_secret = 'ODkzOTY2NjkwNzY4MDA3MTc4.YVjJXA.Az511XCUNfFgEDdciex3s3pHzVw'
 client.run(my_secret)

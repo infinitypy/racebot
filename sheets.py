@@ -10,12 +10,12 @@ race_info = sheet.worksheet('raceinfo')
 round_info = sheet.worksheet('rounds')
 players = sheet.worksheet('playerinfo')
 
+known_players = players.col_values(1)
+known_ids = players.col_values(2)
+player_aliases = players.col_values(3)
+
 
 def known(identifier):
-    known_players = players.col_values(1)
-    known_ids = players.col_values(2)
-    player_aliases = players.col_values(3)
-
     names_to_ids = {}
     for i in range(len(known_players)):
         names_to_ids[known_ids[i]] = [known_players[i], *(player_aliases[i].split(','))]
@@ -32,8 +32,6 @@ def from_discord_id(disc_id):
     disc_ids = players.col_values(4)
     if disc_id not in disc_ids:
         return None
-    known_players = players.col_values(1)
-    known_ids = players.col_values(2)
     index = disc_ids.index(disc_id)
     return known_ids[index], known_players[index]
 
