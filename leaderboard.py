@@ -35,7 +35,7 @@ def get_leaderboard(race_num):
         #full_data = writelbtosheet.fulldata.get_values('B2:' + column(race_num) + '101', major_dimension='COLUMNS')
         #full_data[race_num - 1] = [cell.value for cell in
         #                           writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
-    return [string_to_tuple(entry) for entry in full_data[race_num - 1]]
+    return [string_to_tuple(entry) for entry in full_data[race_num - 2]]
 
 
 def get_id(race_num, rank):
@@ -53,18 +53,21 @@ def get_id(race_num, rank):
 
 
 def get_nicks(user_id):
-    race_nicks = []
+    race_nicks = {}
 
     for race_num in range(1, len(all_ids)):
         if not get_leaderboard(race_num):
             continue
         for entry in full_data[race_num - 1]:
-            if string_to_tuple(entry)[0] == user_id:
+            if string_to_tuple(entry)[0] == user_id and string_to_tuple(entry)[1] != '':
                 if string_to_tuple(entry)[1] not in race_nicks:
-                    race_nicks.append(string_to_tuple(entry)[1])
+                    race_nicks[string_to_tuple(entry)[1]] = 1
+                else:
+                    race_nicks[string_to_tuple(entry)[1]] += 1
+
                 break
 
-    return race_nicks
+    return sorted(race_nicks.items(), key=lambda x: x[1], reverse=True)
 
 
 def get_rank(race_num, user_id):

@@ -2,7 +2,6 @@ import datetime
 import os
 import statistics
 import string
-
 import discord
 import matplotlib.pyplot as plot
 import numpy as np
@@ -18,6 +17,52 @@ import timetravel.newracedecode
 # from webserver import keep_alive
 
 client = commands.Bot(command_prefix=['r!', 'R!'])
+client.remove_command('help')
+
+@client.command(pass_context=True)
+async def help(ctx, commandname=None):
+
+    commandhelp = {
+        'hello' : 'Returns hello',
+        'invite' : 'Returns bot invite',
+        'race' : 'race number, returns race name',
+        'length' : 'round number, returns round length',
+        'rtime' : 'start round, end round, send time, returns calculated time',
+        'lb' : 'race number, first, last, returns the lb',
+        'id' : 'race number, rank, returns the userid',
+        'nicks' : 'userid, returns all used nicknames',
+        'rank' : 'userid, returns rank in the current race',
+        'ranka' : 'userid, returns average rank',
+        'rankw' : 'userid, returns worst rank',
+        'rankb' : 'userid, returns best rank',
+        'profile' : 'userid, returns stats',
+        'nkinfo' : 'race name, returns info for the race',
+        'getid' : 'returns your linked id',
+        'setid' : 'userid, saves a userid to your discord allowing you to leave the userid section for other commands blank',
+        'unlink' : 'unlinks your userid',
+        'pasta' : 'pasta',
+        'diagnosis' : 'skill issue',
+    }
+
+    embed = discord.Embed(
+        colour = discord.Colour.orange()
+    )
+
+    embed.set_author(name='Help')
+    if commandname == None:
+        embed.add_field(name='Command list', value=', '.join(list(commandhelp.keys())), inline=False)
+        embed.add_field(name='Help usage', value='help commandname, returns what the command does and how to use it', inline=False)
+    elif commandname in commandhelp:
+        embed.add_field(name=commandname, value=commandhelp[commandname])
+    else:
+        embed.set_author(name='Help')
+        embed.add_field(name=commandname, value='Not a valid command, use r!help for a list of commands', inline=False)
+
+
+    await ctx.send(embed=embed)
+
+
+
 LAST_ID = '5b7f82e318c7cbe32fa01e4e'
 ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
 
@@ -144,7 +189,11 @@ async def nicks(ctx, identifier=None):
     if not output:
         await ctx.send(ROF)
         return
-    nicknames = '\n'.join(list(map(str, output)))
+
+    nicknames = ''
+    for entry in output:
+        nicknames += '\n' + "{:>2}: {}".format(entry[1], entry[0])
+
     await ctx.send('Nicknames for **{}**```\n{}```'
                    .format(user_id[1], nicknames))
 
