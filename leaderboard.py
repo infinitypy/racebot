@@ -35,7 +35,7 @@ def get_leaderboard(race_num):
         #full_data = writelbtosheet.fulldata.get_values('B2:' + column(race_num) + '101', major_dimension='COLUMNS')
         #full_data[race_num - 1] = [cell.value for cell in
         #                           writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
-    return [string_to_tuple(entry) for entry in full_data[race_num - 2]]
+    return [string_to_tuple(entry) for entry in full_data[race_num - 1]]
 
 
 def get_id(race_num, rank):

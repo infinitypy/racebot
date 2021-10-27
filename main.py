@@ -23,37 +23,40 @@ client.remove_command('help')
 async def help(ctx, commandname=None):
 
     commandhelp = {
-        'hello' : 'Returns hello',
-        'invite' : 'Returns bot invite',
-        'race' : 'race number, returns race name',
-        'length' : 'round number, returns round length',
-        'rtime' : 'start round, end round, send time, returns calculated time',
-        'lb' : 'race number, first, last, returns the lb',
-        'id' : 'race number, rank, returns the userid',
-        'nicks' : 'userid, returns all used nicknames',
-        'rank' : 'userid, returns rank in the current race',
-        'ranka' : 'userid, returns average rank',
-        'rankw' : 'userid, returns worst rank',
-        'rankb' : 'userid, returns best rank',
-        'profile' : 'userid, returns stats',
-        'nkinfo' : 'race name, returns info for the race',
-        'getid' : 'returns your linked id',
-        'setid' : 'userid, saves a userid to your discord allowing you to leave the userid section for other commands blank',
-        'unlink' : 'unlinks your userid',
-        'pasta' : 'pasta',
-        'diagnosis' : 'skill issue',
+        'hello' : ['none', 'Returns hello'],
+        'invite' : ['none', 'Returns bot invite'],
+        'race' : ['racenumber', 'returns race name'],
+        'length' : ['roundnumber', 'returns round length'],
+        'rtime' : ['startround end round send time', 'returns calculated time'],
+        'lb' : ['racenumber first last', 'returns the lb'],
+        'id' : ['racenumber rank', 'returns the userid'],
+        'nicks' : ['userid', 'returns all used nicknames'],
+        'rank' : ['userid', 'returns rank in the current race'],
+        'ranka' : ['userid', 'returns average rank'],
+        'rankw' : ['userid', 'returns worst rank'],
+        'rankb' : ['userid', 'returns best rank'],
+        'profile' : ['userid', 'returns stats'],
+        'nkinfo' : ['race name', 'returns info for the race'],
+        'getid' : ['none', 'returns your linked id'],
+        'setid' : ['userid', 'saves a userid to your discord allowing you to leave the userid section for other commands blank'],
+        'unlink' : ['none', 'unlinks your userid'],
+        'pasta' : ['none', 'pasta'],
+        'diagnosis' : ['none', 'skill issue'],
+        'badgelb' : ['none', 'returns a badge leaderboard'],
     }
 
     embed = discord.Embed(
         colour = discord.Colour.orange()
     )
 
-    embed.set_author(name='Help')
     if commandname == None:
+        embed.set_author(name='Help')
         embed.add_field(name='Command list', value=', '.join(list(commandhelp.keys())), inline=False)
         embed.add_field(name='Help usage', value='help commandname, returns what the command does and how to use it', inline=False)
     elif commandname in commandhelp:
-        embed.add_field(name=commandname, value=commandhelp[commandname])
+        embed.set_author(name='Help for "'+commandname+'" command')
+        embed.add_field(name='Usage', value=commandhelp[commandname][0])
+        embed.add_field(name='Function', value=commandhelp[commandname][1])
     else:
         embed.set_author(name='Help')
         embed.add_field(name=commandname, value='Not a valid command, use r!help for a list of commands', inline=False)
@@ -155,7 +158,6 @@ async def lb(ctx, race_num=None, first=None, last=None):
                     .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][1], output[i + int(first) - 1][0])
     else:
         output_str = 'No data'
-    print(output_str)
     await ctx.send('{}```{}```'
                    .format(title, output_str))
 
@@ -343,6 +345,17 @@ async def diagnosis(ctx, *args):
     name = ' '.join(args) if args else None
     header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
     await ctx.send(header + misc.random_issue(name))
+
+blb = 'None, run ``r!badgelb update`` to populate'
+@client.command()
+async def badgelb(ctx, update=None):
+    global blb
+    if update == 'update':
+        await ctx.send('updating (this takes about 30 seconds)')
+        blb = profiles.generatebadgelb()
+        await ctx.send('updated')
+    else:
+        await ctx.send(blb)
 
 
 # keep_alive()
