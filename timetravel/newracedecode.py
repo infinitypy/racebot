@@ -9,6 +9,18 @@ def decode(data_bytes):
     return string
 
 
+def events():
+    data = requests.get('https://static-api.nkstatic.com/nkapi/skusettings/de23c3d3985a143c77e50966c56cab22.json')
+    decoded = json.loads(decode(data.content))
+    decoded = json.loads(decoded['data'])['settings']['events']
+    newest = {'start' : 0}
+    for i in range(len(decoded)):
+        if decoded[i]['type'] == 'raceEvent':
+            if decoded[i]['start'] > newest['start']:
+                newest = decoded[i]
+    return 'newest race name: {}\nnewest race id: {}'.format(newest['name'], newest['id'])
+
+
 def raceinfo(name):
     race_info = {}
 
@@ -24,6 +36,11 @@ def raceinfo(name):
                   'DartlingGunner', 'WizardMonkey', 'SuperMonkey', 'NinjaMonkey', 'Alchemist', 'Druid', 'BananaFarm',
                   'SpikeFactory', 'MonkeyVillage', 'EngineerMonkey']
 
+    ntower_list = ['Dart', 'Boomer', 'Bomb', 'Tack', 'Ice', 'Glue',
+                  'Sniper', 'Sub', 'Boat', 'Ace', 'Heli', 'Mortar',
+                  'Dartling', 'Wizard', 'Super', 'Ninja', 'Alch', 'Druid', 'Farm',
+                  'Spac', 'Village', 'Engi']
+
     towers = decoded['towers']
     formatted_towers = {}
     for i in range(len(towers)):
@@ -35,7 +52,7 @@ def raceinfo(name):
 
     for i in range(len(tower_list)):
         if formatted_towers[tower_list[i]][0] != 0:
-            enabled += (tower_list[i])
+            enabled += (ntower_list[i])
             if ''.join(map(str, [5 - x for x in formatted_towers[tower_list[i]][1:4]])) != '555':
                 enabled += '(' + ''.join(map(str, [5 - x for x in formatted_towers[tower_list[i]][1:4]])) + ')'
             if formatted_towers[tower_list[i]][0] != -1:
@@ -53,6 +70,13 @@ def raceinfo(name):
     race_info['rounds'] = [decoded['startRules']['round'], decoded['startRules']['endRound']]
     race_info['startcash'] = decoded['startRules']['cash']
     race_info['lives'] = decoded['startRules']['lives']
+    if race_info['lives'] == -1:
+        if race_info['difficulty'] == 'Hard':
+            race_info['lives'] = 100
+        elif race_info['difficulty'] == 'Medium':
+            race_info['lives'] = 150
+        elif race_info['difficulty'] == 'Easy':
+            race_info['lives'] = 200
 
     # display if not default
     race_info['mk'] = decoded['disableMK']
@@ -75,9 +99,13 @@ def raceinfo(name):
         corngrats += '\nall camo'
     if race_info['regrow']:
         corngrats += '\nall regrow'
+    if race_info['selling']:
+        corngrats += '\nno selling'
 
     corngrats += '\nRounds: ' + str(race_info['rounds'][0]) + '-' + str(race_info['rounds'][1])
     corngrats += '\nCash: ' + str(race_info['startcash']) + '\nLives: ' + str(race_info['lives'])
     corngrats += '\nTowers: ' + enabled[:-2]
+
+    corngrats += '\n\nModifiers:\nBloon Speed: {}\nCeram hp: {}\nMoab Speed: {}\nMoab hp: {}'.format(race_info['bloon speed'], race_info['ceram hp'], race_info['moab speed'], race_info['moab hp'])
 
     return corngrats

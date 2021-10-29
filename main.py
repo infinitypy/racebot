@@ -43,6 +43,7 @@ async def help(ctx, commandname=None):
         'pasta' : ['none', 'pasta'],
         'diagnosis' : ['none', 'skill issue'],
         'badgelb' : ['none', 'returns a badge leaderboard'],
+        'newrace' : ['none', 'returns the latest race name/id']
     }
 
     embed = discord.Embed(
@@ -295,6 +296,10 @@ async def profile(ctx, identifier=None):
         return
     await ctx.send(profiles.get_profile(user_id[0]))
 
+
+@client.command()
+async def newrace(ctx):
+    await ctx.send(timetravel.newracedecode.events())
 
 @client.command()
 async def nkinfo(ctx, name):
