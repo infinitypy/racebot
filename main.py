@@ -19,52 +19,50 @@ import timetravel.newracedecode
 client = commands.Bot(command_prefix=['r!', 'R!'])
 client.remove_command('help')
 
+
 @client.command(pass_context=True)
 async def help(ctx, commandname=None):
-
-    commandhelp = {
-        'hello' : ['none', 'Returns hello'],
-        'invite' : ['none', 'Returns bot invite'],
-        'race' : ['racenumber', 'returns race name'],
-        'length' : ['roundnumber', 'returns round length'],
-        'rtime' : ['startround end round send time', 'returns calculated time'],
-        'lb' : ['racenumber first last', 'returns the lb'],
-        'id' : ['racenumber rank', 'returns the userid'],
-        'nicks' : ['userid', 'returns all used nicknames'],
-        'rank' : ['userid', 'returns rank in the current race'],
-        'ranka' : ['userid', 'returns average rank'],
-        'rankw' : ['userid', 'returns worst rank'],
-        'rankb' : ['userid', 'returns best rank'],
-        'profile' : ['userid', 'returns stats'],
-        'nkinfo' : ['race name', 'returns info for the race'],
-        'getid' : ['none', 'returns your linked id'],
-        'setid' : ['userid', 'saves a userid to your discord allowing you to leave the userid section for other commands blank'],
-        'unlink' : ['none', 'unlinks your userid'],
-        'pasta' : ['none', 'pasta'],
-        'diagnosis' : ['none', 'skill issue'],
-        'badgelb' : ['none', 'returns a badge leaderboard'],
-        'newrace' : ['none', 'returns the latest race name/id']
+    command_help = {
+        'hello': ['none', 'Returns hello'],
+        'invite': ['none', 'Returns bot invite'],
+        'race': ['racenumber', 'returns race name'],
+        'length': ['roundnumber', 'returns round length'],
+        'rtime': ['startround end round send time', 'returns calculated time'],
+        'lb': ['racenumber first last', 'returns the lb'],
+        'id': ['racenumber rank', 'returns the userid'],
+        'nicks': ['userid', 'returns all used nicknames'],
+        'rank': ['userid', 'returns rank in the current race'],
+        'ranks': ['userid', 'returns stats about rankings'],
+        'profile': ['userid', 'returns stats'],
+        'nkinfo': ['race name', 'returns info for the race'],
+        'getid': ['none', 'returns your linked id'],
+        'setid': ['userid',
+                  'saves a userid to your discord allowing you to leave the userid section for other commands blank'],
+        'unlink': ['none', 'unlinks your userid'],
+        'pasta': ['none', 'pasta'],
+        'diagnosis': ['none', 'skill issue'],
+        'badgelb': ['none', 'returns a badge leaderboard'],
+        'newrace': ['none', 'returns the latest race name/id']
     }
 
     embed = discord.Embed(
-        colour = discord.Colour.orange()
+        colour=discord.Colour.orange()
     )
 
-    if commandname == None:
+    if not commandname:
         embed.set_author(name='Help')
-        embed.add_field(name='Command list', value=', '.join(list(commandhelp.keys())), inline=False)
-        embed.add_field(name='Help usage', value='help commandname, returns what the command does and how to use it', inline=False)
-    elif commandname in commandhelp:
-        embed.set_author(name='Help for "'+commandname+'" command')
-        embed.add_field(name='Usage', value=commandhelp[commandname][0])
-        embed.add_field(name='Function', value=commandhelp[commandname][1])
+        embed.add_field(name='Command list', value=', '.join(list(command_help.keys())), inline=False)
+        embed.add_field(name='Help usage', value='help commandname, returns what the command does and how to use it',
+                        inline=False)
+    elif commandname in command_help:
+        embed.set_author(name='Help for "' + commandname + '" command')
+        embed.add_field(name='Usage', value=command_help[commandname][0])
+        embed.add_field(name='Function', value=command_help[commandname][1])
     else:
         embed.set_author(name='Help')
         embed.add_field(name=commandname, value='Not a valid command, use r!help for a list of commands', inline=False)
 
-
     await ctx.send(embed=embed)
-
 
 
 LAST_ID = '5b7f82e318c7cbe32fa01e4e'
@@ -110,7 +108,7 @@ async def length(ctx, num, abr=None):
 
 
 @client.command()
-async def rtime(ctx, start, end, stime = None, abr=None):
+async def rtime(ctx, start, end, stime=None, abr=None):
     if not stime and not abr:
         stime = 0
     try:
@@ -152,7 +150,7 @@ async def lb(ctx, race_num=None, first=None, last=None):
         output_str = ''
         for i in range(int(last) - int(first) + 1):
             if len(output[0]) == 3:
-                output_str += '\n{} {} {}'\
+                output_str += '\n{} {} {}' \
                     .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][2], output[i + int(first) - 1][1])
             else:
                 output_str += '\n{} {} {}' \
@@ -218,21 +216,23 @@ async def rank(ctx, identifier=None):
 
 
 @client.command()
-async def ranka(ctx, identifier=None):
+async def ranks(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
             await ctx.send(ROF)
             return
     user_id = sheets.known(identifier)
-    ranks = leaderboard.get_all_rank(user_id[0])
-    if not ranks:
+    all_ranks = leaderboard.get_all_rank(user_id[0])
+    if not all_ranks:
         await ctx.send(ROF)
         return
-    x = [entry[0] for entry in ranks]
+    x = [entry[0] for entry in all_ranks]
     if user_id[0] == '5b2845abfcd0f8d9745e6cfe':
-        ranks = [(entry[0], 100) for entry in ranks]
-    y = [entry[1] for entry in ranks]
+        all_ranks = [(entry[0], (entry[1] - 1) % 20 + 81) for entry in all_ranks]
+    elif user_id[0] == '5b7f82e318c7cbe32fa01e4e':
+        all_ranks = [(entry[0], (entry[1] - 1) % 20 + 1) for entry in all_ranks]
+    y = [entry[1] for entry in all_ranks]
     num_races = len(leaderboard.all_ids)
     plot.clf()
     plot.axis([1, num_races, 1, 100])
@@ -243,43 +243,28 @@ async def ranka(ctx, identifier=None):
     p = np.poly1d(z)
     plot.plot(x, p(x), 'r--')
     plot.savefig('output.png')
-    await ctx.send('**{}**\'s average rank in {} tracked races: {}\nPredicted ranking in race {}: {}'
-                   .format(user_id[1], len(ranks), round(statistics.median([entry[1] for entry in ranks])),
-                           num_races + 1, round(p(num_races))),
-                   file=discord.File('output.png'))
+
+    best = min(all_ranks, key=lambda entry: entry[1])
+    worst = max(all_ranks, key=lambda entry: entry[1])
+
+    embed = discord.Embed(
+        colour=discord.Colour.orange()
+    )
+
+    embed.set_author(name='Stats for {} across {} tracked races'
+                     .format(user_id[1], len(all_ranks)))
+    embed.add_field(name='Best tracked performance', value='Rank {} in race {}'
+                    .format(best[1], best[0]),
+                    inline=False)
+    embed.add_field(name='Worst tracked performance', value='Rank {} in race {}'
+                    .format(worst[1], worst[0]),
+                    inline=False)
+    embed.add_field(name='Average rank', value=str(round(statistics.median([entry[1] for entry in all_ranks]))),
+                    inline=False)
+    embed.add_field(name='Predicted ranking in race {}'.format(num_races + 1), value=str(round(p(num_races))),
+                    inline=False)
+    await ctx.send(embed=embed, file=discord.File('output.png'))
     os.remove('output.png')
-
-
-@client.command()
-async def rankw(ctx, identifier=None):
-    if not identifier:
-        identifier = discorduserids.get_id(ctx.message.author.id)
-        if not identifier:
-            await ctx.send(ROF)
-            return
-    user_id = sheets.known(identifier)
-    race_num, user_rank = leaderboard.get_worst_rank(user_id[0])
-    if not race_num:
-        await ctx.send(ROF)
-        return
-    await ctx.send('**{}**\'s worst tracked performance in race {} with rank {}'
-                   .format(user_id[1], race_num, user_rank))
-
-
-@client.command()
-async def rankb(ctx, identifier=None):
-    if not identifier:
-        identifier = discorduserids.get_id(ctx.message.author.id)
-        if not identifier:
-            await ctx.send(ROF)
-            return
-    user_id = sheets.known(identifier)
-    race_num, user_rank = leaderboard.get_best_rank(user_id[0])
-    if not race_num:
-        await ctx.send(ROF)
-        return
-    await ctx.send('**{}**\'s best tracked performance in race {} with rank {}'
-                   .format(user_id[1], race_num, user_rank))
 
 
 @client.command()
@@ -300,6 +285,7 @@ async def profile(ctx, identifier=None):
 @client.command()
 async def newrace(ctx):
     await ctx.send(timetravel.newracedecode.events())
+
 
 @client.command()
 async def nkinfo(ctx, name):
@@ -351,7 +337,10 @@ async def diagnosis(ctx, *args):
     header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
     await ctx.send(header + misc.random_issue(name))
 
+
 blb = 'None, run ``r!badgelb update`` to populate'
+
+
 @client.command()
 async def badgelb(ctx, update=None):
     global blb
