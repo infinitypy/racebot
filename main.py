@@ -162,7 +162,7 @@ async def lb(ctx, race_num=None, first=None, last=None):
     if not first and not last:
         first = 1
         last = 50
-    title = f'Race # {race_num}: **{sheets.race(int(race_num))}**'
+    title = f'Race # {race_num}: **{sheets.race(str(race_num))}**'
     output = leaderboard.get_leaderboard(int(race_num))
     if output:
         output_str = ''
