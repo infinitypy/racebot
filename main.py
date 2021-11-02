@@ -57,7 +57,7 @@ async def help(ctx, command_name=None):
         embed.add_field(name='Help usage', value='help command_name, returns what the command does and how to use it',
                         inline=False)
     elif command_name in command_help:
-        embed.set_author(name='Help for "' + command_name + '" command')
+        embed.set_author(name=f'Help for "{command_name}" command')
         embed.add_field(name='Usage', value=command_help[command_name][0], inline=False)
         embed.add_field(name='Function', value=command_help[command_name][1])
     else:

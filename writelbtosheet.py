@@ -24,8 +24,7 @@ def lb(race_num):
     complete = []
 
     race_id = all_ids[race_num - 1]
-    race_url = 'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_{}.json'\
-        .format(race_id)
+    race_url = f'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_{race_id}.json'
     try:
         data = requests.get(race_url).json()
     except JSONDecodeError:
