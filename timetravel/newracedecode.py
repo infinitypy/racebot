@@ -13,12 +13,12 @@ def events():
     data = requests.get('https://static-api.nkstatic.com/nkapi/skusettings/de23c3d3985a143c77e50966c56cab22.json')
     decoded = json.loads(decode(data.content))
     decoded = json.loads(decoded['data'])['settings']['events']
-    newest = {'start' : 0}
+    newest = {'start': 0}
     for i in range(len(decoded)):
         if decoded[i]['type'] == 'raceEvent':
             if decoded[i]['start'] > newest['start']:
                 newest = decoded[i]
-    return 'newest race name: {}\nnewest race id: {}'.format(newest['name'], newest['id'])
+    return f'newest race name: {newest["name"]}\nnewest race id: {newest["id"]}'
 
 
 def raceinfo(name):
@@ -37,9 +37,9 @@ def raceinfo(name):
                   'SpikeFactory', 'MonkeyVillage', 'EngineerMonkey']
 
     ntower_list = ['Dart', 'Boomer', 'Bomb', 'Tack', 'Ice', 'Glue',
-                  'Sniper', 'Sub', 'Boat', 'Ace', 'Heli', 'Mortar',
-                  'Dartling', 'Wizard', 'Super', 'Ninja', 'Alch', 'Druid', 'Farm',
-                  'Spac', 'Village', 'Engi']
+                   'Sniper', 'Sub', 'Boat', 'Ace', 'Heli', 'Mortar',
+                   'Dartling', 'Wizard', 'Super', 'Ninja', 'Alch', 'Druid', 'Farm',
+                   'Spac', 'Village', 'Engi']
 
     towers = decoded['towers']
     formatted_towers = {}
@@ -53,10 +53,12 @@ def raceinfo(name):
     for i in range(len(tower_list)):
         if formatted_towers[tower_list[i]][0] != 0:
             enabled += (ntower_list[i])
-            if ''.join(map(str, [5 - x for x in formatted_towers[tower_list[i]][1:4]])) != '555':
-                enabled += '(' + ''.join(map(str, [5 - x for x in formatted_towers[tower_list[i]][1:4]])) + ')'
-            if formatted_towers[tower_list[i]][0] != -1:
-                enabled += '[' + str(formatted_towers[tower_list[i]][0]) + ']'
+            upgrades = ''.join(map(str, [5 - x for x in formatted_towers[tower_list[i]][1:4]]))
+            if upgrades != '555':
+                enabled += f'({upgrades})'
+            count = formatted_towers[tower_list[i]][0]
+            if count != -1:
+                enabled += f'[{count}]'
 
             enabled += ', '
 
@@ -90,7 +92,7 @@ def raceinfo(name):
     race_info['moab hp'] = decoded['bloonModifiers']['healthMultipliers']['moabs']
 
     # make into a cute string
-    corngrats = 'Full info for ' + race_info['name']
+    corngrats = f'Full info for {race_info["name"]}'
     corngrats += '\n' + ', '.join((race_info['map'], race_info['difficulty'], race_info['mode']))
 
     if race_info['mk']:
@@ -102,10 +104,11 @@ def raceinfo(name):
     if race_info['selling']:
         corngrats += '\nno selling'
 
-    corngrats += '\nRounds: ' + str(race_info['rounds'][0]) + '-' + str(race_info['rounds'][1])
-    corngrats += '\nCash: ' + str(race_info['startcash']) + '\nLives: ' + str(race_info['lives'])
-    corngrats += '\nTowers: ' + enabled[:-2]
+    corngrats += f'\nRounds: {str(race_info["rounds"][0])}-{str(race_info["rounds"][1])}'
+    corngrats += f'\nCash: {str(race_info["startcash"])}\nLives: {str(race_info["lives"])}'
+    corngrats += f'\nTowers: {enabled[:-2]}'
 
-    corngrats += '\n\nModifiers:\nBloon Speed: {}\nCeram hp: {}\nMoab Speed: {}\nMoab hp: {}'.format(race_info['bloon speed'], race_info['ceram hp'], race_info['moab speed'], race_info['moab hp'])
+    corngrats += f'\n\nModifiers:\nBloon Speed: {race_info["bloon speed"]}\nCeram hp: {race_info["ceram hp"]}\n' \
+                 f'Moab Speed: {race_info["moab speed"]}\nMoab hp: {race_info["moab hp"]}'
 
     return corngrats

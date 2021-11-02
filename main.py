@@ -2,45 +2,47 @@ import datetime
 import os
 import statistics
 import string
+
 import discord
 import matplotlib.pyplot as plot
 import numpy as np
+from discord import HTTPException
 from discord.ext import commands
 
+import discorduserids
 import leaderboard
 import misc
 import profiles
 import sheets
-import discorduserids
 import timetravel.newracedecode
 
 # from webserver import keep_alive
 
-client = commands.Bot(command_prefix=['r!', 'R!'])
+client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'])
 client.remove_command('help')
 
 
 @client.command(pass_context=True)
-async def help(ctx, commandname=None):
+async def help(ctx, command_name=None):
     command_help = {
-        'hello': ['none', 'Returns hello'],
+        'hello': ['name:opt', 'Says hello'],
         'invite': ['none', 'Returns bot invite'],
-        'race': ['racenumber', 'returns race name'],
-        'length': ['roundnumber', 'returns round length'],
-        'rtime': ['startround end round send time', 'returns calculated time'],
-        'lb': ['racenumber first last', 'returns the lb'],
-        'id': ['racenumber rank', 'returns the userid'],
-        'nicks': ['userid', 'returns all used nicknames'],
-        'rank': ['userid', 'returns rank in the current race'],
-        'ranks': ['userid', 'returns stats about rankings'],
-        'profile': ['userid', 'returns stats'],
+        'race': ['race_number [race_end]', 'returns [a range of] race name'],
+        'length': ['round_number', 'returns round length'],
+        'rtime': ['start_round end round send time', 'returns calculated time'],
+        'lb': ['race_number first:opt last:opt', 'returns the lb'],
+        'id': ['race_number rank', 'returns the userid'],
+        'nicks': ['userid:opt', 'returns all used nicknames'],
+        'rank': ['userid:opt', 'returns rank in the current race'],
+        'ranks': ['userid:opt', 'returns stats about rankings'],
+        'profile': ['userid:opt', 'returns stats'],
         'nkinfo': ['race name', 'returns info for the race'],
         'getid': ['none', 'returns your linked id'],
         'setid': ['userid',
                   'saves a userid to your discord allowing you to leave the userid section for other commands blank'],
         'unlink': ['none', 'unlinks your userid'],
-        'pasta': ['none', 'pasta'],
-        'diagnosis': ['none', 'skill issue'],
+        'pasta': ['label:opt', 'pasta'],
+        'diagnosis': ['patient:opt', 'skill issue'],
         'badgelb': ['none', 'returns a badge leaderboard'],
         'newrace': ['none', 'returns the latest race name/id']
     }
@@ -49,24 +51,25 @@ async def help(ctx, commandname=None):
         colour=discord.Colour.orange()
     )
 
-    if not commandname:
+    if not command_name:
         embed.set_author(name='Help')
         embed.add_field(name='Command list', value=', '.join(list(command_help.keys())), inline=False)
-        embed.add_field(name='Help usage', value='help commandname, returns what the command does and how to use it',
+        embed.add_field(name='Help usage', value='help command_name, returns what the command does and how to use it',
                         inline=False)
-    elif commandname in command_help:
-        embed.set_author(name='Help for "' + commandname + '" command')
-        embed.add_field(name='Usage', value=command_help[commandname][0])
-        embed.add_field(name='Function', value=command_help[commandname][1])
+    elif command_name in command_help:
+        embed.set_author(name='Help for "' + command_name + '" command')
+        embed.add_field(name='Usage', value=command_help[command_name][0], inline=False)
+        embed.add_field(name='Function', value=command_help[command_name][1])
     else:
         embed.set_author(name='Help')
-        embed.add_field(name=commandname, value='Not a valid command, use r!help for a list of commands', inline=False)
+        embed.add_field(name=command_name, value='Not a valid command, use r!help for a list of commands', inline=False)
 
+    embed.set_thumbnail(url=ROF)
     await ctx.send(embed=embed)
 
 
-LAST_ID = '5b7f82e318c7cbe32fa01e4e'
 ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
+BIG_ERROR = 'Too much text. Please select a smaller range.'
 
 
 @client.event
@@ -75,8 +78,15 @@ async def on_ready():
 
 
 @client.command()
-async def hello(ctx):
-    await ctx.send('hello')
+async def hello(ctx, *args):
+    if not args:
+        await ctx.send('hello')
+    else:
+        name = ' '.join(args)
+        if name == 'exephur':
+            await ctx.send('All the homies hate exephur')
+        else:
+            await ctx.send(f'hello {name}')
 
 
 @client.command()
@@ -86,21 +96,30 @@ async def invite(ctx):
 
 
 @client.command()
-async def race(ctx, num, race_id=None):
-    try:
-        if int(num) > 0:
-            await ctx.send(sheets.race(int(num), race_id))
+async def race(ctx, num, num_end=None, race_id=None):
+    if not race_id:
+        if not num_end:
+            output = sheets.race(num, None)
+        elif num_end.isdigit():
+            output = sheets.race_range(num, num_end, None)
         else:
-            await ctx.send(ROF)
-    except ValueError:
+            output = sheets.race(num, num_end)
+    else:
+        output = sheets.race_range(num, num_end, race_id)
+    if not output:
         await ctx.send(ROF)
+        return
+    try:
+        await ctx.send(output)
+    except HTTPException:
+        await ctx.send(BIG_ERROR)
 
 
 @client.command()
 async def length(ctx, num, abr=None):
     try:
         if 0 < int(num) <= 140:
-            await ctx.send('Round ' + num + ' is ' + sheets.length(int(num), abr) + 's')
+            await ctx.send(f'Round {num} is {sheets.length(int(num), abr)}s')
         else:
             await ctx.send(ROF)
     except ValueError:
@@ -116,8 +135,7 @@ async def rtime(ctx, start, end, stime=None, abr=None):
                 int(start) < int(end) and float(stime) >= 0:
             longest, longest_round = sheets.rtime(int(start), int(end), float(stime), abr)
             final_time = str(datetime.timedelta(seconds=longest))[3:-4]
-            await ctx.send('You will get **{}** if you perfect clean round {}'
-                           .format(final_time, longest_round))
+            await ctx.send(f'You will get **{final_time}** if you perfect clean round {longest_round}')
         else:
             await ctx.send(ROF)
     except ValueError:
@@ -144,7 +162,7 @@ async def lb(ctx, race_num=None, first=None, last=None):
     if not first and not last:
         first = 1
         last = 50
-    title = 'Race # {}: **{}**'.format(race_num, sheets.race(int(race_num)))
+    title = f'Race # {race_num}: **{sheets.race(int(race_num))}**'
     output = leaderboard.get_leaderboard(int(race_num))
     if output:
         output_str = ''
@@ -157,8 +175,7 @@ async def lb(ctx, race_num=None, first=None, last=None):
                     .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][1], output[i + int(first) - 1][0])
     else:
         output_str = 'No data'
-    await ctx.send('{}```{}```'
-                   .format(title, output_str))
+    await ctx.send(f'{title}```{output_str}```')
 
 
 @client.command()
@@ -173,8 +190,7 @@ async def id(ctx, race_num=None, user_rank=None):
     if not output:
         await ctx.send(ROF)
         return
-    await ctx.send('**{}**\'s user ID:'
-                   .format(output[1]))
+    await ctx.send(f'**{output[1]}**\'s user ID:')
     await ctx.send(output[0])
 
 
@@ -193,10 +209,9 @@ async def nicks(ctx, identifier=None):
 
     nicknames = ''
     for entry in output:
-        nicknames += '\n' + "{:>2}: {}".format(entry[1], entry[0])
+        nicknames += '\n' + f'{entry[1]:>2}: {entry[0]}'
 
-    await ctx.send('Nicknames for **{}**```\n{}```'
-                   .format(user_id[1], nicknames))
+    await ctx.send(f'Nicknames for **{user_id[1]}**```\n{nicknames}```')
 
 
 @client.command()
@@ -211,8 +226,7 @@ async def rank(ctx, identifier=None):
     if not output:
         await ctx.send(ROF)
         return
-    await ctx.send('**{}**\'s current rank in race {}: {}'
-                   .format(user_id[1], len(leaderboard.all_ids), output))
+    await ctx.send(f'**{user_id[1]}**\'s current rank in race {len(leaderboard.all_ids)}: {output}')
 
 
 @client.command()
@@ -251,19 +265,17 @@ async def ranks(ctx, identifier=None):
         colour=discord.Colour.orange()
     )
 
-    embed.set_author(name='Stats for {} across {} tracked races'
-                     .format(user_id[1], len(all_ranks)))
-    embed.add_field(name='Best tracked performance', value='Rank {} in race {}'
-                    .format(best[1], best[0]),
-                    inline=False)
-    embed.add_field(name='Worst tracked performance', value='Rank {} in race {}'
-                    .format(worst[1], worst[0]),
-                    inline=False)
+    embed.set_author(name=f'Stats for {user_id[1]} across {len(all_ranks)} tracked races')
+    embed.add_field(name='Best tracked performance', value=f'Rank {best[1]} in race {best[0]}', inline=False)
+    embed.add_field(name='Worst tracked performance', value=f'Rank {worst[1]} in race {worst[0]}', inline=False)
     embed.add_field(name='Average rank', value=str(round(statistics.median([entry[1] for entry in all_ranks]))),
                     inline=False)
-    embed.add_field(name='Predicted ranking in race {}'.format(num_races + 1), value=str(round(p(num_races))),
+    embed.add_field(name=f'Predicted ranking in race {num_races + 1}', value=str(round(p(num_races))),
                     inline=False)
-    await ctx.send(embed=embed, file=discord.File('output.png'))
+
+    file = discord.File('output.png', filename='image.png')
+    embed.set_image(url='attachment://image.png')
+    await ctx.send(file=file, embed=embed)
     os.remove('output.png')
 
 
@@ -307,15 +319,14 @@ async def setid(ctx, u_id=None):
     if not u_id:
         await ctx.send(ROF)
         return
-    replaced = discorduserids.set_id(ctx.message.author.id, u_id)
-    await ctx.send('{} user ID: **{}**'
-                   .format('Replacement' if replaced else 'New', u_id))
+    text = 'Replacement' if discorduserids.set_id(ctx.message.author.id, u_id) else 'New'
+    await ctx.send(f'{text} user ID: **{u_id}**')
 
 
 @client.command()
 async def unlink(ctx):
     removed = discorduserids.remove_id(ctx.message.author.id)
-    output = '**{}** successfully unlinked'.format(ctx.message.author.id) if removed else 'Nothing linked'
+    output = f'**{ctx.message.author.id}** successfully unlinked' if removed else 'Nothing linked'
     await ctx.send(output)
 
 

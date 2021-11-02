@@ -29,5 +29,5 @@ def write_mappings():
     f1.truncate(0)
     f1.seek(0)
     for d_id, u_id in mappings.items():
-        f1.write('{}\t{}\n'.format(d_id, u_id))
+        f1.write(f'{d_id}\t{u_id}\n')
     f1.close()

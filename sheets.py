@@ -37,10 +37,27 @@ def from_discord_id(disc_id):
 
 
 def race(num, display_race_id=None):
+    if not num.isdigit() or int(num) <= 0:
+        return None
+    num = int(num)
     if num == 129 and display_race_id is None:
         return ':corn::tada:'
     col = 3 if display_race_id is not None else 2
     return race_info.cell(num + 1, col).value
+
+
+def race_range(start, end, display_race_id=None):
+    if not start.isdigit() or int(start) <= 0 or \
+            not end.isdigit() or int(end) <= 0 or int(end) < int(start):
+        return None
+    start = int(start)
+    end = int(end)
+    col = 3 if display_race_id is not None else 2
+    names = race_info.col_values(col)
+    output = '```'
+    for i in range(start, end + 1):
+        output += f'{i:>2}. {names[i]}\n'
+    return output[0: -1] + '```'
 
 
 def length(num, abr):

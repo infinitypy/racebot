@@ -4,8 +4,7 @@ from json import JSONDecodeError
 
 
 def get_profile(user_id):
-    user_url = 'https://priority-static-api.nkstatic.com/storage/static/11/{}/public-stats'\
-        .format(user_id)
+    user_url = f'https://priority-static-api.nkstatic.com/storage/static/11/{user_id}/public-stats'
     try:
         data = requests.get(user_url, headers={'User-Agent': 'btd6-'}).json()
     except JSONDecodeError:
@@ -21,13 +20,12 @@ def get_profile(user_id):
             '<:Top50:897738138636664883> {}\n<:DoubleGoldMedal:896548449489682462> {}\n' +
             '<:GoldSilverMedal:896548496860127302> {}\n<:DoubleSilverMedal:896548568075231233> {}\n' +
             '<:SilverMedal:896548595581481011> {}\n<:BronzeMedal:896548636211683339> {}\n\n' +
-            '<:ParticipationMedal:896548662111531028> {}')\
+            '<:ParticipationMedal:896548662111531028> {}') \
         .format(user_id, *medal_counts, sum(medal_counts))
 
 
-
-def get_shit(user_id):
-    user_url = 'https://priority-static-api.nkstatic.com/storage/static/11/{}/public-stats'\
+def get_medal_counts(user_id):
+    user_url = 'https://priority-static-api.nkstatic.com/storage/static/11/{}/public-stats' \
         .format(user_id)
     try:
         data = requests.get(user_url, headers={'User-Agent': 'btd6-'}).json()
@@ -41,16 +39,17 @@ def get_shit(user_id):
 
     return medal_counts
 
-def generatebadgelb():
-    blb = {}
-    for i in range(len(sheets.known_ids)-1):
-        blb[sheets.known_players[i+1]] = get_shit(sheets.known_ids[i+1])
 
+def generate_badge_lb():
+    blb = {}
+    for i in range(len(sheets.known_ids) - 1):
+        blb[sheets.known_players[i + 1]] = get_medal_counts(sheets.known_ids[i + 1])
 
     sortedbytotal = sorted(blb.items(), key=lambda x: x[1][-1], reverse=True)
 
-    howtouseformat = ''
+    output_str = ''
     for i in range(10):
-        howtouseformat += '\n``{:<18}``<:BlackDiamondMedal:896548315548762133>``{:<3}``<:RedDiamondMedal:896548361321201764>``{:<3}``<:DiamondMedal:896548376164843540>``{:<3}{:<3}``'.format(sortedbytotal[i][0], *sortedbytotal[i][1])
+        output_str += '\n``{:<18}``<:BlackDiamondMedal:896548315548762133>``{:<3}``<:RedDiamondMedal:896548361321201764>``{:<3}``<:DiamondMedal:896548376164843540>``{:<3}{:<3}``'.format(
+            sortedbytotal[i][0], *sortedbytotal[i][1])
 
-    return howtouseformat
+    return output_str

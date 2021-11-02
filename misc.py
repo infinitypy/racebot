@@ -13,11 +13,11 @@ lines = f.readlines()
 f.close()
 pastas = {}
 identifiers = lines[0][1:].strip()
-running = ""
+running = ''
 for line in lines[1:]:
     if line[0] == '~':
         pastas[identifiers] = running.strip()
-        running = ""
+        running = ''
         identifiers = line[1:].strip()
     else:
         running += line
