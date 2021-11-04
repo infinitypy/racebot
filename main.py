@@ -300,7 +300,9 @@ async def newrace(ctx):
 
 
 @client.command()
-async def nkinfo(ctx, name):
+async def nkinfo(ctx, name=None):
+    if name == None:
+        name = timetravel.newracedecode.events('name')
     await ctx.send(timetravel.newracedecode.raceinfo(name))
 
 
@@ -320,7 +322,7 @@ async def setid(ctx, u_id=None):
         await ctx.send(ROF)
         return
     text = 'Replacement' if discorduserids.set_id(ctx.message.author.id, u_id) else 'New'
-    await ctx.send(f'{text} user ID: **{u_id}**')
+    await ctx.send(f'{text} user ID: ``{u_id}``')
 
 
 @client.command()
