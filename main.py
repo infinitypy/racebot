@@ -357,7 +357,7 @@ async def badgelb(ctx, update=None):
     global blb
     if update == 'update':
         await ctx.send('updating (this takes about 30 seconds)')
-        blb = profiles.generatebadgelb()
+        blb = profiles.generate_badge_lb()
         await ctx.send('updated')
     else:
         await ctx.send(blb)
