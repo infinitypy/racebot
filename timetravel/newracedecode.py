@@ -13,7 +13,7 @@ def events(name=None):
     data = requests.get('https://static-api.nkstatic.com/nkapi/skusettings/de23c3d3985a143c77e50966c56cab22.json')
     decoded = json.loads(decode(data.content))
     decoded = json.loads(decoded['data'])['settings']['events']
-    newest = {'start': 0}
+    newest = {'start' : 0}
     for i in range(len(decoded)):
         if decoded[i]['type'] == 'raceEvent':
             if decoded[i]['start'] > newest['start']:
@@ -21,8 +21,7 @@ def events(name=None):
     if name == 'name':
         return newest['name']
     else:
-        return f'newest race name: {newest["name"]}\nnewest race id: {newest["id"]}'    
-
+        return f'newest race name: {newest["name"]}\nnewest race id: {newest["id"]}'  
 
 def raceinfo(name):
     race_info = {}
@@ -40,9 +39,9 @@ def raceinfo(name):
                   'SpikeFactory', 'MonkeyVillage', 'EngineerMonkey']
 
     ntower_list = ['Dart', 'Boomer', 'Bomb', 'Tack', 'Ice', 'Glue',
-                   'Sniper', 'Sub', 'Boat', 'Ace', 'Heli', 'Mortar',
-                   'Dartling', 'Wizard', 'Super', 'Ninja', 'Alch', 'Druid', 'Farm',
-                   'Spac', 'Village', 'Engi']
+                  'Sniper', 'Sub', 'Boat', 'Ace', 'Heli', 'Mortar',
+                  'Dartling', 'Wizard', 'Super', 'Ninja', 'Alch', 'Druid', 'Farm',
+                  'Spac', 'Village', 'Engi']
 
     towers = decoded['towers']
     formatted_towers = {}
@@ -66,7 +65,6 @@ def raceinfo(name):
 
             enabled += ', '
     enabled = enabled[:-2]
-
 
     # other info
 
