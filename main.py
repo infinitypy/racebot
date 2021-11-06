@@ -84,7 +84,7 @@ async def hello(ctx, *args):
     else:
         name = ' '.join(args)
         hash_val = misc.string_hash(args)
-        if hash_val % 10 == 0:
+        if hash_val % 5 == 0:
             await ctx.send(f'All the homies hate {name}')
         else:
             await ctx.send(f'hello {name}')
