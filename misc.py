@@ -1,5 +1,8 @@
+import hashlib
 import random
 import statistics
+import string
+
 from fuzzywuzzy import fuzz
 
 f = open('skillissues.txt', 'r', encoding='utf8')
@@ -27,7 +30,19 @@ random.shuffle(ids_list)
 pasta_index = 0
 
 
-def random_pasta(identifier):
+def strip_to_words(args):
+    s = ''.join(args).lower()
+    for c in string.punctuation:
+        s = s.replace(c, '')
+    return ' '.join(s.split())
+
+
+def string_hash(args):
+    s = strip_to_words(args)
+    return int(hashlib.sha1(s.encode("utf-8")).hexdigest(), 16)
+
+
+def random_pasta(identifier=None):
     if identifier:
         for ids in ids_list:
             if identifier in ids.split(','):

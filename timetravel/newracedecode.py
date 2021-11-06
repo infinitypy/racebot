@@ -110,7 +110,7 @@ def raceinfo(name):
 
     corngrats += f'\nRounds: {str(race_info["rounds"][0])}-{str(race_info["rounds"][1])}'
     corngrats += f'\nCash: {str(race_info["startcash"])}\nLives: {str(race_info["lives"])}'
-    corngrats += f'\nTowers: {enabled[]}'
+    corngrats += f'\nTowers: {enabled}'
 
     corngrats += f'\n\nModifiers:\nBloon Speed: {race_info["bloon speed"]}\nCeram hp: {race_info["ceram hp"]}\n' \
                  f'Moab Speed: {race_info["moab speed"]}\nMoab hp: {race_info["moab hp"]}'

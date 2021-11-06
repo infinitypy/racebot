@@ -83,8 +83,9 @@ async def hello(ctx, *args):
         await ctx.send('hello')
     else:
         name = ' '.join(args)
-        if name == 'exephur':
-            await ctx.send('All the homies hate exephur')
+        hash_val = misc.string_hash(args)
+        if hash_val % 10 == 0:
+            await ctx.send(f'All the homies hate {name}')
         else:
             await ctx.send(f'hello {name}')
 
@@ -301,7 +302,7 @@ async def newrace(ctx):
 
 @client.command()
 async def nkinfo(ctx, name=None):
-    if name == None:
+    if not name:
         name = timetravel.newracedecode.events('name')
     await ctx.send(timetravel.newracedecode.raceinfo(name))
 
@@ -334,14 +335,8 @@ async def unlink(ctx):
 
 @client.command()
 async def pasta(ctx, *args):
-    if args:
-        identifier = ''.join(args)
-        for c in string.punctuation:
-            identifier = identifier.replace(c, '')
-    else:
-        identifier = None
-    test = misc.random_pasta(identifier)
-    await ctx.send(test)
+    output = misc.random_pasta(misc.strip_to_words(args) if args else None)
+    await ctx.send(output)
 
 
 @client.command()
