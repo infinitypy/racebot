@@ -297,13 +297,14 @@ async def profile(ctx, identifier=None):
 
 @client.command()
 async def newrace(ctx):
-    await ctx.send(timetravel.newracedecode.events())
+    info = timetravel.newracedecode.events()
+    await ctx.send(f'**Name:** {info[0]}\n**ID:** {info[1]}')
 
 
 @client.command()
 async def nkinfo(ctx, name=None):
     if not name:
-        name = timetravel.newracedecode.events('name')
+        name = (timetravel.newracedecode.events())[0]
     await ctx.send(timetravel.newracedecode.raceinfo(name))
 
 

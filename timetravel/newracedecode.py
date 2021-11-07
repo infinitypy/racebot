@@ -1,6 +1,6 @@
 import json
 import requests
-
+infourl = 'https://static-api.nkstatic.com/nkapi/skusettings/69c94ef2750c04fb6feed91af799a32a.json'
 
 def decode(data_bytes):
     string = ''
@@ -9,8 +9,8 @@ def decode(data_bytes):
     return string
 
 
-def events(name=None):
-    data = requests.get('https://static-api.nkstatic.com/nkapi/skusettings/de23c3d3985a143c77e50966c56cab22.json')
+def events():
+    data = requests.get(infourl)
     decoded = json.loads(decode(data.content))
     decoded = json.loads(decoded['data'])['settings']['events']
     newest = {'start' : 0}
@@ -18,10 +18,8 @@ def events(name=None):
         if decoded[i]['type'] == 'raceEvent':
             if decoded[i]['start'] > newest['start']:
                 newest = decoded[i]
-    if name == 'name':
-        return newest['name']
-    else:
-        return f'newest race name: {newest["name"]}\nnewest race id: {newest["id"]}'  
+
+    return newest['name'], newest['id']
 
 def raceinfo(name):
     race_info = {}
@@ -49,6 +47,11 @@ def raceinfo(name):
     for i in range(len(towers)):
         if towers[i]['isHero'] and towers[i]['max'] == 1:
             hero = towers[i]['tower'] + ', '
+        
+        if towers[i]['path1NumBlockedTiers'] == -1: towers[i]['path1NumBlockedTiers'] = 5
+        if towers[i]['path2NumBlockedTiers'] == -1: towers[i]['path2NumBlockedTiers'] = 5
+        if towers[i]['path3NumBlockedTiers'] == -1: towers[i]['path3NumBlockedTiers'] = 5
+
         formatted_towers[towers[i]['tower']] = (
             towers[i]['max'], towers[i]['path1NumBlockedTiers'], towers[i]['path2NumBlockedTiers'],
             towers[i]['path3NumBlockedTiers'], towers[i]['isHero'])
@@ -75,14 +78,14 @@ def raceinfo(name):
     race_info['mode'] = decoded['mode']
     race_info['rounds'] = [decoded['startRules']['round'], decoded['startRules']['endRound']]
     race_info['startcash'] = decoded['startRules']['cash']
+    if race_info['startcash'] == -1 and race_info['mode'] == 'HalfCash': race_info['startcash'] = 325
+    if race_info['startcash'] == -1: race_info['startcash'] = 650
+
     race_info['lives'] = decoded['startRules']['lives']
     if race_info['lives'] == -1:
-        if race_info['difficulty'] == 'Hard':
-            race_info['lives'] = 100
-        elif race_info['difficulty'] == 'Medium':
-            race_info['lives'] = 150
-        elif race_info['difficulty'] == 'Easy':
-            race_info['lives'] = 200
+        if race_info['difficulty'] == 'Hard': race_info['lives'] = 100
+        elif race_info['difficulty'] == 'Medium': race_info['lives'] = 150
+        elif race_info['difficulty'] == 'Easy': race_info['lives'] = 200
 
     # display if not default
     race_info['mk'] = decoded['disableMK']
@@ -112,7 +115,8 @@ def raceinfo(name):
     corngrats += f'\nCash: {str(race_info["startcash"])}\nLives: {str(race_info["lives"])}'
     corngrats += f'\nTowers: {enabled}'
 
-    corngrats += f'\n\nModifiers:\nBloon Speed: {race_info["bloon speed"]}\nCeram hp: {race_info["ceram hp"]}\n' \
-                 f'Moab Speed: {race_info["moab speed"]}\nMoab hp: {race_info["moab hp"]}'
+    if (race_info['bloon speed'], race_info['ceram hp'], race_info['moab speed'], race_info['moab hp']) != (1.0, 1.0, 1.0, 1.0):
+        corngrats += f'\n\nModifiers:\nBloon Speed: {race_info["bloon speed"]}\nCeram hp: {race_info["ceram hp"]}\n' \
+                    f'Moab Speed: {race_info["moab speed"]}\nMoab hp: {race_info["moab hp"]}'
 
     return corngrats
