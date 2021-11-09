@@ -3,7 +3,13 @@ import random
 import statistics
 import string
 
+import discord
+import matplotlib.pyplot as plot
+import numpy as np
+
 from fuzzywuzzy import fuzz
+
+import leaderboard
 
 f = open('skillissues.txt', 'r', encoding='utf8')
 skill_issues = f.readlines()
@@ -75,7 +81,36 @@ def random_issue(name):
     return issue
 
 
-def send_as_txt(message):
-    f = open('output.txt', 'w')
-    f.write(message)
-    f.close()
+def ranks_embed(identifier, all_ranks):
+    x = [entry[0] for entry in all_ranks]
+    y = [entry[1] for entry in all_ranks]
+
+    num_races = len(leaderboard.all_ids)
+    plot.clf()
+    plot.axis([1, num_races, 1, 100])
+    plot.grid(color='grey', alpha=0.5)
+    plot.plot(x, y, 'k.')
+
+    z = np.polyfit(x, y, 1)
+    p = np.poly1d(z)
+    plot.plot(x, p(x), 'r--')
+    plot.savefig('output.png')
+
+    best = min(all_ranks, key=lambda entry: entry[1])
+    worst = max(all_ranks, key=lambda entry: entry[1])
+
+    embed = discord.Embed(
+        colour=discord.Colour.orange()
+    )
+
+    embed.set_author(name=f'Stats for {identifier} across {len(all_ranks)} tracked races')
+    embed.add_field(name='Best tracked performance', value=f'Rank {best[1]} in race {best[0]}', inline=False)
+    embed.add_field(name='Worst tracked performance', value=f'Rank {worst[1]} in race {worst[0]}', inline=False)
+    embed.add_field(name='Average rank', value=str(round(statistics.median([entry[1] for entry in all_ranks]))),
+                    inline=False)
+    embed.add_field(name=f'Predicted ranking in race {num_races + 1}', value=str(round(p(num_races))),
+                    inline=False)
+
+    file = discord.File('output.png', filename='image.png')
+    embed.set_image(url='attachment://image.png')
+    return file, embed
