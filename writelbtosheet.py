@@ -1,11 +1,8 @@
-from json import JSONDecodeError
-
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import requests
-import json
-import datetime
+
 import sheets
+import leaderboard
 
 scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
          "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
@@ -18,47 +15,19 @@ all_races = {}
 all_ids = sheets.race_info.col_values(3)[1:]
 
 
-def lb(race_num):
-    times = []
-    new_times = []
-    complete = []
-
-    race_id = all_ids[race_num - 1]
-    race_url = f'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_{race_id}.json'
-    try:
-        data = requests.get(race_url).json()
-    except JSONDecodeError:
-        return None
-    entries = json.loads(data["data"])['scores']['equal']
-    stuff = [(entry['score'], entry['userID']) for entry in entries]
-
-    for i in range(len(stuff)):
-        if str(stuff[i][0])[-1] == '9':
-            times.append(str(stuff[i][0])[0:-1] + '8')
-        else:
-            times.append(str(stuff[i][0]))
-
-    for i in range(len(times)):
-        new_times.append(str(datetime.timedelta(milliseconds=999999999 - int(times[i])))[3:-3])
-
-    for i in range(len(stuff)):
-        complete.append(f'{stuff[i][1]}, {new_times[i]}')
-
-    return complete
-
-
 def load_race(race_num):
-    leaderboard = lb(race_num)
-    if not leaderboard:
+    global fulldata
+    fulldata = sheet.worksheet('main')
+    if race_num < fulldata.col_count:
         return False
-    else:
-        if race_num >= fulldata.col_count:
-            fulldata.add_cols(race_num - fulldata.col_count + 1)
-        batch_size = 100
-        fulldata.update_cell(1, race_num + 1, str(race_num))
-        for j in range(0, len(leaderboard), batch_size):
-            partial = fulldata.range(j + 2, race_num + 1, j + batch_size + 1, race_num + 1)
-            for index, cell in enumerate(partial):
-                cell.value = leaderboard[j:j + batch_size][index]
-            fulldata.update_cells(partial)
-        return True
+    sheet.worksheet('main')
+    fulldata.add_cols(1)
+    batch_size = 100
+    fulldata.update_cell(1, race_num + 1, str(race_num))
+    lb = leaderboard.get_api_lb(race_num)
+    for j in range(0, len(lb), batch_size):
+        partial = fulldata.range(j + 2, race_num + 1, j + batch_size + 1, race_num + 1)
+        for index, cell in enumerate(partial):
+            cell.value = lb[j:j + batch_size][index]
+        fulldata.update_cells(partial)
+    return True

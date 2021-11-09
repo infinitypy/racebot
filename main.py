@@ -83,6 +83,9 @@ async def hello(ctx, *args):
         await ctx.send('hello')
     else:
         name = ' '.join(args)
+        if name == '@everyone' or name == '@here':
+            await ctx.send('bruh')
+            return
         hash_val = misc.string_hash(args)
         if hash_val % 5 == 0:
             await ctx.send(f'All the homies hate {name}')
@@ -166,6 +169,12 @@ async def lb(ctx, race_num=None, first=None, last=None):
     title = f'Race # {race_num}: **{sheets.race(str(race_num))}**'
     output = leaderboard.get_leaderboard(int(race_num))
     if output:
+        for entry in output:
+            res = sheets.known(str(entry[0]))
+            if res[0] == res[1]:
+                entry[0] = f' ID: {res[1][0:3]}...'
+            else:
+                entry[0] = res[1]
         output_str = ''
         for i in range(int(last) - int(first) + 1):
             if len(output[0]) == 3:
@@ -238,6 +247,7 @@ async def ranks(ctx, identifier=None):
             await ctx.send(ROF)
             return
     user_id = sheets.known(identifier)
+    print(user_id)
     all_ranks = leaderboard.get_all_rank(user_id[0])
     if not all_ranks:
         await ctx.send(ROF)
