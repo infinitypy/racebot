@@ -302,7 +302,7 @@ async def profile(ctx, identifier=None):
     if not output:
         await ctx.send(ROF)
         return
-    await ctx.send(profiles.get_profile(user_id[0]))
+    await ctx.send(f'Race stats for **{user_id[1]}**\n{output}')
 
 
 @client.command()

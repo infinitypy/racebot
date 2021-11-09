@@ -15,13 +15,13 @@ def get_profile(user_id):
                    'GoldSilver', 'DoubleSilver', 'Silver', 'Bronze']
     medal_counts = [medals.get(name, 0) for name in medal_names]
 
-    return ('Race Stats for ID **{}**:\n<:BlackDiamondMedal:896548315548762133> {}\n' +
+    return ('<:BlackDiamondMedal:896548315548762133> {}\n' +
             '<:RedDiamondMedal:896548361321201764> {}\n<:DiamondMedal:896548376164843540> {}\n' +
             '<:Top50:897738138636664883> {}\n<:DoubleGoldMedal:896548449489682462> {}\n' +
             '<:GoldSilverMedal:896548496860127302> {}\n<:DoubleSilverMedal:896548568075231233> {}\n' +
             '<:SilverMedal:896548595581481011> {}\n<:BronzeMedal:896548636211683339> {}\n\n' +
             '<:ParticipationMedal:896548662111531028> {}') \
-        .format(user_id, *medal_counts, sum(medal_counts))
+        .format(*medal_counts, sum(medal_counts))
 
 
 def get_medal_counts(user_id):
