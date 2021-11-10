@@ -1,33 +1,44 @@
-f = open('savedids.txt', 'r', encoding='utf8')
-mappings = {entry.split('\t')[0]: entry.split('\t')[1].strip() for entry in f.readlines()}
-f.close()
+import writelbtosheet
+
+sheet_mappings = writelbtosheet.user_data.get_values(f'A2:B{writelbtosheet.user_data.row_count}')
+mappings = {}
+for k, v in sheet_mappings:
+    if v:
+        mappings[v] = k
 
 
 def get_id(d_id):
     d_id = str(d_id)
-    return mappings[d_id] if d_id in mappings else None
+    for k, v in mappings.items():
+        if d_id == v:
+            return k
+    return None
 
 
-def set_id(d_id, u_id):
+def set_id(u_id, d_id):
+    if u_id not in mappings:
+        return None
     d_id = str(d_id)
-    replace = d_id in mappings
-    mappings[d_id] = u_id
-    write_mappings()
+    replace = mappings[u_id] != ''
+    mappings[u_id] = d_id
+    write_mappings(u_id, d_id)
     return replace
 
 
 def remove_id(d_id):
     d_id = str(d_id)
-    remove = d_id in mappings
-    if remove:
-        del mappings[d_id]
-    return remove
+    for k, v in mappings.items():
+        if d_id == v:
+            mappings[k] = ''
+            write_mappings(k, '')
+            return True
+    return False
 
 
-def write_mappings():
-    f1 = open('savedids.txt', 'r+')
-    f1.truncate(0)
-    f1.seek(0)
-    for d_id, u_id in mappings.items():
-        f1.write(f'{d_id}\t{u_id}\n')
-    f1.close()
+def write_mappings(u_id, new_did):
+    sheet_uids = writelbtosheet.user_data.range(2, 2, writelbtosheet.user_data.row_count, 2)
+    for index, cell in enumerate(sheet_uids):
+        if cell.value == u_id:
+            writelbtosheet.user_data.update_cell(index + 2, 1, new_did)
+            return True
+    return False

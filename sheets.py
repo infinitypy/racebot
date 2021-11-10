@@ -27,7 +27,7 @@ def known(identifier):
     more_ids_to_names = {}
     for i in range(len(known_players)):
         ids_to_names[known_ids[i]] = [known_players[i], *(player_aliases[i].split(','))]
-    for i in range(len(assoc_ids)):
+    for i in range(min(len(assoc_ids), len(assoc_players))):
         more_ids_to_names[assoc_ids[i]] = assoc_players[i]
     if identifier in ids_to_names:
         return identifier, ids_to_names[identifier][0]

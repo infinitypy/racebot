@@ -1,8 +1,6 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-import leaderboard
-
 scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
          "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_name('creds.json', scope)
@@ -17,7 +15,7 @@ assoc_players = user_data.col_values(3)
 
 def load_race(race_num):
     global fulldata
-    #fulldata = sheet.worksheet('main')
+    fulldata = sheet.worksheet('main')
     if race_num < fulldata.col_count:
         return False
     sheet.worksheet('main')
@@ -52,6 +50,7 @@ def load_all_users():
 
 def load_nicks(start):
     import time
+    import leaderboard
     batch_size = 10
     while True:
         try:

@@ -299,7 +299,11 @@ async def setid(ctx, u_id=None):
     if not u_id:
         await ctx.send(ROF)
         return
-    text = 'Replacement' if discorduserids.set_id(ctx.message.author.id, u_id) else 'New'
+    res = discorduserids.set_id(u_id, ctx.message.author.id)
+    if res is None:
+        await ctx.send(ROF)
+        return
+    text = 'Replacement' if res else 'New'
     await ctx.send(f'{text} user ID: ``{u_id}``')
 
 
