@@ -1,10 +1,7 @@
 import datetime
 import os
-import statistics
 
 import discord
-import matplotlib.pyplot as plot
-import numpy as np
 from discord import HTTPException
 from discord.ext import commands
 
@@ -14,8 +11,8 @@ import misc
 import profiles
 import sheets
 import timetravel.newracedecode
-
 # from webserver import keep_alive
+import writelbtosheet
 
 client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'])
 client.remove_command('help')
@@ -159,21 +156,15 @@ async def lb(ctx, race_num=None, first=None, last=None):
     if race_num and first and not last:
         last = first
         first = race_num
-        race_num = len(leaderboard.all_ids)
+        race_num = len(sheets.all_ids)
     if not race_num:
-        race_num = len(leaderboard.all_ids)
+        race_num = len(sheets.all_ids)
     if not first and not last:
         first = 1
         last = 50
     title = f'Race # {race_num}: **{sheets.race(str(race_num))}**'
     output = leaderboard.get_leaderboard(int(race_num))
     if output:
-        for entry in output:
-            res = sheets.known(str(entry[0]))
-            if res[0] == res[1]:
-                entry[0] = f' ID: {res[1][0:3]}...'
-            else:
-                entry[0] = res[1]
         output_str = ''
         for i in range(int(last) - int(first) + 1):
             if len(output[0]) == 3:
@@ -194,7 +185,7 @@ async def id(ctx, race_num=None, user_rank=None):
     else:
         if not user_rank:
             user_rank = race_num
-            race_num = len(leaderboard.all_ids)
+            race_num = len(sheets.all_ids)
         output = leaderboard.get_id(int(race_num), user_rank)
     if not output:
         await ctx.send(ROF)
@@ -231,11 +222,11 @@ async def rank(ctx, identifier=None):
             await ctx.send(ROF)
             return
     user_id = sheets.known(identifier)
-    output = leaderboard.get_rank(len(leaderboard.all_ids), user_id[0])
+    output = leaderboard.get_rank(len(sheets.all_ids), user_id[0])
     if not output:
         await ctx.send(ROF)
         return
-    await ctx.send(f'**{user_id[1]}**\'s current rank in race {len(leaderboard.all_ids)}: {output}')
+    await ctx.send(f'**{user_id[1]}**\'s current rank in race {sheets.all_ids}: {output}')
 
 
 @client.command()
@@ -338,6 +329,22 @@ async def badgelb(ctx, update=None):
         await ctx.send('updated')
     else:
         await ctx.send(blb)
+
+
+@client.command()
+async def loadusers(ctx):
+    if ctx.message.author.id != 279126808455151628:
+        await ctx.send(ROF)
+        return
+    writelbtosheet.load_all_users()
+
+
+@client.command()
+async def loadnicks(ctx, start=2):
+    if ctx.message.author.id != 279126808455151628:
+        await ctx.send(ROF)
+        return
+    writelbtosheet.load_nicks(start)
 
 
 # keep_alive()

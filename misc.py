@@ -6,10 +6,9 @@ import string
 import discord
 import matplotlib.pyplot as plot
 import numpy as np
-
 from fuzzywuzzy import fuzz
 
-import leaderboard
+import sheets
 
 f = open('skillissues.txt', 'r', encoding='utf8')
 skill_issues = f.readlines()
@@ -85,7 +84,7 @@ def ranks_embed(identifier, all_ranks):
     x = [entry[0] for entry in all_ranks]
     y = [entry[1] for entry in all_ranks]
 
-    num_races = len(leaderboard.all_ids)
+    num_races = len(sheets.all_ids)
     plot.clf()
     plot.axis([1, num_races, 1, 100])
     plot.grid(color='grey', alpha=0.5)

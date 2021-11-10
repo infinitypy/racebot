@@ -16,13 +16,12 @@ def column(num, res=''):
     return column(num // 26, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[num % 26] + res) if num > 1 else res
 
 
-all_ids = sheets.race_info.col_values(3)[1:]
 loaded_races = writelbtosheet.fulldata.row_values(1)
 full_data = writelbtosheet.fulldata.get_values('B2:' + column(writelbtosheet.fulldata.col_count) + '101', major_dimension='COLUMNS')
 
 
 def get_api_lb(race_num):
-    race_id = all_ids[race_num - 1]
+    race_id = sheets.all_ids[race_num - 1]
     race_url = f'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_{race_id}.json'
     try:
         data = requests.get(race_url).json()
@@ -48,26 +47,25 @@ def get_api_lb(race_num):
 
 
 def get_leaderboard(race_num):
-    if race_num is len(all_ids):
+    if race_num is len(sheets.all_ids):
         output = get_api_lb(race_num)
         if not output:
             return None
-        split_entries = [entry.split(',') for entry in output]
-        for entry in split_entries:
-            res = sheets.known(str(entry[0]))
-            if res[0] == res[1]:
-                entry[0] = ' ID: ' + res[1][0:3] + '...'
-            else:
-                entry[0] = res[1]
-        return split_entries
     else:
         global full_data
-        if int(race_num) == len(all_ids) - 1 and writelbtosheet.load_race(race_num):
+        if int(race_num) == len(sheets.all_ids) - 1 and writelbtosheet.load_race(race_num):
             full_data = writelbtosheet.fulldata.get_values(f'B2:{column(race_num)}101', major_dimension='COLUMNS')
             full_data[race_num - 1] = [cell.value for cell in
                                        writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
         output = full_data[race_num - 1]
     split_entries = [entry.split(',') for entry in output]
+    for entry in split_entries:
+        res = sheets.known(str(entry[0]))
+        print(res)
+        if res[0] == res[1]:
+            entry[0] = f' ID: {res[1][0:3]}...'
+        else:
+            entry[0] = res[1]
     return split_entries
 
 
@@ -92,12 +90,12 @@ def get_id(race_num, rank):
 
 def get_nicks(user_id):
     race_nicks = {}
-    for race_num in range(1, len(all_ids)):
+    for race_num in range(1, len(sheets.all_ids)):
         lb = get_leaderboard(race_num)
         if not lb:
             continue
         for entry in lb:
-            if not entry[0]:
+            if not entry[0] or len(entry) == 2:
                 continue
             nick = entry[1]
             if entry[0] == user_id and nick:
@@ -119,7 +117,7 @@ def get_rank(race_num, user_id):
 
 def get_all_rank(user_id):
     ranks = []
-    for race_num in range(1, len(all_ids) + 1):
+    for race_num in range(1, len(sheets.all_ids) + 1):
         if race_num != 107 and race_num != 143:
             rank = get_rank(race_num, user_id)
             if rank:
@@ -129,7 +127,7 @@ def get_all_rank(user_id):
 
 def get_worst_rank(user_id):
     worst = (0, -1)
-    for race_num in range(1, len(all_ids) + 1):
+    for race_num in range(1, len(sheets.all_ids) + 1):
         if race_num != 107 and race_num != 143:
             rank = get_rank(race_num, user_id)
             if rank and rank >= worst[1]:
@@ -139,7 +137,7 @@ def get_worst_rank(user_id):
 
 def get_best_rank(user_id):
     best = (0, 101)
-    for race_num in range(1, 146 + 1):
+    for race_num in range(1, len(sheets.all_ids) + 1):
         if race_num != 107 and race_num != 143:
             rank = get_rank(race_num, user_id)
             if rank and rank <= best[1]:
