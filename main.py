@@ -165,6 +165,12 @@ async def lb(ctx, race_num=None, first=None, last=None):
     title = f'Race # {race_num}: **{sheets.race(str(race_num))}**'
     output = leaderboard.get_leaderboard(int(race_num))
     if output:
+        for entry in output:
+            res = sheets.known(str(entry[0]))
+            if res[0] == res[1]:
+                entry[0] = f' ID: {res[1][0:3]}...'
+            else:
+                entry[0] = res[1]
         output_str = ''
         for i in range(int(last) - int(first) + 1):
             if len(output[0]) == 3:

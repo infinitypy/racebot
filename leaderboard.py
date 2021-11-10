@@ -59,13 +59,6 @@ def get_leaderboard(race_num):
                                        writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
         output = full_data[race_num - 1]
     split_entries = [entry.split(',') for entry in output]
-    for entry in split_entries:
-        res = sheets.known(str(entry[0]))
-        print(res)
-        if res[0] == res[1]:
-            entry[0] = f' ID: {res[1][0:3]}...'
-        else:
-            entry[0] = res[1]
     return split_entries
 
 
