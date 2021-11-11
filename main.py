@@ -373,6 +373,18 @@ async def loadnicks(ctx, start=2):
     writelbtosheet.load_nicks(start)
 
 
+@client.event
+async def on_message(message):
+    string = message.content
+    if string.startswith('congratulations'):
+        await message.reply('*corngratulations')
+        return
+    if string.startswith('congrats'):
+        await message.reply('*corngrats')
+        return
+    await client.process_commands(message)
+
+
 # keep_alive()
 # my_secret = os.environ['TOKEN']
 my_secret = 'ODkzOTY2NjkwNzY4MDA3MTc4.YVjJXA.Az511XCUNfFgEDdciex3s3pHzVw'
