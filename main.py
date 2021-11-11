@@ -15,7 +15,6 @@ import timetravel.newracedecode
 # from webserver import keep_alive
 import writelbtosheet
 
-
 client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'])
 client.remove_command('help')
 
@@ -24,8 +23,8 @@ client.remove_command('help')
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         error = str(error)
-        await ctx.send(f'r!{error[error.find(chr(34)) + 1: error.rfind(chr(34))]}'
-                       f' does not exist, use r!help to see a list of valid commands')
+        await reply(ctx, f'r!{error[error.find(chr(34)) + 1: error.rfind(chr(34))]}'
+                         f' does not exist, use r!help to see a list of valid commands', True)
         return
     raise error
 
@@ -73,7 +72,7 @@ async def help(ctx, command_name=None) -> None:
         embed.add_field(name=command_name, value='Not a valid command, use r!help for a list of commands', inline=False)
 
     embed.set_thumbnail(url=ROF)
-    await ctx.send(embed=embed)
+    await ctx.reply(embed=embed)
 
 
 ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
@@ -93,19 +92,19 @@ async def hello(ctx, *args) -> None:
     else:
         name: str = ' '.join(args)
         if not misc.validate_str(name):
-            await ctx.send(ROF)
+            await reply(ctx, ROF, True)
             return
     hash_val = misc.string_hash(args)
     if hash_val % 5 == 0:
-        await ctx.send(f'All the homies hate {name}')
+        await reply(ctx, f'All the homies hate {name}')
     else:
-        await ctx.send(f'hello {name}')
+        await reply(ctx, f'hello {name}')
 
 
 @client.command()
 async def invite(ctx) -> None:
-    await ctx.send('https://discord.com/oauth2/authorize?'
-                   'client_id=893291225568919562&permissions=3072&scope=bot')
+    await reply(ctx, 'https://discord.com/oauth2/authorize?'
+                     'client_id=893291225568919562&permissions=3072&scope=bot')
 
 
 @client.command()
@@ -120,23 +119,23 @@ async def race(ctx, num, num_end=None, race_id=None) -> None:
     else:
         output = sheets.race_range(num, num_end, race_id)
     if not output:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
     try:
-        await ctx.send(output)
+        await reply(ctx, output)
     except HTTPException:
-        await ctx.send(BIG_ERROR)
+        await reply(ctx, BIG_ERROR)
 
 
 @client.command()
 async def length(ctx, num, abr=None):
     try:
         if 0 < int(num) <= 140:
-            await ctx.send(f'Round {num} is {sheets.length(int(num), abr)}s')
+            await reply(ctx, f'Round {num} is {sheets.length(int(num), abr)}s')
         else:
-            await ctx.send(ROF)
+            await reply(ctx, ROF, True)
     except ValueError:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
 
 
 @client.command()
@@ -148,20 +147,20 @@ async def rtime(ctx, start, end, stime=None, abr=None):
                 int(start) < int(end) and float(stime) >= 0:
             longest, longest_round = sheets.rtime(int(start), int(end), float(stime), abr)
             final_time = str(datetime.timedelta(seconds=longest))[3:-4]
-            await ctx.send(f'You will get **{final_time}** if you perfect clean round {longest_round}')
+            await reply(ctx, f'You will get **{final_time}** if you perfect clean round {longest_round}')
         else:
-            await ctx.send(ROF)
+            await reply(ctx, ROF, True)
     except ValueError:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
 
 
 @client.command()
 async def info(ctx, num):
     try:
         if int(num) > 0:
-            await ctx.send('\n'.join(sheets.info(int(num))))
+            await reply(ctx, '\n'.join(sheets.info(int(num))))
     except ValueError:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
 
 
 @client.command()
@@ -194,7 +193,7 @@ async def lb(ctx, race_num=None, first=None, last=None):
                     .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][1], output[i + int(first) - 1][0])
     else:
         output_str = 'No data'
-    await ctx.send(f'{title}```{output_str}```')
+    await reply(ctx, f'{title}```{output_str}```')
 
 
 @client.command()
@@ -207,9 +206,9 @@ async def id(ctx, race_num=None, user_rank=None):
             race_num = len(sheets.all_ids)
         output = leaderboard.get_id(race_num, user_rank)
     if not output:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
-    await ctx.send(f'**{output[1]}**\'s user ID:')
+    await reply(ctx, f'**{output[1]}**\'s user ID:')
     await ctx.send(output[0])
 
 
@@ -218,19 +217,19 @@ async def nicks(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await ctx.send(ROF)
+            await reply(ctx, ROF, True)
             return
     user_id = sheets.known(identifier)
     output = leaderboard.get_nicks(user_id[0])
     if not output:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
 
     nicknames = ''
     for entry in output:
         nicknames += '\n' + f'{entry[1]:>2}: {entry[0]}'
 
-    await ctx.send(f'Nicknames for **{user_id[1]}**```\n{nicknames}```')
+    await reply(ctx, f'Nicknames for **{user_id[1]}**```\n{nicknames}```')
 
 
 @client.command()
@@ -238,14 +237,14 @@ async def rank(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await ctx.send(ROF)
+            await reply(ctx, ROF, True)
             return
     user_id = sheets.known(identifier)
     output = leaderboard.get_rank(len(sheets.all_ids), user_id[0])
     if not output:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
-    await ctx.send(f'**{user_id[1]}**\'s current rank in race {sheets.all_ids}: {output}')
+    await reply(ctx, f'**{user_id[1]}**\'s current rank in race {sheets.all_ids}: {output}')
 
 
 @client.command()
@@ -253,19 +252,19 @@ async def ranks(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await ctx.send(ROF)
+            await reply(ctx, ROF, True)
             return
     user_id = sheets.known(identifier)
     all_ranks = leaderboard.get_all_rank(user_id[0])
     if not all_ranks:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
     if user_id[0] == '5b2845abfcd0f8d9745e6cfe':
         all_ranks = [(entry[0], (entry[1] - 1) % 20 + 81) for entry in all_ranks]
     elif user_id[0] == '5b7f82e318c7cbe32fa01e4e':
         all_ranks = [(entry[0], (entry[1] - 1) % 20 + 1) for entry in all_ranks]
     file, embed = misc.ranks_embed(user_id[1], all_ranks)
-    await ctx.send(file=file, embed=embed)
+    await ctx.reply(file=file, embed=embed, mention_author=False)
     os.remove('output.png')
 
 
@@ -274,73 +273,71 @@ async def profile(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await ctx.send(ROF)
+            await reply(ctx, ROF, True)
             return
     user_id = sheets.known(identifier)
     output = profiles.get_profile(user_id[0])
     if not output:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
-    await ctx.send(f'Race stats for **{user_id[1]}**\n{output}')
+    await reply(ctx, f'Race stats for **{user_id[1]}**\n{output}')
 
 
 @client.command()
 async def newrace(ctx):
     race_info = timetravel.newracedecode.events()
-    await ctx.send(f'**Name:** {race_info[0]}\n**ID:** {race_info[1]}')
+    await reply(ctx, f'**Name:** {race_info[0]}\n**ID:** {race_info[1]}')
 
 
 @client.command()
 async def nkinfo(ctx, name=None):
     if not name:
         name = (timetravel.newracedecode.events())[0]
-    await ctx.send(timetravel.newracedecode.raceinfo(name))
+    await reply(ctx, timetravel.newracedecode.raceinfo(name))
 
 
 @client.command()
 async def getid(ctx):
     output = discorduserids.get_id(ctx.message.author.id)
     if not output:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
-    await ctx.send('User ID:')
+    await reply(ctx, 'User ID:')
     await ctx.send(output)
 
 
 @client.command()
 async def setid(ctx, u_id=None):
     if not u_id:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
     res = discorduserids.set_id(u_id, ctx.message.author.id)
     if res is None:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
     text = 'Replacement' if res else 'New'
-    await ctx.send(f'{text} user ID: {u_id}')
+    await reply(ctx, f'{text} user ID: {u_id}')
 
 
 @client.command()
 async def unlink(ctx):
     removed = discorduserids.remove_id(ctx.message.author.id)
-    output = f'**{ctx.message.author.id}** successfully unlinked' if removed else 'Nothing linked'
-    await ctx.send(output)
+    await reply(ctx, f'**{ctx.message.author.id}** successfully unlinked' if removed else 'Nothing linked')
 
 
 @client.command()
 async def pasta(ctx, *args):
-    output = misc.random_pasta(misc.strip_to_words(args) if args else None)
-    await ctx.send(output)
+    await reply(ctx, misc.random_pasta(misc.strip_to_words(args) if args else None))
 
 
 @client.command()
 async def diagnosis(ctx, *args):
     name = ' '.join(args) if args else None
     if not misc.validate_str(name):
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
     header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
-    await ctx.send(header + misc.random_issue(args))
+    await reply(ctx, header + misc.random_issue(args))
 
 
 blb = 'None, run ``r!badgelb update`` to populate'
@@ -350,27 +347,29 @@ blb = 'None, run ``r!badgelb update`` to populate'
 async def badgelb(ctx, update=None):
     global blb
     if update == 'update':
-        await ctx.send('updating (this takes about 30 seconds)')
+        await reply(ctx, 'updating (this takes about 30 seconds)')
         blb = profiles.generate_badge_lb()
         await ctx.send('updated')
     else:
-        await ctx.send(blb)
+        await reply(ctx, blb, True)
 
 
 @client.command()
 async def loadusers(ctx):
     if ctx.message.author.id != 279126808455151628:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
     writelbtosheet.load_all_users()
+    await reply(ctx, 'Done loading users')
 
 
 @client.command()
 async def loadnicks(ctx, start=2):
     if ctx.message.author.id != 279126808455151628:
-        await ctx.send(ROF)
+        await reply(ctx, ROF, True)
         return
     writelbtosheet.load_nicks(start)
+    await reply(ctx, 'Done loading nicknames')
 
 
 @client.event
@@ -383,6 +382,10 @@ async def on_message(message):
         await message.reply('*corngrats')
         return
     await client.process_commands(message)
+
+
+async def reply(ctx, message, mention=False):
+    await ctx.reply(message, mention_author=mention)
 
 
 # keep_alive()
