@@ -46,11 +46,15 @@ def get_api_lb(race_num):
     return complete
 
 
-def get_leaderboard(race_num):
+def get_leaderboard(race_num: int) -> list[list[str]]:
+    try:
+        race_num = int(race_num)
+    except TypeError:
+        return list()
     if race_num is len(sheets.all_ids):
         output = get_api_lb(race_num)
         if not output:
-            return None
+            return list()
     else:
         global full_data
         if int(race_num) == len(sheets.all_ids) - 1 and writelbtosheet.load_race(race_num):
@@ -62,7 +66,11 @@ def get_leaderboard(race_num):
     return split_entries
 
 
-def get_id(race_num, rank):
+def get_id(race_num: int, rank) -> (str, str):
+    try:
+        race_num = int(race_num)
+    except TypeError:
+        return None
     if not get_leaderboard(race_num):
         return None
     if rank.isdigit():

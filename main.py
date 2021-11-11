@@ -4,6 +4,7 @@ import os
 import discord
 from discord import HTTPException
 from discord.ext import commands
+from discord.ext.commands import CommandNotFound
 
 import discorduserids
 import leaderboard
@@ -14,12 +15,21 @@ import timetravel.newracedecode
 # from webserver import keep_alive
 import writelbtosheet
 
+
 client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'])
 client.remove_command('help')
 
 
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, CommandNotFound):
+        await ctx.send("test")
+        return
+    raise error
+
+
 @client.command(pass_context=True)
-async def help(ctx, command_name=None):
+async def help(ctx, command_name=None) -> None:
     command_help = {
         'hello': ['name:opt', 'Says hello'],
         'invite': ['none', 'Returns bot invite'],
@@ -69,34 +79,31 @@ BIG_ERROR = 'Too much text. Please select a smaller range.'
 
 
 @client.event
-async def on_ready():
+async def on_ready() -> None:
     print(f'{client.user} is online')
 
 
 @client.command()
-async def hello(ctx, *args):
+async def hello(ctx, *args) -> None:
     if not args:
         await ctx.send('hello')
     else:
         name = ' '.join(args)
-        if name == '@everyone' or name == '@here':
-            await ctx.send('bruh')
-            return
         hash_val = misc.string_hash(args)
         if hash_val % 5 == 0:
-            await ctx.send(f'All the homies hate {name}')
+            await ctx.send(f'All the homies hate ``{name}``')
         else:
-            await ctx.send(f'hello {name}')
+            await ctx.send(f'hello ``{name}``')
 
 
 @client.command()
-async def invite(ctx):
+async def invite(ctx) -> None:
     await ctx.send('https://discord.com/oauth2/authorize?'
                    'client_id=893291225568919562&permissions=3072&scope=bot')
 
 
 @client.command()
-async def race(ctx, num, num_end=None, race_id=None):
+async def race(ctx, num, num_end=None, race_id=None) -> None:
     if not race_id:
         if not num_end:
             output = sheets.race(num, None)
@@ -162,11 +169,11 @@ async def lb(ctx, race_num=None, first=None, last=None):
     if not first and not last:
         first = 1
         last = 50
-    title = f'Race # {race_num}: **{sheets.race(str(race_num))}**'
-    output = leaderboard.get_leaderboard(int(race_num))
+    title = f'Race # {race_num}: **{sheets.race(race_num)}**'
+    output = leaderboard.get_leaderboard(race_num)
     if output:
         for entry in output:
-            res = sheets.known(str(entry[0]))
+            res = sheets.known(entry[0])
             if res[0] == res[1]:
                 entry[0] = f' ID: {res[1][0:3]}...'
             else:
@@ -187,12 +194,12 @@ async def lb(ctx, race_num=None, first=None, last=None):
 @client.command()
 async def id(ctx, race_num=None, user_rank=None):
     if not user_rank and not race_num:
-        output = sheets.from_discord_id(str(ctx.message.author.id))
+        output = sheets.from_discord_id(ctx.message.author.id)
     else:
         if not user_rank:
             user_rank = race_num
             race_num = len(sheets.all_ids)
-        output = leaderboard.get_id(int(race_num), user_rank)
+        output = leaderboard.get_id(race_num, user_rank)
     if not output:
         await ctx.send(ROF)
         return

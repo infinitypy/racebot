@@ -23,6 +23,7 @@ assoc_players = writelbtosheet.user_data.col_values(3)
 
 
 def known(identifier):
+    identifier = str(identifier)
     ids_to_names = {}
     more_ids_to_names = {}
     for i in range(len(known_players)):
@@ -40,7 +41,8 @@ def known(identifier):
     return identifier, identifier
 
 
-def from_discord_id(disc_id):
+def from_discord_id(disc_id: int) -> (str, str):
+    disc_id = str(disc_id)
     disc_ids = players.col_values(4)
     if disc_id not in disc_ids:
         return None
@@ -48,22 +50,27 @@ def from_discord_id(disc_id):
     return known_ids[index], known_players[index]
 
 
-def race(num, display_race_id=None):
-    if not num.isdigit() or int(num) <= 0:
-        return None
-    num = int(num)
+def race(num: int, display_race_id: str = None) -> str:
+    try:
+        num = int(num)
+    except TypeError:
+        return ''
+    if num <= 0:
+        return ''
     if num == 129 and display_race_id is None:
         return ':corn::tada:'
     col = 3 if display_race_id is not None else 2
     return race_info.cell(num + 1, col).value
 
 
-def race_range(start, end, display_race_id=None):
-    if not start.isdigit() or int(start) <= 0 or \
-            not end.isdigit() or int(end) <= 0 or int(end) < int(start):
-        return None
-    start = int(start)
-    end = int(end)
+def race_range(start: int, end: int, display_race_id: str = None) -> str:
+    try:
+        start = int(start)
+        end = int(end)
+    except TypeError:
+        return ''
+    if start <= 0 or end <= 0 or start > end:
+        return ''
     col = 3 if display_race_id is not None else 2
     names = race_info.col_values(col)
     output = '```'
