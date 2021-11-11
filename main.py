@@ -340,7 +340,7 @@ async def diagnosis(ctx, *args):
         await ctx.send(ROF)
         return
     header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
-    await ctx.send(header + misc.random_issue(name))
+    await ctx.send(header + misc.random_issue(args))
 
 
 blb = 'None, run ``r!badgelb update`` to populate'

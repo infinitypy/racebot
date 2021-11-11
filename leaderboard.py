@@ -46,7 +46,7 @@ def get_api_lb(race_num):
     return complete
 
 
-def get_leaderboard(race_num: int) -> list[list[str]]:
+def get_leaderboard(race_num: int):
     try:
         race_num = int(race_num)
     except TypeError:

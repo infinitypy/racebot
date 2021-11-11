@@ -1,13 +1,12 @@
 import hashlib
 import random
+import re
 import statistics
 import string
 
 import discord
 import matplotlib.pyplot as plot
 import numpy as np
-from fuzzywuzzy import fuzz
-import re
 
 import sheets
 
@@ -62,16 +61,11 @@ def random_pasta(identifier=None):
     return pasta
 
 
-def random_issue(name):
-    if name:
-        ring_of_fire = "ring of fire"
-        rof = "rof"
-        ring_ratios = [fuzz.ratio(ring_of_fire, name.lower()), fuzz.partial_token_set_ratio(ring_of_fire, name),
-                       fuzz.partial_token_sort_ratio(ring_of_fire, name), ]
-        rof_ratios = [fuzz.ratio(rof, name.lower()), fuzz.partial_token_set_ratio(rof, name),
-                      fuzz.partial_token_sort_ratio(rof, name)]
-        if max([statistics.mean(ring_ratios), statistics.mean(rof_ratios)]) >= 80:
-            return "second longest intermediate map"
+def random_issue(args):
+    if args:
+        s = strip_to_words(args)
+        hash_val = int(hashlib.sha1(s.encode("utf-8")).hexdigest(), 16)
+        return skill_issues[hash_val % len(skill_issues)]
     global issue_index
     if issue_index >= len(skill_issues):
         random.shuffle(skill_issues)
