@@ -7,6 +7,7 @@ import discord
 import matplotlib.pyplot as plot
 import numpy as np
 from fuzzywuzzy import fuzz
+import re
 
 import sheets
 
@@ -113,3 +114,8 @@ def ranks_embed(identifier, all_ranks):
     file = discord.File('output.png', filename='image.png')
     embed.set_image(url='attachment://image.png')
     return file, embed
+
+
+def validate_str(hello_target: str) -> bool:
+    r = re.compile(r'.*@[^!\d].*')
+    return not r.match(hello_target)

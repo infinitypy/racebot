@@ -23,7 +23,9 @@ client.remove_command('help')
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
-        await ctx.send("test")
+        error = str(error)
+        await ctx.send(f'r!{error[error.find(chr(34)) + 1: error.rfind(chr(34))]}'
+                       f' does not exist, use r!help to see a list of valid commands')
         return
     raise error
 
@@ -86,14 +88,18 @@ async def on_ready() -> None:
 @client.command()
 async def hello(ctx, *args) -> None:
     if not args:
-        await ctx.send('hello')
+        args = [str(ctx.message.author.id)]
+        name = f'<@!{args[0]}>'
     else:
-        name = ' '.join(args)
-        hash_val = misc.string_hash(args)
-        if hash_val % 5 == 0:
-            await ctx.send(f'All the homies hate ``{name}``')
-        else:
-            await ctx.send(f'hello ``{name}``')
+        name: str = ' '.join(args)
+        if not misc.validate_str(name):
+            await ctx.send(ROF)
+            return
+    hash_val = misc.string_hash(args)
+    if hash_val % 5 == 0:
+        await ctx.send(f'All the homies hate {name}')
+    else:
+        await ctx.send(f'hello {name}')
 
 
 @client.command()
@@ -311,7 +317,7 @@ async def setid(ctx, u_id=None):
         await ctx.send(ROF)
         return
     text = 'Replacement' if res else 'New'
-    await ctx.send(f'{text} user ID: ``{u_id}``')
+    await ctx.send(f'{text} user ID: {u_id}')
 
 
 @client.command()
@@ -330,6 +336,9 @@ async def pasta(ctx, *args):
 @client.command()
 async def diagnosis(ctx, *args):
     name = ' '.join(args) if args else None
+    if not misc.validate_str(name):
+        await ctx.send(ROF)
+        return
     header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
     await ctx.send(header + misc.random_issue(name))
 
