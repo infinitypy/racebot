@@ -24,7 +24,7 @@ def get_api_lb(race_num):
     race_id = sheets.all_ids[race_num - 1]
     race_url = f'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_{race_id}.json'
     try:
-        data = requests.get(race_url).json()
+        data = requests.get(race_url, headers={'User-Agent': 'btd6-'}).json()
     except JSONDecodeError:
         return None
     entries = json.loads(data["data"])['scores']['equal']

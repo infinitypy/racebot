@@ -8,9 +8,8 @@ def decode(data_bytes):
         string += chr(byte - 21 - i % 6)
     return string
 
-
 def events():
-    data = requests.get(infourl)
+    data = requests.get(infourl, headers={'User-Agent': 'btd6-'})
     decoded = json.loads(decode(data.content))
     decoded = json.loads(decoded['data'])['settings']['events']
     newest = {'start' : 0}
@@ -24,7 +23,7 @@ def events():
 def raceinfo(name):
     race_info = {}
 
-    data = requests.get('https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + name)
+    data = requests.get('https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + name, headers={'User-Agent': 'btd6-'})
     decoded = json.loads(decode(data.content))
     decoded = json.loads(decoded['data'])
     decoded = json.loads(decoded['races/' + name])
