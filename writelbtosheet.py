@@ -14,6 +14,7 @@ assoc_players = user_data.col_values(3)
 
 
 def load_race(race_num):
+    import leaderboard
     global fulldata
     fulldata = sheet.worksheet('main')
     if race_num < fulldata.col_count:
@@ -32,6 +33,7 @@ def load_race(race_num):
 
 
 def load_all_users():
+    import leaderboard
     unique_ids = set()
     for race_lb in leaderboard.full_data:
         for entry in race_lb:
