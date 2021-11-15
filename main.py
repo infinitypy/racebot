@@ -11,7 +11,7 @@ import leaderboard
 import misc
 import profiles
 import sheets
-import timetravel.newracedecode
+import newracedecode
 # from webserver import keep_alive
 import writelbtosheet
 
@@ -285,15 +285,15 @@ async def profile(ctx, identifier=None):
 
 @client.command()
 async def newrace(ctx):
-    race_info = timetravel.newracedecode.events()
+    race_info = newracedecode.events()
     await reply(ctx, f'**Name:** {race_info[0]}\n**ID:** {race_info[1]}')
 
 
 @client.command()
 async def nkinfo(ctx, name=None):
     if not name:
-        name = (timetravel.newracedecode.events())[0]
-    await reply(ctx, timetravel.newracedecode.raceinfo(name))
+        name = newracedecode.events()[0]
+    await reply(ctx, newracedecode.raceinfo(name))
 
 
 @client.command()

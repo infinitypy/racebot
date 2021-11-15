@@ -8,9 +8,9 @@ scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/au
 creds = ServiceAccountCredentials.from_json_keyfile_name('creds.json', scope)
 client = gspread.authorize(creds)
 sheet = client.open_by_key('1iG4mtopJVlF7g3gv6sNrYspyonSQGSHuDOb-QMNVnPc')
-race_info = sheet.worksheet('raceinfo')
+race_info = sheet.worksheet('Race Info')
 round_info = sheet.worksheet('rounds')
-players = sheet.worksheet('playerinfo')
+players = sheet.worksheet('Player Info')
 
 all_ids = race_info.col_values(3)[1:]
 
