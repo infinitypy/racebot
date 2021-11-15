@@ -15,7 +15,7 @@ import newracedecode
 # from webserver import keep_alive
 import writelbtosheet
 
-client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'])
+client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'], case_insensitive=True)
 client.remove_command('help')
 
 
