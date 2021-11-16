@@ -372,6 +372,18 @@ async def loadnicks(ctx, start=2):
     await reply(ctx, 'Done loading nicknames')
 
 
+@client.command()
+async def ntwic(ctx):
+    await ctx.message.delete()
+    await ctx.send('<:ntwica:910284846910308465>')
+
+
+@client.command()
+async def ntwica(ctx):
+    await ctx.message.delete()
+    await ctx.send('<:ntwica:910284846910308465>')
+
+
 @client.event
 async def on_message(message):
     string = message.content
