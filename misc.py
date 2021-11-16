@@ -84,8 +84,13 @@ def ranks_embed(identifier, all_ranks):
     plot.axis([1, num_races, 1, 100])
     plot.grid(color='grey', alpha=0.5)
     plot.plot(x, y, 'k.')
-
-    z = np.polyfit(x, y, 1)
+    cmap = plot.get_cmap("gist_rainbow")
+    for i in range(1, 100):
+        z = np.polyfit(x, y, i)
+        p = np.poly1d(z)
+        color = cmap(float(i) / 100)
+        plot.plot(x, p(x), '-', color=color)
+    z = np.polyfit(x, y, 100)
     p = np.poly1d(z)
     plot.plot(x, p(x), 'r--')
     plot.savefig('output.png')

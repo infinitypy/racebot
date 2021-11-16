@@ -375,11 +375,8 @@ async def loadnicks(ctx, start=2):
 @client.event
 async def on_message(message):
     string = message.content
-    if string.startswith('congratulations'):
-        await message.reply('*corngratulations')
-        return
-    if string.startswith('congrats'):
-        await message.reply('*corngrats')
+    if string.strip().startswith('grats'):
+        await message.reply('*congrats')
         return
     await client.process_commands(message)
 
