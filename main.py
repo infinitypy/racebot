@@ -9,9 +9,9 @@ from discord.ext.commands import CommandNotFound
 import discorduserids
 import leaderboard
 import misc
+import newracedecode
 import profiles
 import sheets
-import newracedecode
 # from webserver import keep_alive
 import writelbtosheet
 
@@ -374,14 +374,20 @@ async def loadnicks(ctx, start=2):
 
 @client.command()
 async def ntwic(ctx):
-    await ctx.message.delete()
-    await ctx.send('<:ntwica:910284846910308465>')
+    try:
+        await ctx.message.delete()
+        await ctx.send('<:ntwica:910284846910308465>')
+    except discord.errors.Forbidden:
+        await reply(ctx, '<:ntwica:910284846910308465>')
 
 
 @client.command()
 async def ntwica(ctx):
-    await ctx.message.delete()
-    await ctx.send('<:ntwica:910284846910308465>')
+    try:
+        await ctx.message.delete()
+        await ctx.send('<:ntwica:910284846910308465>')
+    except discord.errors.Forbidden:
+        await reply(ctx, '<:ntwica:910284846910308465>')
 
 
 @client.event
