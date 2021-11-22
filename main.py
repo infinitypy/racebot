@@ -392,10 +392,13 @@ async def ntwica(ctx):
 
 @client.event
 async def on_message(message):
-    string = message.content
-    if string.strip().startswith('grats'):
-        await message.reply('*congrats')
-        return
+    if message.author.id == 386828593260658688:
+        await message.add_reaction(discord.utils.get(client.emojis, name='greengobbler'))
+    else:
+        string = message.content
+        if string.strip().startswith('grats'):
+            await message.reply('*congrats')
+            return
     await client.process_commands(message)
 
 
