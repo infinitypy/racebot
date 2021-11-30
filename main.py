@@ -19,42 +19,49 @@ import writelbtosheet
 client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'], case_insensitive=True)
 client.remove_command('help')
 
+command_help = {
+    'hello': ['name:opt', 'Says hello'],
+    'invite': ['none', 'Returns bot invite'],
+    'race': ['race_number [race_end]', 'returns [a range of] race name'],
+    'length': ['round_number', 'returns round length'],
+    'rtime': ['start_round end round send time', 'returns calculated time'],
+    'lb': ['race_number first:opt last:opt', 'returns the lb'],
+    'id': ['race_number rank', 'returns the userid'],
+    'nicks': ['userid:opt', 'returns all used nicknames'],
+    'rank': ['userid:opt', 'returns rank in the current race'],
+    'ranks': ['userid:opt', 'returns stats about rankings'],
+    'profile': ['userid:opt', 'returns stats'],
+    'nkinfo': ['race name', 'returns info for the race'],
+    'getid': ['none', 'returns your linked id'],
+    'setid': ['userid',
+              'saves a userid to your discord allowing you to leave the userid section for other commands blank'],
+    'unlink': ['none', 'unlinks your userid'],
+    'pasta': ['label:opt', 'pasta'],
+    'diagnosis': ['patient:opt', 'skill issue'],
+    'badgelb': ['none', 'returns a badge leaderboard'],
+    'newrace': ['none', 'returns the latest race name/id']
+}
+
 
 @client.event
 async def on_command_error(ctx, error):
+    import difflib
     if isinstance(error, CommandNotFound):
         error = str(error)
-        await reply(ctx, f'r!{error[error.find(chr(34)) + 1: error.rfind(chr(34))]}'
-                         f' does not exist, use r!help to see a list of valid commands', True)
+        error = error[error.find(chr(34)) + 1: error.rfind(chr(34))]
+        matches = difflib.get_close_matches(error, command_help.keys(), n=2)
+        if not matches:
+            await reply(ctx, f'r!{error}'
+                             f' does not exist, use r!help to see a list of valid commands', True)
+            return
+        matches_str = ' or '.join([f'r!{match}' for match in matches])
+        await reply(ctx, f'Did you mean {matches_str}?', True)
         return
     raise error
 
 
 @client.command(pass_context=True)
 async def help(ctx, command_name=None) -> None:
-    command_help = {
-        'hello': ['name:opt', 'Says hello'],
-        'invite': ['none', 'Returns bot invite'],
-        'race': ['race_number [race_end]', 'returns [a range of] race name'],
-        'length': ['round_number', 'returns round length'],
-        'rtime': ['start_round end round send time', 'returns calculated time'],
-        'lb': ['race_number first:opt last:opt', 'returns the lb'],
-        'id': ['race_number rank', 'returns the userid'],
-        'nicks': ['userid:opt', 'returns all used nicknames'],
-        'rank': ['userid:opt', 'returns rank in the current race'],
-        'ranks': ['userid:opt', 'returns stats about rankings'],
-        'profile': ['userid:opt', 'returns stats'],
-        'nkinfo': ['race name', 'returns info for the race'],
-        'getid': ['none', 'returns your linked id'],
-        'setid': ['userid',
-                  'saves a userid to your discord allowing you to leave the userid section for other commands blank'],
-        'unlink': ['none', 'unlinks your userid'],
-        'pasta': ['label:opt', 'pasta'],
-        'diagnosis': ['patient:opt', 'skill issue'],
-        'badgelb': ['none', 'returns a badge leaderboard'],
-        'newrace': ['none', 'returns the latest race name/id']
-    }
-
     embed = discord.Embed(
         colour=discord.Colour.orange()
     )
