@@ -1,5 +1,6 @@
 import datetime
 import os
+import random
 
 import discord
 from discord import HTTPException
@@ -77,6 +78,7 @@ async def help(ctx, command_name=None) -> None:
 
 ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
 BIG_ERROR = 'Too much text. Please select a smaller range.'
+NO_ID = 'No associated ID. Set using r!setid <BTD6 ID>'
 
 
 @client.event
@@ -131,7 +133,7 @@ async def race(ctx, num, num_end=None, race_id=None) -> None:
 async def length(ctx, num, abr=None):
     try:
         if 0 < int(num) <= 140:
-            await reply(ctx, f'Round {num} is {sheets.length(int(num), abr)}s')
+            await reply(ctx, f'Round {num} {"ABR " if abr else ""}is **{sheets.length(int(num), abr)}**s')
         else:
             await reply(ctx, ROF, True)
     except ValueError:
@@ -217,7 +219,7 @@ async def nicks(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await reply(ctx, ROF, True)
+            await reply(ctx, NO_ID, True)
             return
     user_id = sheets.known(identifier)
     output = leaderboard.get_nicks(user_id[0])
@@ -237,14 +239,14 @@ async def rank(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await reply(ctx, ROF, True)
+            await reply(ctx, NO_ID, True)
             return
     user_id = sheets.known(identifier)
     output = leaderboard.get_rank(len(sheets.all_ids), user_id[0])
     if not output:
         await reply(ctx, ROF, True)
         return
-    await reply(ctx, f'**{user_id[1]}**\'s current rank in race {sheets.all_ids}: {output}')
+    await reply(ctx, f'**{user_id[1]}**\'s current rank in race {len(sheets.all_ids)}: {output}')
 
 
 @client.command()
@@ -252,7 +254,7 @@ async def ranks(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await reply(ctx, ROF, True)
+            await reply(ctx, NO_ID, True)
             return
     user_id = sheets.known(identifier)
     all_ranks = leaderboard.get_all_rank(user_id[0])
@@ -273,7 +275,7 @@ async def profile(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await reply(ctx, ROF, True)
+            await reply(ctx, NO_ID, True)
             return
     user_id = sheets.known(identifier)
     output = profiles.get_profile(user_id[0])
@@ -300,7 +302,7 @@ async def nkinfo(ctx, name=None):
 async def getid(ctx):
     output = discorduserids.get_id(ctx.message.author.id)
     if not output:
-        await reply(ctx, ROF, True)
+        await reply(ctx, NO_ID, True)
         return
     await reply(ctx, 'User ID:')
     await ctx.send(output)
@@ -392,7 +394,7 @@ async def ntwica(ctx):
 
 @client.event
 async def on_message(message):
-    if message.author.id == 386828593260658688:
+    if message.author.id == 386828593260658688 and random.randint(1, 20) == 1:
         await message.add_reaction(discord.utils.get(client.emojis, name='greengobbler'))
     else:
         string = message.content
