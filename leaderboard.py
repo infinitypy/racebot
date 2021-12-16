@@ -17,7 +17,8 @@ def column(num, res=''):
 
 
 loaded_races = writelbtosheet.fulldata.row_values(1)
-full_data = writelbtosheet.fulldata.get_values('B2:' + column(writelbtosheet.fulldata.col_count) + '101', major_dimension='COLUMNS')
+full_data = writelbtosheet.fulldata.get_values('B2:' + column(writelbtosheet.fulldata.col_count) + '101',
+                                               major_dimension='COLUMNS')
 
 
 def get_api_lb(race_num):

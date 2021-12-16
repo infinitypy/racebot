@@ -1,6 +1,30 @@
 import json
+
+import discord
 import requests
-infourl = 'https://static-api.nkstatic.com/nkapi/skusettings/69c94ef2750c04fb6feed91af799a32a.json'
+
+import misc
+
+f = open('eventlink.txt', 'r')
+info_url = f.read()
+f.close()
+tower_categories = ['Primary', 'Military', 'Magic', 'Support']
+canon_to_nick = {'DartMonkey': 'Dart', 'BoomerangMonkey': 'Boomer', 'BombShooter': 'Bomb',
+                 'TackShooter': 'Tack', 'IceMonkey': 'Ice', 'GlueGunner': 'Glue',
+                 'SniperMonkey': 'Sniper', 'MonkeySub': 'Sub', 'MonkeyBuccaneer': 'Bucc', 'MonkeyAce': 'Ace',
+                 'HeliPilot': 'Heli', 'MortarMonkey': 'Mortar', 'DartlingGunner': 'Dartling',
+                 'WizardMonkey': 'Wizard', 'SuperMonkey': 'Super',
+                 'NinjaMonkey': 'Ninja', 'Alchemist': 'Alch', 'Druid': 'Druid',
+                 'BananaFarm': 'Farm', 'SpikeFactory': 'Spact', 'MonkeyVillage': 'Village', 'EngineerMonkey': 'Engi'}
+
+
+def set_link(link: str) -> None:
+    global info_url
+    info_url = link
+    f = open('eventlink.txt', 'w')
+    f.write(info_url)
+    f.close()
+
 
 def decode(data_bytes):
     string = ''
@@ -8,83 +32,61 @@ def decode(data_bytes):
         string += chr(byte - 21 - i % 6)
     return string
 
+
 def events():
-    data = requests.get(infourl, headers={'User-Agent': 'btd6-'})
+    data = requests.get(info_url, headers={'User-Agent': 'btd6-'})
     decoded = json.loads(decode(data.content))
     decoded = json.loads(decoded['data'])['settings']['events']
-    newest = {'start' : 0}
+    newest = {'start': 0}
     for i in range(len(decoded)):
         if decoded[i]['type'] == 'raceEvent':
             if decoded[i]['start'] > newest['start']:
                 newest = decoded[i]
-
     return newest['name'], newest['id']
 
-def raceinfo(name):
-    race_info = {}
 
-    data = requests.get('https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + name, headers={'User-Agent': 'btd6-'})
+def raceinfo(name):
+    data = requests.get(
+        'https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + name,
+        headers={'User-Agent': 'btd6-'})
     decoded = json.loads(decode(data.content))
     decoded = json.loads(decoded['data'])
-    decoded = json.loads(decoded['races/' + name])
+    try:
+        decoded = json.loads(decoded['races/' + name])
+    except KeyError:
+        return None
     decoded = decoded['challenge']
-
-    # towers
-    tower_list = ['DartMonkey', 'BoomerangMonkey', 'BombShooter', 'TackShooter', 'IceMonkey', 'GlueGunner',
-                  'SniperMonkey', 'MonkeySub', 'MonkeyBuccaneer', 'MonkeyAce', 'HeliPilot', 'MortarMonkey',
-                  'DartlingGunner', 'WizardMonkey', 'SuperMonkey', 'NinjaMonkey', 'Alchemist', 'Druid', 'BananaFarm',
-                  'SpikeFactory', 'MonkeyVillage', 'EngineerMonkey']
-
-    ntower_list = ['Dart', 'Boomer', 'Bomb', 'Tack', 'Ice', 'Glue',
-                  'Sniper', 'Sub', 'Boat', 'Ace', 'Heli', 'Mortar',
-                  'Dartling', 'Wizard', 'Super', 'Ninja', 'Alch', 'Druid', 'Farm',
-                  'Spac', 'Village', 'Engi']
-
     towers = decoded['towers']
-    formatted_towers = {}
+    formatted_towers = {k: None for k in canon_to_nick.keys()}
     hero = ''
-    for i in range(len(towers)):
-        if towers[i]['isHero'] and towers[i]['max'] == 1:
-            hero = towers[i]['tower'] + ', '
-        
-        if towers[i]['path1NumBlockedTiers'] == -1: towers[i]['path1NumBlockedTiers'] = 5
-        if towers[i]['path2NumBlockedTiers'] == -1: towers[i]['path2NumBlockedTiers'] = 5
-        if towers[i]['path3NumBlockedTiers'] == -1: towers[i]['path3NumBlockedTiers'] = 5
-
-        formatted_towers[towers[i]['tower']] = (
-            towers[i]['max'], towers[i]['path1NumBlockedTiers'], towers[i]['path2NumBlockedTiers'],
-            towers[i]['path3NumBlockedTiers'], towers[i]['isHero'])
-
-    enabled = hero
-
-    for i in range(len(tower_list)):
-        if formatted_towers[tower_list[i]][0] != 0:
-            enabled += (ntower_list[i])
-            if ''.join(map(str, [5 - x for x in formatted_towers[tower_list[i]][1:4]])) != '555':
-                enabled += '(' + ''.join(map(str, [5 - x for x in formatted_towers[tower_list[i]][1:4]])) + ')'
-            if formatted_towers[tower_list[i]][0] != -1:
-                enabled += '[' + str(formatted_towers[tower_list[i]][0]) + ']'
-
-            enabled += ', '
-    enabled = enabled[:-2]
-
-    # other info
-
+    for tower in towers:
+        if tower['isHero'] and tower['max'] == 1:
+            hero = tower['tower']
+            continue
+        if tower['max'] != 0:
+            for i in range(1, 4):
+                if tower[f'path{i}NumBlockedTiers'] == -1:
+                    tower[f'path{i}NumBlockedTiers'] = 5
+            blocked_tiers = [tower[f'path{i}NumBlockedTiers'] for i in range(1, 4)]
+            avail_tiers = ''
+            if blocked_tiers != [0, 0, 0]:
+                avail_tiers = f'({"".join([str(5 - x) for x in blocked_tiers])})'
+            count = ''
+            if tower['max'] != -1:
+                count = f'[{tower["max"]}]'
+            formatted_towers[tower['tower']] = (count, avail_tiers)
     # always display
-    race_info['name'] = decoded['name']
-    race_info['map'] = decoded['map']
-    race_info['difficulty'] = decoded['difficulty']
-    race_info['mode'] = decoded['mode']
-    race_info['rounds'] = [decoded['startRules']['round'], decoded['startRules']['endRound']]
-    race_info['startcash'] = decoded['startRules']['cash']
-    if race_info['startcash'] == -1 and race_info['mode'] == 'HalfCash': race_info['startcash'] = 325
-    if race_info['startcash'] == -1: race_info['startcash'] = 650
-
+    race_info = {'name': decoded['name'], 'map': misc.space_by_caps(decoded['map']),
+                 'difficulty': decoded['difficulty'], 'mode': misc.space_by_caps(decoded['mode']),
+                 'rounds': [decoded['startRules']['round'], decoded['startRules']['endRound']],
+                 'startcash': decoded['startRules']['cash'], 'maxtowers': decoded['maxTowers']}
+    if race_info['startcash'] == -1:
+        race_info['startcash'] = 325 if race_info['mode'] == 'HalfCash' else 650
     race_info['lives'] = decoded['startRules']['lives']
     if race_info['lives'] == -1:
-        if race_info['difficulty'] == 'Hard': race_info['lives'] = 100
-        elif race_info['difficulty'] == 'Medium': race_info['lives'] = 150
-        elif race_info['difficulty'] == 'Easy': race_info['lives'] = 200
+        race_info['lives'] = 100 if race_info['difficulty'] == 'Hard' else \
+            150 if race_info['difficulty'] == 'Medium' else \
+                200
 
     # display if not default
     race_info['mk'] = decoded['disableMK']
@@ -96,26 +98,58 @@ def raceinfo(name):
     race_info['moab speed'] = decoded['bloonModifiers']['moabSpeedMultiplier']
     race_info['ceram hp'] = decoded['bloonModifiers']['healthMultipliers']['bloons']
     race_info['moab hp'] = decoded['bloonModifiers']['healthMultipliers']['moabs']
+    race_info['regrow rate'] = decoded['bloonModifiers']['regrowRateMultiplier']
+    race_info['ability rate'] =\
+        decoded['abilityCooldownReductionMultiplier'] if 'abilityCooldownReductionMultiplier' in decoded else 1
 
-    # make into a cute string
-    corngrats = f'Full info for {race_info["name"]}'
-    corngrats += '\n' + ', '.join((race_info['map'], race_info['difficulty'], race_info['mode']))
+    if race_info['map'] == 'Tutorial':
+        race_info['map'] = 'Monkey Meadow'
+    if race_info['mode'] == 'Clicks':
+        race_info['mode'] = 'CHIMPS'
 
-    if race_info['mk']:
-        corngrats += '\nno MK'
-    if race_info['camo']:
-        corngrats += '\nall camo'
-    if race_info['regrow']:
-        corngrats += '\nall regrow'
-    if race_info['selling']:
-        corngrats += '\nno selling'
+    game_modifiers = f'{"No MK " if race_info["mk"] else ""}{"All camo " if race_info["camo"] else ""}' \
+                     f'{"All regrow " if race_info["regrow"] else ""}{"No selling " if race_info["selling"] else ""}'
+    bloon_modifiers = []
+    if race_info['bloon speed'] != 1.0:
+        bloon_modifiers.append(f'{race_info["bloon speed"] * 100:.0f}% bloon speed')
+    if race_info['ceram hp'] != 1.0:
+        bloon_modifiers.append(f'{race_info["ceram hp"] * 100:.0f}% ceramic health')
+    if race_info['moab speed'] != 1.0:
+        bloon_modifiers.append(f'{race_info["moab speed"] * 100:.0f}% blimp speed')
+    if race_info['moab hp'] != 1.0:
+        bloon_modifiers.append(f'{race_info["moab hp"] * 100:.0f}% blimp health')
+    if race_info['regrow rate'] != 1.0:
+        bloon_modifiers.append(f'{race_info["regrow rate"] * 100:.0f}% regrow rate')
+    if race_info['ability rate'] != 1.0:
+        bloon_modifiers.append(f'{race_info["ability rate"] * 100:.0f}% ability cooldowns')
+    description = ', '.join((race_info['map'], race_info['difficulty'], race_info['mode']))
+    description += f'\n{game_modifiers}' if game_modifiers else ''
+    description += f'\n{", ".join(bloon_modifiers)}' if bloon_modifiers else ''
+    description += f'\n{misc.space_by_caps(hero)}'
+    max_towers = race_info['maxtowers']
+    description += f'\n{f"{max_towers} towers only" if max_towers != -1 else ""}'
 
-    corngrats += f'\nRounds: {str(race_info["rounds"][0])}-{str(race_info["rounds"][1])}'
-    corngrats += f'\nCash: {str(race_info["startcash"])}\nLives: {str(race_info["lives"])}'
-    corngrats += f'\nTowers: {enabled}'
+    embed = discord.Embed(
+        title=f'Full info for {race_info["name"]}',
+        description=description,
+        colour=discord.Colour.orange()
+    )
 
-    if (race_info['bloon speed'], race_info['ceram hp'], race_info['moab speed'], race_info['moab hp']) != (1.0, 1.0, 1.0, 1.0):
-        corngrats += f'\n\nModifiers:\nBloon Speed: {race_info["bloon speed"]}\nCeram hp: {race_info["ceram hp"]}\n' \
-                    f'Moab Speed: {race_info["moab speed"]}\nMoab hp: {race_info["moab hp"]}'
-
-    return corngrats
+    embed.add_field(name='Rounds', value='{}-{}'.format(*race_info['rounds']))
+    embed.add_field(name='Start cash', value=race_info['startcash'])
+    embed.add_field(name='Lives', value=race_info['lives'])
+    categorized = [[], [], [], []]
+    for index, (tower, stats) in enumerate(formatted_towers.items()):
+        if stats:
+            output = f'{canon_to_nick[tower]}{stats[0]}{stats[1]}'
+            if index < 6:
+                categorized[0].append(output)
+            elif index < 13:
+                categorized[1].append(output)
+            elif index < 18:
+                categorized[2].append(output)
+            else:
+                categorized[3].append(output)
+    for index, category in enumerate(categorized):
+        embed.add_field(name=tower_categories[index], value=', '.join(category), inline=False)
+    return embed

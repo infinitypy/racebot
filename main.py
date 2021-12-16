@@ -295,6 +295,8 @@ async def profile(ctx, identifier=None):
 @client.command()
 async def newrace(ctx):
     race_info = newracedecode.events()
+    if race_info[1] not in sheets.all_ids:
+        sheets.write_race(*race_info)
     await reply(ctx, f'**Name:** {race_info[0]}\n**ID:** {race_info[1]}')
 
 
@@ -302,7 +304,11 @@ async def newrace(ctx):
 async def nkinfo(ctx, name=None):
     if not name:
         name = newracedecode.events()[0]
-    await reply(ctx, newracedecode.raceinfo(name))
+    output = newracedecode.raceinfo(name)
+    if not output:
+        await reply(ctx, ROF)
+        return
+    await ctx.send(embed=output, mention_author=False)
 
 
 @client.command()
@@ -334,21 +340,6 @@ async def unlink(ctx):
     await reply(ctx, f'**{ctx.message.author.id}** successfully unlinked' if removed else 'Nothing linked')
 
 
-@client.command()
-async def pasta(ctx, *args):
-    await reply(ctx, misc.random_pasta(misc.strip_to_words(args) if args else None))
-
-
-@client.command()
-async def diagnosis(ctx, *args):
-    name = ' '.join(args) if args else None
-    if not misc.validate_str(name):
-        await reply(ctx, ROF, True)
-        return
-    header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
-    await reply(ctx, header + misc.random_issue(args))
-
-
 blb = 'None, run ``r!badgelb update`` to populate'
 
 
@@ -364,21 +355,26 @@ async def badgelb(ctx, update=None):
 
 
 @client.command()
-async def loadusers(ctx):
-    if ctx.message.author.id != 279126808455151628:
+async def setlink(ctx, link):
+    if ctx.message.author.id != 746205219238707210:
         await reply(ctx, ROF, True)
         return
-    writelbtosheet.load_all_users()
-    await reply(ctx, 'Done loading users')
+    newracedecode.set_link(link)
 
 
 @client.command()
-async def loadnicks(ctx, start=2):
-    if ctx.message.author.id != 279126808455151628:
+async def pasta(ctx, *args):
+    await reply(ctx, misc.random_pasta(misc.strip_to_words(args) if args else None))
+
+
+@client.command()
+async def diagnosis(ctx, *args):
+    name = ' '.join(args) if args else None
+    if not misc.validate_str(name):
         await reply(ctx, ROF, True)
         return
-    writelbtosheet.load_nicks(start)
-    await reply(ctx, 'Done loading nicknames')
+    header = name + '\'s diagnosis: ' if name else 'Diagnosis: '
+    await reply(ctx, header + misc.random_issue(args))
 
 
 @client.command()
