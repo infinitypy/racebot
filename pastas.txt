@@ -4,7 +4,7 @@ gwen strikes me as the type to act tough on the field but enjoy cuddles and rain
 ~espanol,español,dominacionfemenina,dominaciónfemenina
 si puedo aportar, ezili parece retraida mas que un fondo, si logras que se abra, ella te destruira
 gwen me parece que es el tipo que intenta actuar duro pero en el fondo adora los cariños y arcoiris y esas cosas
-~exephur,psa,snipe,sniping,record,recording,transparency,btfo,offline
+~exe,exephur,psa,snipe,sniping,record,recording,transparency,btfo,offline
 imagine how easy it would be to btfo everyone calling you out with a video showing that you beat people legit, such an easy way to be like "hey, you sniped me, even when I just had a superior legit strat?, damn bro...", and yet somehow absolutely no one fucking does this
 
 psa tip for anyone in the community who is a top 50 grinder and got or almost got top 3, just record your shit, it's that easy. instant community respect and transparency, at 0 expense of your own
@@ -45,7 +45,7 @@ that is a 3rd party application that can slow your game 5 times more then you se
 
 they can not beat me so they coop and cheat hahaha.. noobs gonna noob
 i feel honored they go true such trouble just to beat me
-~tsp,support,@Chocbox#2345
+~tsp,support
 If I may disturb you good sir I couldn't help but notice you are having trouble finding the time the race rewards are distributed. While this prestigious discord does have access to this information, unfortunately as you did not defeat <@!217726724752932864> in battle we cannot freely impart this knowledge to you. As a result you have been confined to this humble, yet cozy corner of the server to spend the rest of your days.
 If you have any qualms with the result of this decision you may take it up with our wonderful staff at support@ninjakiwi.com.
 We have an incredible track record of always solving each and every issue that is brought to us and we hope to hear from you shortly.
@@ -135,3 +135,21 @@ now that you have reached Libby, call Randy and ask him where exactly the log ca
 Exephur should come out of his cabin and you can storm it
 ~fan,fanart,author,authors,garbage,hotgarbage
 one thing is a fan-art that takes days to create and another thing is a challenge everyone can create with 3 minutes. also, its not like they are saying they made them. u can just search on the browser and find the author. also they dont get any benefit on crediting or not crediting authors so this post is hot garbage
+~battles2,btdbattles2,btdb2,skin,skins,heroskin,heroskins,altskin,altskins
+Cyber Quincy: while plasma arrows are better than explosive, giving up attack speed in favor of pierce leaves you too open to midgame moab pressure, which was a massive strength of the original quincy. Cyber isnt ever relevantly better than stock quincy but gives up a huge chunk of his midgame. overall worse
+
+Scientist Gwen: Scientist Gwen's higher pitched voice and more jumpy and excitable nature reveals a more genuine personality than the often superficial and self-centered attitude of stock gwen. if you got into bed with scientist gwen she would be more likely to release her genuine affections for you, leading to a healthy and adorable relationship that stock gwen is simply too old and detached for. overall depends on your tastes.
+
+Ocean Obyn: While a lot of obyn's attacks work weirdly, regenerative brambles are overall fairly useless for the price in pierce they cost and ocean obyn's totem is unquestionably worse than stock's. There isnt really a strat that needs ocean obyn's magic buff currently, and as such ocean obyn is worse than stock because so much of obyn's power is concentrated in his totem. overall worse.
+
+Biker Bones: Bones' shell is unquestionably worse; giving up the large uptime stun of jones' shell in exchange for slightly more damage on an extremely long cooldown makes bones shell far less useful in both early and midgame. Bones gets a double damage boost swapped in for jones' ability refresh. this helps give him an extra burst of dps midgame to make up for his inferior shell. In the 20s it's actually preferable to have jones lv10 instead of bones' because assassins will be your main ddt popping and jones effectively doubles the amount of ddts you can handle while bones does not help unless your bombs can pop ddts themselves. past round 30, though, bones' bomb boost is better because assassins will no longer target DDTs and his ability becomes a direct upgrade to jones'. overall a sidegrade.
+~ethan,ethanreid,recursive,recursivecluster,crosspath,sgm,shyguymask,hbomb
+Ethan Reid's video on Recursive Cluster crosspath comparison is completely horrible. How do you completely ignore the two already existing videos on the subject (Me and Hbomb's), make unfair one-sided sandbox tests that don't apply in a real game (30 hyperclumped pre-freeplay ZOMGs? Really!?) then call my take a "misconception"? Not to mention blatantly lying through his teeth about Hbomb's math. Hell, he didn't even talk about single target MOAB DPS which is the biggest and most important difference. What motivates someone to make such a badly researched video when he usually makes good informative content? Why would you want to mislead your audience like this?
+~glue,gluegunner,moabglue
+The Glue Gunner does damage over time but you need to upgrade it twice on the top path for that. That's really stupid because it's so expensive for such little damage but it gets even worse. You can only use 2 of the 3 paths and you need the top path for a little bit damage. While the Bloon Solver (5th upgrade top path) is one of the best towers because it deals massive damage with a lot of pierce, it looks really bad for other upgrades:
+
+The Moab Glue should have bonus damage to Moab Class Bloons (like the Moab, Bfb, Zomg, Ddt or Bad) but you of course need the 203 crosspathing for any damage. That's really expensive and I even think NK messed up programming because I never noticed extra damage compared to 200 alone. And 023 Moab Glue is a fucking joke, why would i want to hit multiple Moabs if it does 0 damage???? Seriously, wtf?!?!
+
+I can rant a lot more about the awful balancing of the Glue Gunner but adressing the Moab Glue was my biggest concern because sadly a lot of newer and uninformed players get misled by "pro players" calling the Moab Glue really good. But don't let them fool you, it does NOT do extra damage to Moabs.
+
+So my suggestion is: Not buff, but bugfix the Moab Glue to give it the (from the upgrade name) promised bonus damage to Moabs and later rework the whole tower. Having such awful balancing really hurts the game.

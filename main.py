@@ -402,7 +402,7 @@ async def on_message(message):
     else:
         string = message.content
         if string.strip().startswith('grats'):
-            await message.reply('*congrats')
+            await message.reply('*corngrats')
             return
     await client.process_commands(message)
 
