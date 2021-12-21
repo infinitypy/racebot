@@ -263,16 +263,18 @@ async def ranks(ctx, identifier=None):
         if not identifier:
             await reply(ctx, NO_ID, True)
             return
-    user_id = sheets.known(identifier)
-    all_ranks = leaderboard.get_all_rank(user_id[0])
-    if not all_ranks:
+    file, embed = misc.ranks_embed(True, identifier)
+    await ctx.reply(file=file, embed=embed, mention_author=False)
+    os.remove('output.png')
+
+
+@client.command()
+async def compare(ctx, *args):
+    if len(args) == 0:
         await reply(ctx, ROF, True)
         return
-    if user_id[0] == '5b2845abfcd0f8d9745e6cfe':
-        all_ranks = [(entry[0], (entry[1] - 1) % 20 + 81) for entry in all_ranks]
-    elif user_id[0] == '5b7f82e318c7cbe32fa01e4e':
-        all_ranks = [(entry[0], (entry[1] - 1) % 20 + 1) for entry in all_ranks]
-    file, embed = misc.ranks_embed(user_id[1], all_ranks)
+    identifiers = [discorduserids.get_id(ctx.message.author.id) if x == 'self' else x for x in args]
+    file, embed = misc.ranks_embed(False, *identifiers)
     await ctx.reply(file=file, embed=embed, mention_author=False)
     os.remove('output.png')
 
