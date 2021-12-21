@@ -13,8 +13,8 @@ import misc
 import newracedecode
 import profiles
 import sheets
+
 # from webserver import keep_alive
-import writelbtosheet
 
 client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'], case_insensitive=True)
 client.remove_command('help')
@@ -91,6 +91,8 @@ NO_ID = 'No associated ID. Set using r!setid <BTD6 ID>'
 @client.event
 async def on_ready() -> None:
     print(f'{client.user} is online')
+    with open('veterof.png', 'rb') as image:
+        await client.user.edit(avatar=image.read())
 
 
 @client.command()
