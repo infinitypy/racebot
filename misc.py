@@ -20,20 +20,28 @@ issue_index = 0
 f = open('pastas.txt', 'r', encoding='utf8')
 lines = f.readlines()
 f.close()
-pastas = {}
-labels = lines[0][1:].strip()
+label_to_pasta = {}
+pastas = []
+labels = lines[0][1:].strip().split(',')
 running = ''
+pasta_count = 0
 for line in lines[1:]:
     if line[0] == '~':
-        pastas[labels] = running.strip()
+        for label in labels:
+            if label not in label_to_pasta:
+                label_to_pasta[label] = set()
+            label_to_pasta[label].add(pasta_count)
+        pastas.append(running)
         running = ''
-        labels = line[1:].strip()
+        pasta_count += 1
+        labels = line[1:].strip().split(',')
     else:
         running += line
-pastas[labels] = running.strip()
-ids_list = list(pastas.keys())
-random.shuffle(ids_list)
-pasta_index = 0
+for label in labels:
+    if label not in pastas:
+        label_to_pasta[label] = set()
+    label_to_pasta[label].add(pasta_count)
+print(label_to_pasta)
 
 
 def strip_to_words(args):
@@ -50,16 +58,9 @@ def string_hash(args):
 
 def random_pasta(identifier=None):
     if identifier:
-        for ids in ids_list:
-            if identifier in ids.split(','):
-                return pastas[ids]
-    global pasta_index
-    if pasta_index >= len(ids_list):
-        random.shuffle(ids_list)
-        pasta_index = 0
-    pasta = pastas[ids_list[pasta_index]]
-    pasta_index += 1
-    return pasta
+        if identifier in label_to_pasta:
+            return pastas[random.choice(tuple(label_to_pasta[identifier]))]
+    return random.choice(pastas)
 
 
 def random_issue(args):

@@ -91,8 +91,6 @@ NO_ID = 'No associated ID. Set using r!setid <BTD6 ID>'
 @client.event
 async def on_ready() -> None:
     print(f'{client.user} is online')
-    with open('veterof.png', 'rb') as image:
-        await client.user.edit(avatar=image.read())
 
 
 @client.command()
