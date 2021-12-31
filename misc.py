@@ -38,10 +38,10 @@ for line in lines[1:]:
     else:
         running += line
 for label in labels:
-    if label not in pastas:
+    if label not in label_to_pasta:
         label_to_pasta[label] = set()
     label_to_pasta[label].add(pasta_count)
-print(label_to_pasta)
+pastas.append(running)
 
 
 def strip_to_words(args):
