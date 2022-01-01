@@ -19,28 +19,10 @@ import sheets
 client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'], case_insensitive=True)
 client.remove_command('help')
 
-command_help = {
-    'hello': ['name:opt', 'Says hello'],
-    'invite': ['none', 'Returns bot invite'],
-    'race': ['race_number [race_end]', 'returns [a range of] race name'],
-    'length': ['round_number', 'returns round length'],
-    'rtime': ['start_round end round send time', 'returns calculated time'],
-    'lb': ['race_number first:opt last:opt', 'returns the lb'],
-    'id': ['race_number rank', 'returns the userid'],
-    'nicks': ['userid:opt', 'returns all used nicknames'],
-    'rank': ['userid:opt', 'returns rank in the current race'],
-    'ranks': ['userid:opt', 'returns stats about rankings'],
-    'profile': ['userid:opt', 'returns stats'],
-    'nkinfo': ['race name', 'returns info for the race'],
-    'getid': ['none', 'returns your linked id'],
-    'setid': ['userid',
-              'saves a userid to your discord allowing you to leave the userid section for other commands blank'],
-    'unlink': ['none', 'unlinks your userid'],
-    'pasta': ['label:opt', 'pasta'],
-    'diagnosis': ['patient:opt', 'skill issue'],
-    'badgelb': ['none', 'returns a badge leaderboard'],
-    'newrace': ['none', 'returns the latest race name/id']
-}
+command_help = {}
+f = open('commandhelp.txt', 'r', encoding='utf8')
+while command := f.readline():
+    command_help[command.strip()] = [f.readline().strip(), f.readline().strip()]
 
 
 @client.event
@@ -51,8 +33,7 @@ async def on_command_error(ctx, error):
         error = error[error.find(chr(34)) + 1: error.rfind(chr(34))]
         matches = difflib.get_close_matches(error, command_help.keys(), n=2)
         if not matches:
-            await reply(ctx, f'r!{error}'
-                             f' does not exist, use r!help to see a list of valid commands', True)
+            await reply(ctx, f'r!{error} does not exist, use r!help to see a list of valid commands', True)
             return
         matches_str = ' or '.join([f'r!{match}' for match in matches])
         await reply(ctx, f'Did you mean {matches_str}?', True)
@@ -61,7 +42,7 @@ async def on_command_error(ctx, error):
 
 
 @client.command(pass_context=True)
-async def help(ctx, command_name=None) -> None:
+async def help(ctx, command_name=None):
     embed = discord.Embed(
         colour=discord.Colour.orange()
     )
@@ -69,7 +50,7 @@ async def help(ctx, command_name=None) -> None:
     if not command_name:
         embed.set_author(name='Help')
         embed.add_field(name='Command list', value=', '.join(list(command_help.keys())), inline=False)
-        embed.add_field(name='Help usage', value='help command_name, returns what the command does and how to use it',
+        embed.add_field(name='Help usage', value='r!help command_name, returns what the command does and how to use it',
                         inline=False)
     elif command_name in command_help:
         embed.set_author(name=f'Help for "{command_name}" command')

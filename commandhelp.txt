@@ -1,0 +1,63 @@
+hello
+	[name]
+	Says hello (or not...?)
+invite
+    none
+    Returns bot invite to server.
+race
+    race_number [last_race_number]
+    Returns [a list of] race name.
+length
+    round_number [abr=any]
+    Returns [abr] round length.
+rtime
+    start_round end_round [start_time=0] [abr=any]
+    Returns finish time assuming perfect cleanup. If not sending from beginning of race, start_round is one round before current displayed round.
+lb
+    [race_number=curr] [first_rank=1] [last_rank=50]
+    Returns race leaderboard. If given first_rank and last_rank only, uses current race. If given race_number only, shows top 50.
+id
+    [race_number] [user_rank=self]
+    Returns in-game ID of player. If given no argument, uses Discord ID to in-game ID mapping (see r!setid). If given user_rank only, searches current race leaderboard for given name.
+nicks
+    [identifier=self]
+    Returns all used nicknames within top 100 at the end of races. If given no argument, uses Discord ID to in-game ID mapping (see r!setid).
+rank
+    [identifier=self]
+    Returns rank in current race. If given no argument, uses Discord ID to in-game ID mapping (see r!setid).
+ranks
+    [identifier=self]
+    Returns stats and graphical representation of historic rankings within top 100. If given no argument, uses Discord ID to in-game ID mapping (see r!setid). Also adjusts ranks obtained via hacking to non-hacked ranks.
+compare
+    [identifiers=self]...
+    Returns graphical comparison of one or more player rankings within top 100. Pass in "self" to include yourself via Discord ID to in-game ID mapping (see r!setid). If given no argument, compares with only self.
+profile
+    [identifier=self]
+    Returns race medals of given player. If given no argument, uses Discord ID to in-game ID mapping (see r!setid).
+newrace
+    none
+    Returns name and race ID of most recent race.
+nkinfo
+    [name=curr]
+    Returns full information on given race. If given no argument, uses the most recent race.
+setid
+    ingame_ID
+    Links Discord ID to provided in-game ID (see r!id).
+getid
+    none
+    Returns in-game ID linked to Discord ID.
+unlink
+    none
+    Unlinks Discord ID to in-game ID.
+badgelb
+    [update]
+    Returns race medal leaderboard. If given update, takes some time to update leaderboard first.
+pasta
+    [label]
+    Returns pasta matching label, or random pasta otherwise.
+diagnosis
+    [name=self]
+    Diagnoses given player.
+ntwic/ntwica
+    none
+    Now that's what I call a friday stinger
