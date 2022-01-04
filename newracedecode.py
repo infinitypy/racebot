@@ -4,6 +4,7 @@ import discord
 import requests
 
 import misc
+import sheets
 
 f = open('eventlink.txt', 'r')
 info_url = f.read()
@@ -45,7 +46,7 @@ def events():
     return newest['name'], newest['id']
 
 
-def raceinfo(name):
+def raceinfo(name, update):
     data = requests.get(
         'https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + name,
         headers={'User-Agent': 'btd6-'})
@@ -99,13 +100,16 @@ def raceinfo(name):
     race_info['ceram hp'] = decoded['bloonModifiers']['healthMultipliers']['bloons']
     race_info['moab hp'] = decoded['bloonModifiers']['healthMultipliers']['moabs']
     race_info['regrow rate'] = decoded['bloonModifiers']['regrowRateMultiplier']
-    race_info['ability rate'] =\
+    race_info['ability rate'] = \
         decoded['abilityCooldownReductionMultiplier'] if 'abilityCooldownReductionMultiplier' in decoded else 1
 
     if race_info['map'] == 'Tutorial':
         race_info['map'] = 'Monkey Meadow'
     if race_info['mode'] == 'Clicks':
         race_info['mode'] = 'CHIMPS'
+
+    if update:
+        sheets.write_race(race_info)
 
     game_modifiers = f'{"No MK " if race_info["mk"] else ""}{"All camo " if race_info["camo"] else ""}' \
                      f'{"All regrow " if race_info["regrow"] else ""}{"No selling " if race_info["selling"] else ""}'

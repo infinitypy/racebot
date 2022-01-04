@@ -12,6 +12,7 @@ race_info = sheet.worksheet('Race Info')
 round_info = sheet.worksheet('rounds')
 players = sheet.worksheet('Player Info')
 
+all_names = race_info.col_values(2)[1:]
 all_ids = race_info.col_values(3)[1:]
 
 known_players = players.col_values(1)
@@ -50,7 +51,7 @@ def from_discord_id(disc_id: int) -> (str, str):
     return known_ids[index], known_players[index]
 
 
-def race(num: int, display_race_id: str = None) -> str:
+def race(num, display_race_id=None):
     try:
         num = int(num)
     except TypeError:
@@ -113,5 +114,12 @@ def info(num):
     return output
 
 
-def write_race(name, id):
-    race_info.add_rows(1)
+def write_race(race_stats):
+    row_num = [name.lower() for name in all_names].index(race_stats['name'].lower()) + 2
+    cell_info = []
+    cell_info.append([race_stats['map']])
+    cell_info.append([race_stats['difficulty']])
+    cell_info.append([race_stats['mode']])
+    cell_info.append([])
+    race_info.update(f'D{row_num}:F{row_num}', cell_info, major_dimension='COLUMNS')
+    print('bef')

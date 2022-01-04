@@ -278,16 +278,16 @@ async def profile(ctx, identifier=None):
 @client.command()
 async def newrace(ctx):
     race_info = newracedecode.events()
-    if race_info[1] not in sheets.all_ids:
-        sheets.write_race(*race_info)
     await reply(ctx, f'**Name:** {race_info[0]}\n**ID:** {race_info[1]}')
 
 
 @client.command()
-async def nkinfo(ctx, name=None):
+async def nkinfo(ctx, name=None, update=None):
     if not name:
         name = newracedecode.events()[0]
-    output = newracedecode.raceinfo(name)
+    if ctx.message.author.id != 279126808455151628:
+        update = None
+    output = newracedecode.raceinfo(name, update)
     if not output:
         await reply(ctx, ROF)
         return
