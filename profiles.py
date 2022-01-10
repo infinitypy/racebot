@@ -46,7 +46,8 @@ def generate_badge_lb():
 
     sortedbytotal = sorted(blb.items(), key=lambda x: x[1][-1], reverse=True)
 
-    output_str = ''
+    output_str = '\n``{:<18}``<:BlackDiamondMedal:896548315548762133>``{:<3}``<:RedDiamondMedal:896548361321201764>``{:<3}``<:DiamondMedal:896548376164843540>``{:<3}{:<3}``'.format(
+        'RandyZ524', 159, 0, 0, 159)
     for i in range(10):
         output_str += '\n``{:<18}``<:BlackDiamondMedal:896548315548762133>``{:<3}``<:RedDiamondMedal:896548361321201764>``{:<3}``<:DiamondMedal:896548376164843540>``{:<3}{:<3}``'.format(
             sortedbytotal[i][0], *sortedbytotal[i][1])

@@ -378,18 +378,6 @@ async def ntwica(ctx):
         await reply(ctx, '<:ntwica:910284846910308465>')
 
 
-@client.event
-async def on_message(message):
-    if message.author.id == 386828593260658688 and random.randint(1, 20) == 1:
-        await message.add_reaction(discord.utils.get(client.emojis, name='greengobbler'))
-    else:
-        string = message.content
-        if string.strip().startswith('grats'):
-            await message.reply('*corngrats')
-            return
-    await client.process_commands(message)
-
-
 async def reply(ctx, message, mention=False):
     await ctx.reply(message, mention_author=mention)
 
