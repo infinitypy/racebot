@@ -394,7 +394,7 @@ async def rofify(ctx, img_link=None):
             img_link = ctx.message.attachments[0].url
         except IndexError:
             img_link = ctx.author.avatar_url
-    elif img_link[0] == '<':
+    elif img_link[:2] == '<:':
         img_link = f'https://cdn.discordapp.com/emojis/{(img_link.split(":"))[-1][:-1]}.webp?size=44&quality=lossless'
     else:
         try:
