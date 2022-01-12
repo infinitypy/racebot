@@ -407,18 +407,24 @@ async def rofify(ctx, emoji: discord.Emoji = None):
 
 @client.command()
 async def rofifi(ctx, img_link=None):
+    import re
     if not img_link:
-        img_link = ctx.message.attachments[0].url
+        try:
+            img_link = ctx.message.attachments[0].url
+        except IndexError:
+            img_link = ctx.author.avatar_url
+    else:
+        try:
+            user_id = int(re.sub('[^0-9]', '', img_link))
+            user = client.get_user(user_id)
+            if not user:
+                user = await client.fetch_user(user_id)
+            img_link = user.avatar_url
+        except HTTPException:
+            pass
     misc.rofify(img_link)
     await ctx.reply(file=discord.File('temp.png'), mention_author=False)
     os.remove('temp.png')
-
-
-@client.command()
-async def rofifu(ctx, user: discord.Member = None):
-    if not user:
-        user = ctx.author
-    await rofifi(ctx, user.avatar_url)
 
 
 async def reply(ctx, message, mention=False):
