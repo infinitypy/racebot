@@ -385,25 +385,17 @@ async def ntwic(ctx):
     except discord.errors.Forbidden:
         await reply(ctx, '<:ntwica:910284846910308465>')
 
-
 @client.command()
-async def rofify(ctx, emoji: discord.Emoji = None):
-    if not emoji:
-        await rofifi(ctx, ctx.message.attachments[0].url)
-        return
-    misc.rofify(emoji.url)
-    await ctx.reply(file=discord.File('temp.png'), mention_author=False)
-    os.remove('temp.png')
-
-
-@client.command()
-async def rofifi(ctx, img_link=None):
+async def rofify(ctx, img_link=None):
     import re
+
     if not img_link:
         try:
             img_link = ctx.message.attachments[0].url
         except IndexError:
             img_link = ctx.author.avatar_url
+    elif img_link[0] == '<':
+        img_link = f'https://cdn.discordapp.com/emojis/{(img_link.split(":"))[-1][:-1]}.webp?size=44&quality=lossless'
     else:
         try:
             user_id = int(re.sub('[^0-9]', '', img_link))
@@ -428,5 +420,5 @@ def get_error(command_name, error_num):
 
 # keep_alive()
 # my_secret = os.environ['TOKEN']
-my_secret = 'ODkzMjkxMjI1NTY4OTE5NTYy.YVZUSA.m07cxGGHWMUYImoNJA6TMdU2NDM'
+my_secret = 'ODkzOTY2NjkwNzY4MDA3MTc4.YVjJXA.Az511XCUNfFgEDdciex3s3pHzVw'
 client.run(my_secret)
