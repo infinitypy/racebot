@@ -69,4 +69,4 @@ pasta
 diagnosis
     INVALID
 
-ntwic/ntwica
+ntwic

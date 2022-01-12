@@ -61,6 +61,6 @@ pasta
 diagnosis
     [name=self]
     Diagnoses given player.
-ntwic/ntwica
+ntwic
     none
     Now that's what I call a friday stinger

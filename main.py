@@ -387,15 +387,6 @@ async def ntwic(ctx):
 
 
 @client.command()
-async def ntwica(ctx):
-    try:
-        await ctx.message.delete()
-        await ctx.send('<:ntwica:910284846910308465>')
-    except discord.errors.Forbidden:
-        await reply(ctx, '<:ntwica:910284846910308465>')
-
-
-@client.command()
 async def rofify(ctx, emoji: discord.Emoji = None):
     if not emoji:
         await rofifi(ctx, ctx.message.attachments[0].url)
