@@ -1,0 +1,72 @@
+ILLEGAL: Illegal input, nice try.
+MISSING: Missing required input. Run r!help <command_name> for more information.
+BAD_RACE_NUM: Input must be a valid race number.
+INVALID: Bad input. Run r!help <command_name> for more information.
+TOO_BIG: Too much text. Please select a smaller range.
+NO_ID: No associated ID. Set using r!setid <BTD6 ID>
+
+hello
+    ILLEGAL
+
+invite
+
+race
+    INVALID
+    TOO_BIG
+
+length
+    INVALID
+
+rtime
+    INVALID
+
+info
+    BAD_RACE_NUM
+
+lb
+    BAD_RACE_NUM
+
+id
+    Player not found with given inputs. Run r!help <command_name> for more information.
+
+nicks
+    NO_ID
+    No nicknames found.
+
+rank
+    NO_ID
+    Player not found on current leaderboard.
+
+ranks
+    NO_ID
+
+compare
+    MISSING
+
+profile
+    NO_ID
+    No profile found for given player.
+
+newrace
+
+nkinfo
+
+setid
+    MISSING
+    In-game ID not found on race leaderboards.
+
+getid
+    NO_ID
+
+unlink
+    NO_ID
+
+badgelb
+    No leaderboard saved. Run ``r!badgelb update`` to save.
+
+pasta
+
+diagnosis
+    INVALID
+
+ntwic/ntwica

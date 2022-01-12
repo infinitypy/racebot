@@ -130,11 +130,34 @@ def ranks_embed(stats, *identifiers):
     return file, embed
 
 
-def validate_str(hello_target: str) -> bool:
+def validate_str(hello_target):
     r = re.compile(r'.*@[^!\d].*')
     return not r.match(hello_target)
 
 
-def space_by_caps(name: str) -> str:
+def space_by_caps(name):
     import re
     return re.sub(r'([A-Z])', r' \1', name).strip()
+
+
+def rofify(img_url):
+    import requests
+    from PIL import Image
+    r = requests.get(img_url)
+    with open('temp.png', 'wb') as out_img:
+        out_img.write(r.content)
+    to_rof = Image.open('temp.png')
+    to_rof_w, to_rof_h = to_rof.size
+    if to_rof_w > to_rof_h:
+        ratio = 144 / to_rof_w
+        new_w = max(1, int(ratio * to_rof_h))
+        to_rof = to_rof.resize((144, new_w), Image.LANCZOS)
+        offset = (144, 216 - int(new_w / 2))
+    else:
+        ratio = 144 / to_rof_h
+        new_h = max(1, int(ratio * to_rof_w))
+        to_rof = to_rof.resize((new_h, 144), Image.LANCZOS)
+        offset = (216 - int(new_h / 2), 144)
+    rof = Image.open('ring.png')
+    rof.paste(to_rof, offset, to_rof.convert('RGBA'))
+    rof.save('temp.png')

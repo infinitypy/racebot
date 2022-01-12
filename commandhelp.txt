@@ -13,6 +13,9 @@ length
 rtime
     start_round end_round [start_time=0] [abr=any]
     Returns finish time assuming perfect cleanup. If not sending from beginning of race, start_round is one round before current displayed round.
+info
+    race_number
+    Returns brief information on the race.
 lb
     [race_number=curr] [first_rank=1] [last_rank=50]
     Returns race leaderboard. If given first_rank and last_rank only, uses current race. If given race_number only, shows top 50.

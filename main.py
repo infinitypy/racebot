@@ -1,11 +1,11 @@
 import datetime
 import os
-import random
 
 import discord
 from discord import HTTPException
 from discord.ext import commands
-from discord.ext.commands import CommandNotFound
+from discord.ext.commands import CommandNotFound, MissingRequiredArgument
+from gspread.exceptions import APIError
 
 import discorduserids
 import leaderboard
@@ -24,21 +24,36 @@ f = open('commandhelp.txt', 'r', encoding='utf8')
 while command := f.readline():
     command_help[command.strip()] = [f.readline().strip(), f.readline().strip()]
 
+error_messages = {'macros': {}}
+f = open('errors.txt', 'r', encoding='utf8')
+while macro := f.readline().strip():
+    macro = macro.split(':')
+    error_messages['macros'][macro[0].strip()] = macro[1].strip()
+while command := f.readline().strip():
+    error_messages[command] = []
+    while error := f.readline().strip():
+        if error in error_messages['macros']:
+            error = error_messages['macros'][error]
+        error_messages[command].append(error)
+
 
 @client.event
-async def on_command_error(ctx, error):
+async def on_command_error(ctx, err):
     import difflib
-    if isinstance(error, CommandNotFound):
-        error = str(error)
-        error = error[error.find(chr(34)) + 1: error.rfind(chr(34))]
-        matches = difflib.get_close_matches(error, command_help.keys(), n=2)
+    if isinstance(err, CommandNotFound):
+        err = str(err)
+        err = err[err.find(chr(34)) + 1: err.rfind(chr(34))]
+        matches = difflib.get_close_matches(err, command_help.keys(), n=2)
         if not matches:
-            await reply(ctx, f'r!{error} does not exist, use r!help to see a list of valid commands', True)
+            await reply(ctx, f'r!{err} does not exist, use r!help to see a list of valid commands', True)
             return
         matches_str = ' or '.join([f'r!{match}' for match in matches])
         await reply(ctx, f'Did you mean {matches_str}?', True)
         return
-    raise error
+    if isinstance(err, MissingRequiredArgument):
+        await reply(ctx, error_messages['macros']['MISSING'])
+        return
+    raise err
 
 
 @client.command(pass_context=True)
@@ -82,7 +97,7 @@ async def hello(ctx, *args) -> None:
     else:
         name: str = ' '.join(args)
         if not misc.validate_str(name):
-            await reply(ctx, ROF, True)
+            await reply(ctx, get_error('hello', 0), True)
             return
     hash_val = misc.string_hash(args)
     if hash_val % 5 == 0:
@@ -98,7 +113,7 @@ async def invite(ctx) -> None:
 
 
 @client.command()
-async def race(ctx, num, num_end=None, race_id=None) -> None:
+async def race(ctx, num, num_end=None, race_id=None):
     if not race_id:
         if not num_end:
             output = sheets.race(num, None)
@@ -109,12 +124,12 @@ async def race(ctx, num, num_end=None, race_id=None) -> None:
     else:
         output = sheets.race_range(num, num_end, race_id)
     if not output:
-        await reply(ctx, ROF, True)
+        await reply(ctx, get_error('race', 0), True)
         return
     try:
         await reply(ctx, output)
     except HTTPException:
-        await reply(ctx, BIG_ERROR)
+        await reply(ctx, get_error('race', 1), True)
 
 
 @client.command()
@@ -123,9 +138,9 @@ async def length(ctx, num, abr=None):
         if 0 < int(num) <= 140:
             await reply(ctx, f'Round {num} {"ABR " if abr else ""}is **{sheets.length(int(num), abr)}**s')
         else:
-            await reply(ctx, ROF, True)
+            await reply(ctx, get_error('length', 0), True)
     except ValueError:
-        await reply(ctx, ROF, True)
+        await reply(ctx, get_error('length', 0), True)
 
 
 @client.command()
@@ -139,9 +154,9 @@ async def rtime(ctx, start, end, stime=None, abr=None):
             final_time = str(datetime.timedelta(seconds=longest))[3:-4]
             await reply(ctx, f'You will get **{final_time}** if you perfect clean round {longest_round}')
         else:
-            await reply(ctx, ROF, True)
+            await reply(ctx, get_error('rtime', 0), True)
     except ValueError:
-        await reply(ctx, ROF, True)
+        await reply(ctx, get_error('rtime', 0), True)
 
 
 @client.command()
@@ -149,8 +164,8 @@ async def info(ctx, num):
     try:
         if int(num) > 0:
             await reply(ctx, '\n'.join(sheets.info(int(num))))
-    except ValueError:
-        await reply(ctx, ROF, True)
+    except (ValueError, APIError):
+        await reply(ctx, get_error('info', 0), True)
 
 
 @client.command()
@@ -164,7 +179,11 @@ async def lb(ctx, race_num=None, first=None, last=None):
     if not first and not last:
         first = 1
         last = 50
-    title = f'Race # {race_num}: **{sheets.race(race_num)}**'
+    try:
+        title = f'Race # {race_num}: **{sheets.race(race_num)}**'
+    except APIError:
+        await reply(ctx, get_error('lb', 0), True)
+        return
     output = leaderboard.get_leaderboard(race_num)
     if output:
         for entry in output:
@@ -196,7 +215,7 @@ async def id(ctx, race_num=None, user_rank=None):
             race_num = len(sheets.all_ids)
         output = leaderboard.get_id(race_num, user_rank)
     if not output:
-        await reply(ctx, ROF, True)
+        await reply(ctx, get_error('id', 0), True)
         return
     await reply(ctx, f'**{output[1]}**\'s user ID:')
     await ctx.send(output[0])
@@ -207,18 +226,16 @@ async def nicks(ctx, identifier=None):
     if not identifier:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await reply(ctx, NO_ID, True)
+            await reply(ctx, get_error('nicks', 0), True)
             return
     user_id = sheets.known(identifier)
     output = leaderboard.get_nicks(user_id[0])
     if not output:
-        await reply(ctx, ROF, True)
+        await reply(ctx, get_error('nicks', 1), True)
         return
-
     nicknames = ''
     for entry in output:
         nicknames += '\n' + f'{entry[1]:>2}: {entry[0]}'
-
     await reply(ctx, f'Nicknames for **{user_id[1]}**```\n{nicknames}```')
 
 
@@ -378,11 +395,41 @@ async def ntwica(ctx):
         await reply(ctx, '<:ntwica:910284846910308465>')
 
 
+@client.command()
+async def rofify(ctx, emoji: discord.Emoji = None):
+    if not emoji:
+        await rofifi(ctx, ctx.message.attachments[0].url)
+        return
+    misc.rofify(emoji.url)
+    await ctx.reply(file=discord.File('temp.png'), mention_author=False)
+    os.remove('temp.png')
+
+
+@client.command()
+async def rofifi(ctx, img_link=None):
+    if not img_link:
+        img_link = ctx.message.attachments[0].url
+    misc.rofify(img_link)
+    await ctx.reply(file=discord.File('temp.png'), mention_author=False)
+    os.remove('temp.png')
+
+
+@client.command()
+async def rofifu(ctx, user: discord.Member = None):
+    if not user:
+        user = ctx.author
+    await rofifi(ctx, user.avatar_url)
+
+
 async def reply(ctx, message, mention=False):
     await ctx.reply(message, mention_author=mention)
 
 
+def get_error(command_name, error_num):
+    return error_messages[command_name][error_num]
+
+
 # keep_alive()
 # my_secret = os.environ['TOKEN']
-my_secret = 'ODkzOTY2NjkwNzY4MDA3MTc4.YVjJXA.Az511XCUNfFgEDdciex3s3pHzVw'
+my_secret = 'ODkzMjkxMjI1NTY4OTE5NTYy.YVZUSA.m07cxGGHWMUYImoNJA6TMdU2NDM'
 client.run(my_secret)
