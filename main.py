@@ -385,17 +385,17 @@ async def ntwic(ctx):
     except discord.errors.Forbidden:
         await reply(ctx, '<:ntwica:910284846910308465>')
 
+
 @client.command()
 async def rofify(ctx, img_link=None):
     import re
-
     if not img_link:
         try:
             img_link = ctx.message.attachments[0].url
         except IndexError:
             img_link = ctx.author.avatar_url
     elif img_link[:2] == '<:':
-        img_link = f'https://cdn.discordapp.com/emojis/{(img_link.split(":"))[-1][:-1]}.webp?size=44&quality=lossless'
+        img_link = client.get_emoji(int(img_link.split(":")[-1][:-1])).url
     else:
         try:
             user_id = int(re.sub('[^0-9]', '', img_link))
