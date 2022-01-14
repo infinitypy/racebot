@@ -16,7 +16,7 @@ import sheets
 
 # from webserver import keep_alive
 
-client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥'], case_insensitive=True)
+client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥', '🌽🎉'], case_insensitive=True)
 client.remove_command('help')
 
 command_help = {}
