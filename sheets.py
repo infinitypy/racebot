@@ -39,6 +39,9 @@ def known(identifier):
         for id, aliases in ids_to_names.items():
             if identifier.lower() in [alias.lower() for alias in aliases]:
                 return id, aliases[0]
+        for id, alias in more_ids_to_names.items():
+            if identifier.lower() == alias.lower():
+                return id, alias
     return identifier, identifier
 
 
