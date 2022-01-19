@@ -95,7 +95,7 @@ async def hello(ctx, *args) -> None:
         args = [str(ctx.message.author.id)]
         name = f'<@!{args[0]}>'
     else:
-        name: str = ' '.join(args)
+        name = ' '.join(args)
         if not misc.validate_str(name):
             await reply(ctx, get_error('hello', 0), True)
             return
@@ -222,12 +222,14 @@ async def id(ctx, race_num=None, user_rank=None):
 
 
 @client.command()
-async def nicks(ctx, identifier=None):
-    if not identifier:
+async def nicks(ctx, *args):
+    if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
             await reply(ctx, get_error('nicks', 0), True)
             return
+    else:
+        identifier = ' '.join(args)
     user_id = sheets.known(identifier)
     output = leaderboard.get_nicks(user_id[0])
     if not output:
@@ -240,12 +242,14 @@ async def nicks(ctx, identifier=None):
 
 
 @client.command()
-async def rank(ctx, identifier=None):
-    if not identifier:
+async def rank(ctx, *args):
+    if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
             await reply(ctx, NO_ID, True)
             return
+    else:
+        identifier = ' '.join(args)
     user_id = sheets.known(identifier)
     output = leaderboard.get_rank(len(sheets.all_ids), user_id[0])
     if not output:
@@ -255,12 +259,14 @@ async def rank(ctx, identifier=None):
 
 
 @client.command()
-async def ranks(ctx, identifier=None):
-    if not identifier:
+async def ranks(ctx, *args):
+    if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
             await reply(ctx, NO_ID, True)
             return
+    else:
+        identifier = ' '.join(args)
     file, embed = misc.ranks_embed(True, identifier)
     await ctx.reply(file=file, embed=embed, mention_author=False)
     os.remove('output.png')
@@ -278,12 +284,14 @@ async def compare(ctx, *args):
 
 
 @client.command()
-async def profile(ctx, identifier=None):
-    if not identifier:
+async def profile(ctx, *args):
+    if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
             await reply(ctx, NO_ID, True)
             return
+    else:
+        identifier = ' '.join(args)
     user_id = sheets.known(identifier)
     output = profiles.get_profile(user_id[0])
     if not output:

@@ -24,6 +24,7 @@ assoc_players = writelbtosheet.user_data.col_values(3)
 
 
 def known(identifier):
+    print(identifier)
     identifier = str(identifier)
     ids_to_names = {}
     more_ids_to_names = {}
