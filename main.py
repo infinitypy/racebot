@@ -107,6 +107,14 @@ async def hello(ctx, *args) -> None:
 
 
 @client.command()
+async def hеllo(ctx, *args):
+    if ctx.message.author.id != 279126808455151628:
+        await hello(ctx, args)
+    name = ' '.join(args)
+    await reply(ctx, f'All the homies hate {name}')
+
+
+@client.command()
 async def invite(ctx) -> None:
     await reply(ctx, 'https://discord.com/oauth2/authorize?'
                      'client_id=893291225568919562&permissions=3072&scope=bot')
