@@ -24,7 +24,6 @@ assoc_players = writelbtosheet.user_data.col_values(3)
 
 
 def known(identifier):
-    print(identifier)
     identifier = str(identifier)
     ids_to_names = {}
     more_ids_to_names = {}
@@ -41,7 +40,7 @@ def known(identifier):
             if identifier.lower() in [alias.lower() for alias in aliases]:
                 return id, aliases[0]
         for id, alias in more_ids_to_names.items():
-            if identifier.lower() == alias.lower():
+            if identifier.lower() in alias.lower().split(','):
                 return id, alias
     return identifier, identifier
 

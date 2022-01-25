@@ -188,7 +188,7 @@ async def lb(ctx, race_num=None, first=None, last=None):
         first = 1
         last = 50
     try:
-        title = f'Race # {race_num}: **{sheets.race(race_num)}**'
+        title = f'Race #{race_num}: **{sheets.race(race_num)}**'
     except APIError:
         await reply(ctx, get_error('lb', 0), True)
         return
