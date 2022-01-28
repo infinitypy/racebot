@@ -102,6 +102,8 @@ def raceinfo(name, update):
     race_info['regrow rate'] = decoded['bloonModifiers']['regrowRateMultiplier']
     race_info['ability rate'] = \
         decoded['abilityCooldownReductionMultiplier'] if 'abilityCooldownReductionMultiplier' in decoded else 1
+    race_info['object cost multi'] = \
+        decoded['removeableCostMultiplier'] if 'removeableCostMultiplier' in decoded else 1
 
     if race_info['map'] == 'Tutorial':
         race_info['map'] = 'Monkey Meadow'
@@ -126,6 +128,8 @@ def raceinfo(name, update):
         bloon_modifiers.append(f'{race_info["regrow rate"] * 100:.0f}% regrow rate')
     if race_info['ability rate'] != 1.0:
         bloon_modifiers.append(f'{race_info["ability rate"] * 100:.0f}% ability cooldowns')
+    if race_info['object cost multi'] != 1.0:
+        bloon_modifiers.append(f'{race_info["object cost multi"] :.0f}x removeable cost multiplier')
     description = ', '.join((race_info['map'], race_info['difficulty'], race_info['mode']))
     description += f'\n{game_modifiers}' if game_modifiers else ''
     description += f'\n{", ".join(bloon_modifiers)}' if bloon_modifiers else ''
@@ -136,7 +140,8 @@ def raceinfo(name, update):
     embed = discord.Embed(
         title=f'Full info for {race_info["name"]}',
         description=description,
-        colour=discord.Colour.orange()
+        colour=discord.Colour.orange(),
+        url=('https://fast-static-api.nkstatic.com/storage/static/appdocs/11/races/' + name)
     )
 
     embed.add_field(name='Rounds', value='{}-{}'.format(*race_info['rounds']))
