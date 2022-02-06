@@ -428,7 +428,7 @@ async def rofify(ctx, img_link=None):
 
 @client.command()
 async def firecredits(ctx, user: discord.Member, diff):
-    if ctx.message.guild.name == 'test' and ctx.message.author.id == 279126808455151628:
+    if ctx.message.guild.name == 'BTD6 Index' and ctx.message.author.id == 279126808455151628:
         fc_roles = [str(x) for x in range(1, 11)]
         fc_roles[0] += ' - overdrive'
         fc_roles[9] += ' - rof'
