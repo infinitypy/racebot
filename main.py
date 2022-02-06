@@ -426,6 +426,30 @@ async def rofify(ctx, img_link=None):
     os.remove('temp.png')
 
 
+@client.command()
+async def firecredits(ctx, user: discord.Member, diff):
+    fc_roles = [str(x) for x in range(1, 11)]
+    fc_roles[0] += ' - overdrive'
+    fc_roles[9] += ' - rof'
+    print(fc_roles)
+    diff = int(diff)
+    if ctx.message.guild.name == 'BTD6 Index' and ctx.message.author.id == 279126808455151628:
+        for role in user.roles:
+            if role.name in fc_roles:
+                old_index = fc_roles.index(role.name)
+                new_index = min(max(old_index + diff, 0), 9)
+                new_role = discord.utils.get(ctx.message.guild.roles, name=fc_roles[new_index])
+                await user.remove_roles(role)
+                await user.add_roles(new_role)
+                index_diff = new_index - old_index
+                if index_diff >= 0:
+                    await reply(ctx, f'{user.display_name} gained {new_index - old_index} '
+                                     f'firecredit{"s" if index_diff != 1 else ""}')
+                else:
+                    await reply(ctx, f'{user.display_name} lost {old_index - new_index} '
+                                     f'firecredit{"s" if index_diff != -1 else ""}')
+
+
 async def reply(ctx, message, mention=False):
     await ctx.reply(message, mention_author=mention)
 
