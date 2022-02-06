@@ -428,12 +428,11 @@ async def rofify(ctx, img_link=None):
 
 @client.command()
 async def firecredits(ctx, user: discord.Member, diff):
-    fc_roles = [str(x) for x in range(1, 11)]
-    fc_roles[0] += ' - overdrive'
-    fc_roles[9] += ' - rof'
-    print(fc_roles)
-    diff = int(diff)
-    if ctx.message.guild.name == 'BTD6 Index' and ctx.message.author.id == 279126808455151628:
+    if ctx.message.guild.name == 'test' and ctx.message.author.id == 279126808455151628:
+        fc_roles = [str(x) for x in range(1, 11)]
+        fc_roles[0] += ' - overdrive'
+        fc_roles[9] += ' - rof'
+        diff = int(diff)
         for role in user.roles:
             if role.name in fc_roles:
                 old_index = fc_roles.index(role.name)
@@ -443,10 +442,10 @@ async def firecredits(ctx, user: discord.Member, diff):
                 await user.add_roles(new_role)
                 index_diff = new_index - old_index
                 if index_diff >= 0:
-                    await reply(ctx, f'{user.display_name} gained {new_index - old_index} '
+                    await reply(ctx, f'{user.mention} gained {new_index - old_index} '
                                      f'firecredit{"s" if index_diff != 1 else ""}')
                 else:
-                    await reply(ctx, f'{user.display_name} lost {old_index - new_index} '
+                    await reply(ctx, f'{user.mention} lost {old_index - new_index} '
                                      f'firecredit{"s" if index_diff != -1 else ""}')
 
 
