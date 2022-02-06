@@ -212,3 +212,14 @@ In order to make the video more watchable i had to speed it up or slow it down a
 At least most other videos are legitimate, it is helpful to a lot of people, you can achieve a great time record if you follow everything near perfectly.
 
 Don't expect anyone on internet to be a saint, especially in a game about popping balloons with a monkey.
+~radioactive,coop,daily,dailycoop,nkode,nkcode,spaghetti,spaghetticode
+ArgumentException: Requested value 'RADIOACTIVE' was not found.
+System.Enum+EnumResult.SetFailure (System.Enum+ParseFailureKind failure, System.String failureMessageID, System.Object failureMessageFormatArgument)
+System.Enum.TryParseEnum (System.Type enumType, System.String value, System.Boolean ignoreCase, System.Enum+EnumResult& parseResult)
+System.Enum.Parse (System.Type enumType, System.String value, System.Boolean ignoreCase)
+Newtonsoft.Json.Serialization.JsonSerializerInternalReader.EnsureType (Newtonsoft.Json.JsonReader reader, System.Object value, System.Globalization.CultureInfo culture, Newtonsoft.Json.Serialization.JsonContract contract, System.Type targetType)
+Newtonsoft.Json.Serialization.JsonSerializerInternalReader.SetPropertyValue (Newtonsoft.Json.Serialization.JsonProperty property, Newtonsoft.Json.JsonConverter propertyConverter, Newtonsoft.Json.Serialization.JsonContainerContract containerContract, Newtonsoft.Json.Serialization.JsonProperty containerProperty, Newtonsoft.Json.JsonReader reader, System.Object target)
+Newtonsoft.Json.Serialization.JsonSerializerInternalReader.PopulateObject (System.Object newObject, Newtonsoft.Json.JsonReader reader, Newtonsoft.Json.Serialization.JsonObjectContract contract, Newtonsoft.Json.Serialization.JsonProperty member, System.String id)
+Newtonsoft.Json.Serialization.JsonSerializerInternalReader.CreateObject (Newtonsoft.Json.JsonReader reader, System.Type objectType, Newtonsoft.Json.Serialization.JsonContract contract, Newtonsoft.Json.Serialization.JsonProperty member, Newtonsoft.Json.Serialization.JsonContainerContract containerContract, Newtonsoft.Json.Serialization.JsonProperty containerMember, System.Object existingValue)
+Newtonsoft.Json.Serialization.JsonSerializerInternalReader.Deserialize (Newtonsoft.Json.JsonReader reader, System.Type objectType, System.Boolean checkAdditionalContent)
+Newtonsoft.Json.JsonSerializer.DeserializeInternal (Newtonsoft.Json.JsonReader reader, System.Type objectType)
