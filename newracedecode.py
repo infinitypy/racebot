@@ -129,7 +129,10 @@ def raceinfo(name, update):
     if race_info['ability rate'] != 1.0:
         bloon_modifiers.append(f'{race_info["ability rate"] * 100:.0f}% ability cooldowns')
     if race_info['object cost multi'] != 1.0:
-        bloon_modifiers.append(f'{race_info["object cost multi"] :.0f}x removeable cost multiplier')
+        if race_info['object cost multi'] == 12.0:
+            bloon_modifiers.append('Obstacles not removable')
+        else:
+            bloon_modifiers.append(f'{race_info["object cost multi"] :.0f}x removable cost multiplier')
     description = ', '.join((race_info['map'], race_info['difficulty'], race_info['mode']))
     description += f'\n{game_modifiers}' if game_modifiers else ''
     description += f'\n{", ".join(bloon_modifiers)}' if bloon_modifiers else ''
