@@ -115,6 +115,14 @@ async def hеllo(ctx, *args):
 
 
 @client.command()
+async def hellо(ctx, *args):
+    if ctx.message.author.id != 279126808455151628:
+        await hello(ctx, args)
+    name = ' '.join(args)
+    await reply(ctx, f'hello {name}')
+
+
+@client.command()
 async def invite(ctx) -> None:
     await reply(ctx, 'https://discord.com/oauth2/authorize?'
                      'client_id=893291225568919562&permissions=3072&scope=bot')
@@ -283,12 +291,51 @@ async def ranks(ctx, *args):
 @client.command()
 async def compare(ctx, *args):
     if len(args) == 0:
-        await reply(ctx, ROF, True)
+        await reply(ctx, get_error('compare', 0), True)
         return
     identifiers = [discorduserids.get_id(ctx.message.author.id) if x == 'self' else x for x in args]
     file, embed = misc.ranks_embed(False, *identifiers)
     await ctx.reply(file=file, embed=embed, mention_author=False)
     os.remove('output.png')
+
+
+@client.command()
+async def gaps(ctx, *args):
+    if len(args) != 2:
+        await reply(ctx, get_error('gap', 0), True)
+        return
+    identifiers = [discorduserids.get_id(ctx.message.author.id) if x == 'self' else x for x in args]
+    pair_ranks = []
+    user_id_1 = sheets.known(identifiers[0])
+    all_ranks_1 = leaderboard.get_all_rank(user_id_1[0])
+    if not all_ranks_1:
+        await reply(ctx, get_error('gap', 1), True)
+        return
+    if user_id_1[0] == '5b2845abfcd0f8d9745e6cfe':
+        all_ranks_1 = [(entry[0], (entry[1] - 1) % 20 + 81) for entry in all_ranks_1]
+    elif user_id_1[0] == '5b7f82e318c7cbe32fa01e4e':
+        all_ranks_1 = [(entry[0], (entry[1] - 1) % 20 + 1) for entry in all_ranks_1]
+    all_ranks_1 = {x[0]: x[1] for x in all_ranks_1}
+    user_id_2 = sheets.known(identifiers[1])
+    all_ranks_2 = leaderboard.get_all_rank(user_id_2[0])
+    if not all_ranks_2:
+        await reply(ctx, get_error('gap', 1), True)
+        return
+    if user_id_2[0] == '5b2845abfcd0f8d9745e6cfe':
+        all_ranks_2 = [(entry[0], (entry[1] - 1) % 20 + 81) for entry in all_ranks_2]
+    elif user_id_2[0] == '5b7f82e318c7cbe32fa01e4e':
+        all_ranks_2 = [(entry[0], (entry[1] - 1) % 20 + 1) for entry in all_ranks_2]
+    all_ranks_2 = {x[0]: x[1] for x in all_ranks_2}
+    for race_rank in all_ranks_2:
+        if race_rank in all_ranks_1:
+            pair_ranks.append((race_rank, all_ranks_1[race_rank] - all_ranks_2[race_rank]))
+    one_best = min(pair_ranks, key=lambda x: x[1])
+    two_best = max(pair_ranks, key=lambda x: x[1])
+    output = f'Race #{one_best[0]}: {user_id_1[1]} ranked {all_ranks_1[one_best[0]]}, ' \
+             f'{user_id_2[1]} ranked {all_ranks_2[one_best[0]]}\n'
+    output += f'Race #{two_best[0]}: {user_id_2[1]} ranked {all_ranks_2[two_best[0]]}, ' \
+              f'{user_id_1[1]} ranked {all_ranks_1[two_best[0]]}\n'
+    await reply(ctx, output)
 
 
 @client.command()
@@ -409,7 +456,11 @@ async def rofify(ctx, img_link=None):
         try:
             img_link = ctx.message.attachments[0].url
         except IndexError:
-            img_link = ctx.author.avatar_url
+            try:
+                replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+                img_link = replied.attachments[0].url
+            except Exception:
+                img_link = ctx.author.avatar_url
     elif img_link[:2] == '<:':
         img_link = client.get_emoji(int(img_link.split(":")[-1][:-1])).url
     else:
@@ -427,26 +478,32 @@ async def rofify(ctx, img_link=None):
 
 
 @client.command()
-async def firecredits(ctx, user: discord.Member, diff):
-    if ctx.message.guild.name == 'BTD6 Index' and ctx.message.author.id == 279126808455151628:
+async def fc(ctx, diff, *users: discord.Member):
+    server_name = ctx.message.guild.name
+    if (server_name == 'BTD6 Index' or server_name == 'test') and ctx.message.author.id == 279126808455151628:
         fc_roles = [str(x) for x in range(1, 11)]
         fc_roles[0] += ' - overdrive'
         fc_roles[9] += ' - rof'
         diff = int(diff)
-        for role in user.roles:
-            if role.name in fc_roles:
-                old_index = fc_roles.index(role.name)
-                new_index = min(max(old_index + diff, 0), 9)
-                new_role = discord.utils.get(ctx.message.guild.roles, name=fc_roles[new_index])
-                await user.remove_roles(role)
-                await user.add_roles(new_role)
-                index_diff = new_index - old_index
-                if index_diff >= 0:
-                    await reply(ctx, f'{user.mention} gained {new_index - old_index} '
-                                     f'firecredit{"s" if index_diff != 1 else ""}')
-                else:
-                    await reply(ctx, f'{user.mention} lost {old_index - new_index} '
-                                     f'firecredit{"s" if index_diff != -1 else ""}')
+        output = ''
+        for user in users:
+            for role in user.roles:
+                if role.name in fc_roles:
+                    old_index = fc_roles.index(role.name)
+                    new_index = min(max(old_index + diff, 0), 9)
+                    new_role = discord.utils.get(ctx.message.guild.roles, name=fc_roles[new_index])
+                    await user.remove_roles(role)
+                    await user.add_roles(new_role)
+                    index_diff = new_index - old_index
+                    if index_diff >= 0 and diff > 0:
+                        output += f'{user.mention} gained {new_index - old_index} ' \
+                                  f'firecredit{"s" if index_diff != 1 else ""} ' \
+                                  f'(now at {new_index + 1} firecredit{"s" if new_index != 0 else ""})\n'
+                    else:
+                        output += f'{user.mention} lost {old_index - new_index} ' \
+                                  f'firecredit{"s" if index_diff != -1 else ""} ' \
+                                  f'(now at {new_index + 1} firecredit{"s" if new_index != 0 else ""})\n'
+        await reply(ctx, output.strip())
 
 
 async def reply(ctx, message, mention=False):

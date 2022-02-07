@@ -34,6 +34,9 @@ ranks
 compare
     [identifiers=self]...
     Returns graphical comparison of one or more player rankings within top 100. Pass in "self" to include yourself via Discord ID to in-game ID mapping (see r!setid). If given no argument, compares with only self.
+gaps
+    identifier1=self, identifier2=self
+    Returns Player 1's best race relative to player 2, and vice versa. Pass in "self" to include yourself via Discord ID to in-game ID mapping (see r!setid).
 profile
     [identifier=self]
     Returns race medals of given player. If given no argument, uses Discord ID to in-game ID mapping (see r!setid).

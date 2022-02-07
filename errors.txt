@@ -43,6 +43,10 @@ ranks
 compare
     MISSING
 
+gap
+    INVALID
+    Player with given identifier not found.
+
 profile
     NO_ID
     No profile found for given player.
