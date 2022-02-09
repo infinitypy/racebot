@@ -473,11 +473,21 @@ async def rofify(ctx, img_link=None):
 async def fc(ctx, diff, *users: discord.Member):
     server_name = ctx.message.guild.name
     if (server_name == 'BTD6 Index' or server_name == 'test') and ctx.message.author.id == 279126808455151628:
+        reply_fc = False
+        replied = None
+        if not users:
+            replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+            user = ctx.guild.get_member(replied.author.id)
+            if not user:
+                user = await ctx.guild.fetch_member(replied.author.id)
+            users = [user]
+            reply_fc = True
         fc_roles = [str(x) for x in range(1, 11)]
         fc_roles[0] += ' - overdrive'
         fc_roles[9] += ' - rof'
         diff = int(diff)
-        output = ''
+        output = {}
+        max_display = -1
         for user in users:
             for role in user.roles:
                 if role.name in fc_roles:
@@ -486,16 +496,18 @@ async def fc(ctx, diff, *users: discord.Member):
                     new_role = discord.utils.get(ctx.message.guild.roles, name=fc_roles[new_index])
                     await user.remove_roles(role)
                     await user.add_roles(new_role)
-                    index_diff = new_index - old_index
-                    if index_diff >= 0 and diff > 0:
-                        output += f'{user.mention} gained {new_index - old_index} ' \
-                                  f'firecredit{"s" if index_diff != 1 else ""} ' \
-                                  f'(now at {new_index + 1} firecredit{"s" if new_index != 0 else ""})\n'
-                    else:
-                        output += f'{user.mention} lost {old_index - new_index} ' \
-                                  f'firecredit{"s" if index_diff != -1 else ""} ' \
-                                  f'(now at {new_index + 1} firecredit{"s" if new_index != 0 else ""})\n'
-        await reply(ctx, output.strip())
+                    output[user.display_name] = '{:<2} → {:<2}'.format(old_index + 1, new_index + 1)
+                    if len(user.display_name) > max_display:
+                        max_display = len(user.display_name)
+        output_str = '```'
+        output_str += '\n'.join(map(lambda x: '{name:>{width}}\'s firecredit score: {res}'
+                                    .format(name=x, width=max_display, res=output[x]), output))
+        output_str += '```'
+        if not reply_fc:
+            await reply(ctx, output_str)
+        else:
+            await ctx.message.delete()
+            await ctx.send(output_str, reference=replied, mention_author=False)
 
 
 async def reply(ctx, message, mention=False):
