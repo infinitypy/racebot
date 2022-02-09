@@ -511,8 +511,10 @@ async def fc(ctx, diff, *users: discord.Member):
 
 
 @client.command()
-async def guess(ctx, test_str):
-    if ctx.guild.name == 'BTD6 Index' and ctx.channel.name == 'bot-commands':
+async def guess(ctx, *args):
+    test_str = ' '.join(args)
+    if ctx.message.author.id == 279126808455151628 or \
+            (ctx.guild.name == 'BTD6 Index' and ctx.channel.name == 'bot-commands'):
         await reply(ctx, misc.str_check(test_str))
 
 
