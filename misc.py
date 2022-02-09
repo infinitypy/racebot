@@ -7,6 +7,7 @@ import string
 import discord
 import matplotlib.pyplot as plot
 import numpy as np
+from Levenshtein import distance as levenshtein_distance
 
 import sheets
 import leaderboard
@@ -43,7 +44,7 @@ for label in labels:
     label_to_pasta[label].add(pasta_count)
 pastas.append(running)
 
-curr_num = 7284796
+curr_str = 'imagine not knowing how to micro/subpixel rof and calling it bad because of that'
 
 
 def strip_to_words(args):
@@ -165,13 +166,8 @@ def rofify(img_url):
     rof.save('temp.png')
 
 
-def num_check(num):
-    global curr_num
-    if num == curr_num:
+def str_check(test_str):
+    dist = levenshtein_distance(test_str, curr_str)
+    if dist == 0:
         return 'Correct, notifying <@!279126808455151628>'
-    direction_chance = 1 - (abs(curr_num - num) / 18000000)
-    if random.uniform(0, 1) < direction_chance:
-        direction = 'low' if num < curr_num else 'high'
-    else:
-        direction = 'high' if num < curr_num else 'low'
-    return f'Too {direction}'
+    return f'You\'re off by {dist}'

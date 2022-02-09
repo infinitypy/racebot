@@ -511,9 +511,9 @@ async def fc(ctx, diff, *users: discord.Member):
 
 
 @client.command()
-async def guess(ctx, num: int):
+async def guess(ctx, test_str):
     if ctx.guild.name == 'BTD6 Index' and ctx.channel.name == 'bot-commands':
-        await reply(ctx, misc.num_check(num))
+        await reply(ctx, misc.str_check(test_str))
 
 
 async def reply(ctx, message, mention=False):
