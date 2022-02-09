@@ -43,7 +43,7 @@ ranks
 compare
     MISSING
 
-gap
+gaps
     INVALID
     Player with given identifier not found.
 
