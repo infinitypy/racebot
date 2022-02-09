@@ -44,7 +44,7 @@ for label in labels:
     label_to_pasta[label].add(pasta_count)
 pastas.append(running)
 
-curr_str = 'imagine not knowing how to micro/subpixel rof and calling it bad because of that'
+curr_str = 'choc can\'t micro rof'
 
 
 def strip_to_words(args):
