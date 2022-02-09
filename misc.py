@@ -43,6 +43,8 @@ for label in labels:
     label_to_pasta[label].add(pasta_count)
 pastas.append(running)
 
+curr_num = 7284796
+
 
 def strip_to_words(args):
     s = ''.join(args).lower()
@@ -161,3 +163,15 @@ def rofify(img_url):
     rof = Image.open('ring.png')
     rof.paste(to_rof, offset, to_rof.convert('RGBA'))
     rof.save('temp.png')
+
+
+def num_check(num):
+    global curr_num
+    if num == curr_num:
+        return 'Correct, notifying <@!279126808455151628>'
+    direction_chance = 1 - (abs(curr_num - num) / 18000000)
+    if random.uniform(0, 1) < direction_chance:
+        direction = 'low' if num < curr_num else 'high'
+    else:
+        direction = 'high' if num < curr_num else 'low'
+    return f'Too {direction}'

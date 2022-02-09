@@ -471,7 +471,7 @@ async def rofify(ctx, img_link=None):
 
 @client.command()
 async def fc(ctx, diff, *users: discord.Member):
-    server_name = ctx.message.guild.name
+    server_name = ctx.guild.name
     if (server_name == 'BTD6 Index' or server_name == 'test') and ctx.message.author.id == 279126808455151628:
         reply_fc = False
         replied = None
@@ -508,6 +508,12 @@ async def fc(ctx, diff, *users: discord.Member):
         else:
             await ctx.message.delete()
             await ctx.send(output_str, reference=replied, mention_author=False)
+
+
+@client.command()
+async def guess(ctx, num: int):
+    if ctx.guild.name == 'BTD6 Index' and ctx.channel.name == 'bot-commands':
+        await reply(ctx, misc.num_check(num))
 
 
 async def reply(ctx, message, mention=False):
