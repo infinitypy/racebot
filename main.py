@@ -302,29 +302,21 @@ async def compare(ctx, *args):
 @client.command()
 async def gaps(ctx, *args):
     if len(args) != 2:
-        await reply(ctx, get_error('gap', 0), True)
+        await reply(ctx, get_error('gaps', 0), True)
         return
     identifiers = [discorduserids.get_id(ctx.message.author.id) if x == 'self' else x for x in args]
     pair_ranks = []
     user_id_1 = sheets.known(identifiers[0])
     all_ranks_1 = leaderboard.get_all_rank(user_id_1[0])
     if not all_ranks_1:
-        await reply(ctx, get_error('gap', 1), True)
+        await reply(ctx, get_error('gaps', 1), True)
         return
-    if user_id_1[0] == '5b2845abfcd0f8d9745e6cfe':
-        all_ranks_1 = [(entry[0], (entry[1] - 1) % 20 + 81) for entry in all_ranks_1]
-    elif user_id_1[0] == '5b7f82e318c7cbe32fa01e4e':
-        all_ranks_1 = [(entry[0], (entry[1] - 1) % 20 + 1) for entry in all_ranks_1]
     all_ranks_1 = {x[0]: x[1] for x in all_ranks_1}
     user_id_2 = sheets.known(identifiers[1])
     all_ranks_2 = leaderboard.get_all_rank(user_id_2[0])
     if not all_ranks_2:
-        await reply(ctx, get_error('gap', 1), True)
+        await reply(ctx, get_error('gaps', 1), True)
         return
-    if user_id_2[0] == '5b2845abfcd0f8d9745e6cfe':
-        all_ranks_2 = [(entry[0], (entry[1] - 1) % 20 + 81) for entry in all_ranks_2]
-    elif user_id_2[0] == '5b7f82e318c7cbe32fa01e4e':
-        all_ranks_2 = [(entry[0], (entry[1] - 1) % 20 + 1) for entry in all_ranks_2]
     all_ranks_2 = {x[0]: x[1] for x in all_ranks_2}
     for race_rank in all_ranks_2:
         if race_rank in all_ranks_1:
