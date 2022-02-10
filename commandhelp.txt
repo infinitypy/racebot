@@ -16,7 +16,7 @@ rtime
 info
     race_number
     Returns brief information on the race.
-lb
+leaderboard
     [race_number=curr] [first_rank=1] [last_rank=50]
     Returns race leaderboard. If given first_rank and last_rank only, uses current race. If given race_number only, shows top 50.
 id

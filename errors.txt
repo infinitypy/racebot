@@ -23,7 +23,7 @@ rtime
 info
     BAD_RACE_NUM
 
-lb
+leaderboard
     BAD_RACE_NUM
 
 id

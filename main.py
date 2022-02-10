@@ -128,7 +128,7 @@ async def invite(ctx) -> None:
                      'client_id=893291225568919562&permissions=3072&scope=bot')
 
 
-@client.command()
+@client.command(aliases=['r'])
 async def race(ctx, num, num_end=None, race_id=None):
     if not race_id:
         if not num_end:
@@ -148,7 +148,7 @@ async def race(ctx, num, num_end=None, race_id=None):
         await reply(ctx, get_error('race', 1), True)
 
 
-@client.command()
+@client.command(aliases=['l'])
 async def length(ctx, num, abr=None):
     try:
         if 0 < int(num) <= 140:
@@ -159,7 +159,7 @@ async def length(ctx, num, abr=None):
         await reply(ctx, get_error('length', 0), True)
 
 
-@client.command()
+@client.command(aliases=['rt'])
 async def rtime(ctx, start, end, stime=None, abr=None):
     if not stime and not abr:
         stime = 0
@@ -175,7 +175,7 @@ async def rtime(ctx, start, end, stime=None, abr=None):
         await reply(ctx, get_error('rtime', 0), True)
 
 
-@client.command()
+@client.command(aliases=['i'])
 async def info(ctx, num):
     try:
         if int(num) > 0:
@@ -184,8 +184,8 @@ async def info(ctx, num):
         await reply(ctx, get_error('info', 0), True)
 
 
-@client.command()
-async def lb(ctx, race_num=None, first=None, last=None):
+@client.command(aliases=['lb'])
+async def leaderboard(ctx, race_num=None, first=None, last=None):
     if race_num and first and not last:
         last = first
         first = race_num
@@ -198,7 +198,7 @@ async def lb(ctx, race_num=None, first=None, last=None):
     try:
         title = f'Race #{race_num}: **{sheets.race(race_num)}**'
     except APIError:
-        await reply(ctx, get_error('lb', 0), True)
+        await reply(ctx, get_error('leaderboard', 0), True)
         return
     output = leaderboard.get_leaderboard(race_num)
     if output:
@@ -257,7 +257,7 @@ async def nicks(ctx, *args):
     await reply(ctx, f'Nicknames for **{user_id[1]}**```\n{nicknames}```')
 
 
-@client.command()
+@client.command(aliases=['rk'])
 async def rank(ctx, *args):
     if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
@@ -274,7 +274,7 @@ async def rank(ctx, *args):
     await reply(ctx, f'**{user_id[1]}**\'s current rank in race {len(sheets.all_ids)}: {output}')
 
 
-@client.command()
+@client.command(aliases=['rks'])
 async def ranks(ctx, *args):
     if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
@@ -288,7 +288,7 @@ async def ranks(ctx, *args):
     os.remove('output.png')
 
 
-@client.command()
+@client.command(aliases=['c'])
 async def compare(ctx, *args):
     if len(args) == 0:
         await reply(ctx, get_error('compare', 0), True)
@@ -299,7 +299,7 @@ async def compare(ctx, *args):
     os.remove('output.png')
 
 
-@client.command()
+@client.command(aliases=['gp'])
 async def gaps(ctx, *args):
     if len(args) != 2:
         await reply(ctx, get_error('gaps', 0), True)
@@ -330,7 +330,7 @@ async def gaps(ctx, *args):
     await reply(ctx, output)
 
 
-@client.command()
+@client.command(aliases=['p'])
 async def profile(ctx, *args):
     if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
@@ -347,13 +347,13 @@ async def profile(ctx, *args):
     await reply(ctx, f'Race stats for **{user_id[1]}**\n{output}')
 
 
-@client.command()
+@client.command(aliases=['nr'])
 async def newrace(ctx):
     race_info = newracedecode.events()
     await reply(ctx, f'**Name:** {race_info[0]}\n**ID:** {race_info[1]}')
 
 
-@client.command()
+@client.command(aliases=['nk'])
 async def nkinfo(ctx, name=None, update=None):
     if not name:
         name = newracedecode.events()[0]
@@ -366,7 +366,7 @@ async def nkinfo(ctx, name=None, update=None):
     await ctx.send(embed=output, mention_author=False)
 
 
-@client.command()
+@client.command(aliases=['gi'])
 async def getid(ctx):
     output = discorduserids.get_id(ctx.message.author.id)
     if not output:
@@ -376,7 +376,7 @@ async def getid(ctx):
     await ctx.send(output)
 
 
-@client.command()
+@client.command(aliases=['si'])
 async def setid(ctx, u_id=None):
     if not u_id:
         await reply(ctx, ROF, True)
@@ -389,7 +389,7 @@ async def setid(ctx, u_id=None):
     await reply(ctx, f'{text} user ID: {u_id}')
 
 
-@client.command()
+@client.command(aliases=['ui'])
 async def unlink(ctx):
     removed = discorduserids.remove_id(ctx.message.author.id)
     await reply(ctx, f'**{ctx.message.author.id}** successfully unlinked' if removed else 'Nothing linked')
@@ -398,7 +398,7 @@ async def unlink(ctx):
 blb = 'None, run ``r!badgelb update`` to populate'
 
 
-@client.command()
+@client.command(aliases=['blb'])
 async def badgelb(ctx, update=None):
     global blb
     if update == 'update':
@@ -417,12 +417,12 @@ async def setlink(ctx, link):
     newracedecode.set_link(link)
 
 
-@client.command()
+@client.command(aliases=['pt'])
 async def pasta(ctx, *args):
     await reply(ctx, misc.random_pasta(misc.strip_to_words(args) if args else None))
 
 
-@client.command()
+@client.command(aliases=['d'])
 async def diagnosis(ctx, *args):
     name = ' '.join(args) if args else None
     if not misc.validate_str(name):
@@ -432,7 +432,7 @@ async def diagnosis(ctx, *args):
     await reply(ctx, header + misc.random_issue(args))
 
 
-@client.command()
+@client.command(aliases=['ntwica'])
 async def ntwic(ctx):
     try:
         await ctx.message.delete()
@@ -441,7 +441,7 @@ async def ntwic(ctx):
         await reply(ctx, '<:ntwica:910284846910308465>')
 
 
-@client.command()
+@client.command(aliases=['rf'])
 async def rofify(ctx, img_link=None):
     import re
     if not img_link:
@@ -469,8 +469,8 @@ async def rofify(ctx, img_link=None):
     os.remove('temp.png')
 
 
-@client.command()
-async def fc(ctx, diff, *users: discord.Member):
+@client.command(aliases=['fc'])
+async def firecredits(ctx, diff, *users: discord.Member):
     server_name = ctx.guild.name
     if (server_name == 'BTD6 Index' or server_name == 'test') and ctx.message.author.id == 279126808455151628:
         reply_fc = False
@@ -510,7 +510,7 @@ async def fc(ctx, diff, *users: discord.Member):
             await ctx.send(output_str, reference=replied, mention_author=False)
 
 
-@client.command()
+@client.command(aliases=['g'])
 async def guess(ctx, *args):
     test_str = ' '.join(args)
     if ctx.message.author.id == 279126808455151628 or \
