@@ -25,6 +25,7 @@ info
 
 leaderboard
     BAD_RACE_NUM
+    TOO_BIG
 
 id
     Player not found with given inputs. Run r!help <command_name> for more information.

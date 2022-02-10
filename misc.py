@@ -45,6 +45,7 @@ for label in labels:
 pastas.append(running)
 
 curr_str = 'choc can\'t micro rof'
+best_str = ('', float('inf'))
 
 
 def strip_to_words(args):
@@ -167,7 +168,15 @@ def rofify(img_url):
 
 
 def str_check(test_str):
+    global best_str
+
     dist = levenshtein_distance(test_str, curr_str)
+    if test_str != curr_str and test_str in curr_str.split(' '):
+        return 'Your response is part of the correct answer'
     if dist == 0:
         return 'Correct, notifying <@!279126808455151628>'
+    if test_str in curr_str.split(' '):
+        return 'Your response is part of the correct answer'
+    if dist < best_str[1]:
+        best_str = (test_str, dist)
     return f'You\'re off by {dist}'

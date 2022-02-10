@@ -204,22 +204,21 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
     if output:
         for entry in output:
             res = sheets.known(entry[0])
-            print(res)
             if not res[1] or res[0] == res[1]:
                 entry[0] = f' ID: {res[0][0:3]}...'
             else:
                 entry[0] = res[1]
         output_str = ''
         for i in range(int(last) - int(first) + 1):
-            if len(output[0]) == 3:
-                output_str += '\n{} {} {}' \
-                    .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][2], output[i + int(first) - 1][1])
-            else:
-                output_str += '\n{} {} {}' \
-                    .format(str(i + int(first)).ljust(2), output[i + int(first) - 1][1], output[i + int(first) - 1][0])
+            curr_index = i + int(first) - 1
+            adj = 0 if len(output[0]) == 3 else 1
+            output_str += f'\n{curr_index + 1:<3}{output[curr_index][2 - adj]} {output[curr_index][1 - adj]}'
     else:
         output_str = 'No data'
-    await reply(ctx, f'{title}```{output_str}```')
+    try:
+        await reply(ctx, f'{title}```{output_str}```')
+    except HTTPException:
+        await reply(ctx, get_error('leaderboard', 1), True)
 
 
 @client.command()
@@ -407,7 +406,7 @@ async def badgelb(ctx, update=None):
         blb = profiles.generate_badge_lb()
         await ctx.send('updated')
     else:
-        await reply(ctx, blb, True)
+        await reply(ctx, blb, blb == 'None, run ``r!badgelb update`` to populate')
 
 
 @client.command()
@@ -517,6 +516,12 @@ async def guess(ctx, *args):
     if ctx.message.author.id == 279126808455151628 or \
             (ctx.guild.name == 'BTD6 Index' and ctx.channel.name == 'bot-commands'):
         await reply(ctx, misc.str_check(test_str))
+
+
+@client.command(aliases=['bg'])
+async def bestguess(ctx):
+    await reply(ctx, f'Current best guess with distance {misc.best_str[1]}:\n'
+                     f'```{misc.best_str[0]} ```')
 
 
 async def reply(ctx, message, mention=False):
