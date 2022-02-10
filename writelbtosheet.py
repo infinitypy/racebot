@@ -14,7 +14,7 @@ assoc_players = user_data.col_values(3)
 
 
 def load_race(race_num):
-    import leaderboard
+    import leaderboards
     global fulldata
     fulldata = sheet.worksheet('main')
     if race_num < fulldata.col_count:
@@ -23,7 +23,7 @@ def load_race(race_num):
     fulldata.add_cols(1)
     batch_size = 100
     fulldata.update_cell(1, race_num + 1, str(race_num))
-    lb = leaderboard.get_api_lb(race_num)
+    lb = leaderboards.get_api_lb(race_num)
     for i in range(0, len(lb), batch_size):
         partial = fulldata.range(i + 2, race_num + 1, i + batch_size + 1, race_num + 1)
         for index, cell in enumerate(partial):
@@ -33,9 +33,9 @@ def load_race(race_num):
 
 
 def load_all_users():
-    import leaderboard
+    import leaderboards
     unique_ids = set()
-    for race_lb in leaderboard.full_data:
+    for race_lb in leaderboards.full_data:
         for entry in race_lb:
             if entry:
                 unique_ids.add(entry[0:entry.index(',')])
@@ -52,7 +52,7 @@ def load_all_users():
 
 def load_nicks(start):
     import time
-    import leaderboard
+    import leaderboards
     batch_size = 10
     while True:
         try:
@@ -61,7 +61,7 @@ def load_nicks(start):
             time.sleep(5)
             continue
         for i in range(0, batch_size * 2, 2):
-            nicks = leaderboard.get_nicks(partial[i].value)
+            nicks = leaderboards.get_nicks(partial[i].value)
             if not nicks:
                 continue
             else:

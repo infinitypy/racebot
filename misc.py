@@ -10,7 +10,7 @@ import numpy as np
 from Levenshtein import distance as levenshtein_distance
 
 import sheets
-import leaderboard
+import leaderboards
 
 f = open('skillissues.txt', 'r', encoding='utf8')
 skill_issues = f.readlines()
@@ -92,7 +92,7 @@ def ranks_embed(stats, *identifiers):
     colors = [cmap(i / num_identifiers) for i in range(num_identifiers)]
     for index, identifier in enumerate(identifiers):
         user_id = sheets.known(identifier)
-        all_ranks = leaderboard.get_all_rank(user_id[0])
+        all_ranks = leaderboards.get_all_rank(user_id[0])
         if not all_ranks:
             continue
         if user_id[0] == '5b2845abfcd0f8d9745e6cfe':

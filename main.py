@@ -8,7 +8,7 @@ from discord.ext.commands import CommandNotFound, MissingRequiredArgument
 from gspread.exceptions import APIError
 
 import discorduserids
-import leaderboard
+import leaderboards
 import misc
 import newracedecode
 import profiles
@@ -200,7 +200,7 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
     except APIError:
         await reply(ctx, get_error('leaderboard', 0), True)
         return
-    output = leaderboard.get_leaderboard(race_num)
+    output = leaderboards.get_leaderboard(race_num)
     if output:
         for entry in output:
             res = sheets.known(entry[0])
