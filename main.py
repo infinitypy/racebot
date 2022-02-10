@@ -204,8 +204,9 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
     if output:
         for entry in output:
             res = sheets.known(entry[0])
-            if res[0] == res[1]:
-                entry[0] = f' ID: {res[1][0:3]}...'
+            print(res)
+            if not res[1] or res[0] == res[1]:
+                entry[0] = f' ID: {res[0][0:3]}...'
             else:
                 entry[0] = res[1]
         output_str = ''
@@ -229,7 +230,7 @@ async def id(ctx, race_num=None, user_rank=None):
         if not user_rank:
             user_rank = race_num
             race_num = len(sheets.all_ids)
-        output = leaderboard.get_id(race_num, user_rank)
+        output = leaderboards.get_id(race_num, user_rank)
     if not output:
         await reply(ctx, get_error('id', 0), True)
         return
@@ -247,7 +248,7 @@ async def nicks(ctx, *args):
     else:
         identifier = ' '.join(args)
     user_id = sheets.known(identifier)
-    output = leaderboard.get_nicks(user_id[0])
+    output = leaderboards.get_nicks(user_id[0])
     if not output:
         await reply(ctx, get_error('nicks', 1), True)
         return
@@ -267,7 +268,7 @@ async def rank(ctx, *args):
     else:
         identifier = ' '.join(args)
     user_id = sheets.known(identifier)
-    output = leaderboard.get_rank(len(sheets.all_ids), user_id[0])
+    output = leaderboards.get_rank(len(sheets.all_ids), user_id[0])
     if not output:
         await reply(ctx, ROF, True)
         return
@@ -307,13 +308,13 @@ async def gaps(ctx, *args):
     identifiers = [discorduserids.get_id(ctx.message.author.id) if x == 'self' else x for x in args]
     pair_ranks = []
     user_id_1 = sheets.known(identifiers[0])
-    all_ranks_1 = leaderboard.get_all_rank(user_id_1[0])
+    all_ranks_1 = leaderboards.get_all_rank(user_id_1[0])
     if not all_ranks_1:
         await reply(ctx, get_error('gaps', 1), True)
         return
     all_ranks_1 = {x[0]: x[1] for x in all_ranks_1}
     user_id_2 = sheets.known(identifiers[1])
-    all_ranks_2 = leaderboard.get_all_rank(user_id_2[0])
+    all_ranks_2 = leaderboards.get_all_rank(user_id_2[0])
     if not all_ranks_2:
         await reply(ctx, get_error('gaps', 1), True)
         return
