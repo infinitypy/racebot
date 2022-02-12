@@ -186,15 +186,18 @@ async def info(ctx, num):
 
 @client.command(aliases=['lb'])
 async def leaderboard(ctx, race_num=None, first=None, last=None):
+    begin_end = [first, last]
+    nbegin_end = []
     if race_num and first and not last:
         last = first
         first = race_num
+        begin_end = [first, last]
         race_num = len(sheets.all_ids)
     if not race_num:
         race_num = len(sheets.all_ids)
     if not first and not last:
-        first = 1
-        last = 50
+        begin_end = [1, 10]
+        nbegin_end = [45, 55]
     try:
         title = f'Race #{race_num}: **{sheets.race(race_num)}**'
     except APIError:
@@ -209,10 +212,22 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
             else:
                 entry[0] = res[1]
         output_str = ''
-        for i in range(int(last) - int(first) + 1):
-            curr_index = i + int(first) - 1
+        for i in range(int(begin_end[1]) - int(begin_end[0]) + 1):
+            curr_index = i + int(begin_end[0]) - 1
             adj = 0 if len(output[0]) == 3 else 1
-            output_str += f'\n{curr_index + 1:<3}{output[curr_index][2 - adj]} {output[curr_index][1 - adj]}'
+            if curr_index + 1 != 50:
+                output_str += f'\n{curr_index + 1:<3}{output[curr_index][2 - adj]} {output[curr_index][1 - adj]}'
+            else:
+                output_str += f'\n50< {output[curr_index][2 - adj].strip()} {output[curr_index][1 - adj]}'
+        if nbegin_end:
+            output_str += '\n...'
+            for i in range(int(nbegin_end[1]) - int(nbegin_end[0]) + 1):
+                curr_index = i + int(nbegin_end[0]) - 1
+                adj = 0 if len(output[0]) == 3 else 1
+                if curr_index + 1 != 50:
+                    output_str += f'\n{curr_index + 1:<3}{output[curr_index][2 - adj]} {output[curr_index][1 - adj]}'
+                else:
+                    output_str += f'\n50< {output[curr_index][2 - adj].strip()} {output[curr_index][1 - adj]}'
     else:
         output_str = 'No data'
     try:
@@ -415,6 +430,7 @@ async def setlink(ctx, link):
         await reply(ctx, ROF, True)
         return
     newracedecode.set_link(link)
+    await reply(ctx, 'minecool is the second longest intermediate map')
 
 
 @client.command(aliases=['pt'])

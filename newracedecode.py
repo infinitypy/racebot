@@ -74,7 +74,7 @@ def raceinfo(name, update):
                 avail_tiers = f'({"".join([str(5 - x) for x in blocked_tiers])})'
             count = ''
             if tower['max'] != -1:
-                count = f'[{tower["max"]}]'
+                count = f'\[{tower["max"]}\]'
             formatted_towers[tower['tower']] = (count, avail_tiers)
     # always display
     race_info = {'name': decoded['name'], 'map': misc.space_by_caps(decoded['map']),
