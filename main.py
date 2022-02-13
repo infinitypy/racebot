@@ -498,23 +498,39 @@ async def firecredits(ctx, diff, *users: discord.Member):
                 user = await ctx.guild.fetch_member(replied.author.id)
             users = [user]
             reply_fc = True
-        fc_roles = [str(x) for x in range(1, 11)]
-        fc_roles[0] += ' - overdrive'
-        fc_roles[9] += ' - rof'
+        fc_roles = [str(2 ** x) for x in range(0, 10)]
         diff = int(diff)
         output = {}
         max_display = -1
         for user in users:
+            old_fc = 0
+            for role in user.roles:
+                if role.name in fc_roles:
+                    old_fc += int(role.name)
+            new_fc = min(max(old_fc + diff, 1), 1023)
+            new_roles = []
+            temp = new_fc
+            for i in range(9, -1, -1):
+                if 2 ** i <= temp:
+                    temp -= 2 ** i
+                    new_roles.append(i)
+            to_remove = []
             for role in user.roles:
                 if role.name in fc_roles:
                     old_index = fc_roles.index(role.name)
-                    new_index = min(max(old_index + diff, 0), 9)
-                    new_role = discord.utils.get(ctx.message.guild.roles, name=fc_roles[new_index])
-                    await user.remove_roles(role)
-                    await user.add_roles(new_role)
-                    output[user.display_name] = '{:<2} → {:<2}'.format(old_index + 1, new_index + 1)
-                    if len(user.display_name) > max_display:
-                        max_display = len(user.display_name)
+                    if old_index not in new_roles:
+                        to_remove.append(role)
+                    else:
+                        new_roles.remove(old_index)
+            await user.remove_roles(*to_remove)
+            to_add = []
+            for index in new_roles:
+                new_role = discord.utils.get(ctx.message.guild.roles, name=str(2 ** index))
+                to_add.append(new_role)
+            await user.add_roles(*to_add)
+            output[user.display_name] = '{:<2} → {:<2}'.format(old_fc, new_fc)
+            if len(user.display_name) > max_display:
+                max_display = len(user.display_name)
         output_str = '```'
         output_str += '\n'.join(map(lambda x: '{name:>{width}}\'s firecredit score: {res}'
                                     .format(name=x, width=max_display, res=output[x]), output))
