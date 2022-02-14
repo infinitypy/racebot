@@ -16,7 +16,7 @@ import sheets
 
 # from webserver import keep_alive
 
-client = commands.Bot(command_prefix=['r!', 'R!', 'rof🔥', 'ROF🔥', '🌽🎉'], case_insensitive=True)
+client = commands.Bot(command_prefix=['r!', 'R!', 'rof!', 'ROF!', 'rof🔥', 'ROF🔥', '🌽🎉'], case_insensitive=True)
 client.remove_command('help')
 
 command_help = {}
@@ -198,6 +198,8 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
     if not first and not last:
         begin_end = [1, 10]
         nbegin_end = [45, 55]
+    if int(race_num) < 0:
+        race_num = int(race_num) % len(sheets.all_ids)
     try:
         title = f'Race #{race_num}: **{sheets.race(race_num)}**'
     except APIError:
