@@ -5,12 +5,14 @@ import statistics
 import string
 
 import discord
-import matplotlib.pyplot as plot
+import os
 import numpy as np
 from Levenshtein import distance as levenshtein_distance
 
 import sheets
 import leaderboards
+
+os.environ['MPLCONFIGDIR'] = os.getcwd() + '/configs/'
 
 f = open('skillissues.txt', 'r', encoding='utf8')
 skill_issues = f.readlines()
@@ -82,6 +84,7 @@ def random_issue(args):
 
 
 def ranks_embed(stats, *identifiers):
+    import matplotlib.pyplot as plot
     num_races = len(sheets.all_ids)
     plot.clf()
     plot.axis([1, num_races, 1, 100])
