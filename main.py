@@ -241,7 +241,8 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
 @client.command()
 async def id(ctx, race_num=None, user_rank=None):
     if not user_rank and not race_num:
-        output = sheets.from_discord_id(ctx.message.author.id)
+        identifier = discorduserids.get_id(ctx.message.author.id)
+        output = sheets.known(identifier)
     else:
         if not user_rank:
             user_rank = race_num
@@ -250,7 +251,10 @@ async def id(ctx, race_num=None, user_rank=None):
     if not output:
         await reply(ctx, get_error('id', 0), True)
         return
-    await reply(ctx, f'**{output[1]}**\'s user ID:')
+    if output[0] == output[1]:
+        await reply(ctx, 'User ID:')
+    else:
+        await reply(ctx, f'**{output[1]}**\'s user ID:')
     await ctx.send(output[0])
 
 

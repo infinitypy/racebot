@@ -75,7 +75,8 @@ def get_id(race_num: int, rank) -> (str, str):
     if not get_leaderboard(race_num):
         return None
     if rank.isdigit():
-        split_entry = string_to_tuple(full_data[race_num - 1][int(rank) - 1])
+        rank = int(rank)
+        split_entry = get_leaderboard(race_num)[rank - 1]
         if len(split_entry) == 3:
             return split_entry[:2]
         else:
@@ -85,9 +86,10 @@ def get_id(race_num: int, rank) -> (str, str):
         user_id = sheets.known(rank)
         if user_id[0] != user_id[1]:
             return user_id
-        for entry in full_data[race_num - 1]:
-            if string_to_tuple(entry)[1].lower() == user_id.lower():
-                return string_to_tuple(entry)[:2]
+        for split_entry in get_leaderboard(race_num):
+            if split_entry[1].lower() == user_id[1].lower():
+                return split_entry[:2]
+        return None
 
 
 def get_nicks(user_id):
