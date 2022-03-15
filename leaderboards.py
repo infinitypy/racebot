@@ -129,7 +129,7 @@ def get_all_rank(user_id):
         if race_num != 107 and race_num != 143:
             rank = get_rank(race_num, user_id)
             if rank:
-                ranks.append((race_num, rank))
+                ranks.append((race_num, rank[0]))
     return ranks
 
 
@@ -139,7 +139,7 @@ def get_worst_rank(user_id):
         if race_num != 107 and race_num != 143:
             rank = get_rank(race_num, user_id)
             if rank and rank >= worst[1]:
-                worst = (race_num, rank)
+                worst = (race_num, rank[0])
     return worst
 
 
@@ -149,5 +149,5 @@ def get_best_rank(user_id):
         if race_num != 107 and race_num != 143:
             rank = get_rank(race_num, user_id)
             if rank and rank <= best[1]:
-                best = (race_num, rank)
+                best = (race_num, rank[0])
     return best
