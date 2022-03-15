@@ -4,6 +4,7 @@ import datetime
 
 import requests
 
+import newracedecode
 import sheets
 import writelbtosheet
 
@@ -22,7 +23,10 @@ full_data = writelbtosheet.fulldata.get_values('B2:' + column(writelbtosheet.ful
 
 
 def get_api_lb(race_num):
-    race_id = sheets.all_ids[race_num - 1]
+    try:
+        race_id = sheets.all_ids[race_num - 1]
+    except Exception:
+        race_id = newracedecode.events()[1]
     race_url = f'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_{race_id}.json'
     try:
         data = requests.get(race_url, headers={'User-Agent': 'btd6-'}).json()
@@ -116,7 +120,7 @@ def get_rank(race_num, user_id):
         return None
     for index, entry in enumerate(full_lb):
         if entry[0] == user_id:
-            return index + 1
+            return index + 1, entry[1]
 
 
 def get_all_rank(user_id):

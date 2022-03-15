@@ -218,18 +218,22 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
             curr_index = i + int(begin_end[0]) - 1
             adj = 0 if len(output[0]) == 3 else 1
             if curr_index + 1 != 50:
-                output_str += f'\n{curr_index + 1:<3}{output[curr_index][2 - adj]} {output[curr_index][1 - adj]}'
+                output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj].strip()} ' \
+                              f'{output[curr_index][1 - adj]}'
             else:
-                output_str += f'\n50< {output[curr_index][2 - adj].strip()} {output[curr_index][1 - adj]}'
+                output_str += f'\n50< {output[curr_index][2 - adj].strip()} ' \
+                              f'{output[curr_index][1 - adj]}'
         if nbegin_end:
             output_str += '\n...'
             for i in range(int(nbegin_end[1]) - int(nbegin_end[0]) + 1):
                 curr_index = i + int(nbegin_end[0]) - 1
                 adj = 0 if len(output[0]) == 3 else 1
                 if curr_index + 1 != 50:
-                    output_str += f'\n{curr_index + 1:<3}{output[curr_index][2 - adj]} {output[curr_index][1 - adj]}'
+                    output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj].strip()} ' \
+                                  f'{output[curr_index][1 - adj]}'
                 else:
-                    output_str += f'\n50< {output[curr_index][2 - adj].strip()} {output[curr_index][1 - adj]}'
+                    output_str += f'\n50< {output[curr_index][2 - adj].strip()} ' \
+                                  f'{output[curr_index][1 - adj]}'
     else:
         output_str = 'No data'
     try:
@@ -292,7 +296,8 @@ async def rank(ctx, *args):
     if not output:
         await reply(ctx, ROF, True)
         return
-    await reply(ctx, f'**{user_id[1]}**\'s current rank in race {len(sheets.all_ids)}: {output}')
+    await reply(ctx, f'**{user_id[1]}**\'s current rank in race {len(sheets.all_ids)}: {output[0]}\n'
+                     f'Current time: {output[1]}')
 
 
 @client.command(aliases=['rks'])

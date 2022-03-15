@@ -252,3 +252,31 @@ Also please make your mind up... You people just keep saying a race is too gener
 Lets say, hypothetically, overdrive was better than ring of fire. Let's say overdrive did 100 dps. For the sake of argument, let's say you alch buff the overdrive and it does 400 single target dps. You think it ill solo round 63? In fact, top players like RandyZ524 can micro the rof to do over 1000 dps.
 
 Now that we have established that you can either get an alch buffed overdrive or a microable rof which does easily over double the dps, I believe you'd agree with me when I say that you would do better if you used the rof. Am I not correct? Even if you couldn't micro the rof, you could use TAS and easily beat what the overdrive can achieve. You think top race players like Randy and his 49 alts would use an inferior tower?
+~pacer,pacertest,multistage,rof,ringoffire,ringoffirebloonstest
+The RingofFire Bloons Test is a multistage 100 round test that progressively gets more difficult as it continues. The RingofFire bloons test will begin in 30 seconds. Place down your tacks. The difficulty level starts low, but gets harder each round after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.
+~~battles2,btdbattles2,btdb2,1.0.9,update1.0.9,patchnotes,sneakpeek
+Update 1.0.9 - Patch Notes Sneak Peek!
+
+Now that we feel like the game has been in a good spot for a while, with most towers being equally shit and XP grinding still being slow af, it’s time that we stop doing balance changes and instead introduce something that we’ve had planned ever since the beginning of Battles 2’s development:
+
+• TOWER APPRENTICE LEVELS!
+  - Tower Apprentice levels can be unlocked after a Tower has all Mastery Upgrades purchased.
+  - Each Apprentice level costs an absurd amount of XP, but is very well worth it.
+  - For every Apprentice level, the tower gets substantially stronger. For most towers, this includes attack speed, range, and eventually pierce and even damage! There are also some super cool exceptions for unique towers like Village and Glue. We can’t wait for our 3 dedicated players to try out this pay to win mechanic!
+- The max is Apprentice 25. Happy grinding :)
+
+This update will not feature any balance changes, as we feel like the game is very well balanced currently. Enjoy your shit towers F2P idiots.
+~rof,ringoffire,cash,johnnycash,song,country,countrymusic,countrysong
+"Ring of Fire" is a song written by June Carter Cash and Merle Kilgore and popularized by Johnny Cash in 1963. The single appears on Cash's 1963 album, Ring of Fire: The Best of Johnny Cash. The song was originally recorded by June's sister, Anita Carter, on her Mercury Records album Folk Songs Old and New (1963) as "(Love's) Ring of Fire". "Ring of Fire" was ranked #4 on CMT's 100 Greatest Songs of Country Music in 2003 and #87 on Rolling Stone's list of The 500 Greatest Songs of All Time. In June 2014, Rolling Stone ranked the song #27 on its list of the 100 greatest country songs of all time.
+~lych,gravelordlych,boss,bosses,bossbloon,bossbloons,5star,5-star,5starlych,5-starlych,doublegun,double-gun,doubleguns,double-guns,doublecash
+**5-star Gravelord Lych can't be defeated**
+
+I just wanna preface this by saying that you will not defeat the 5 star lych. I'm not detailing any strategy or discussion, it is just simply unfair and impossible. I'm just detailing my experience. Also, without double cash, you won't even beat the 1 star lych, because you cannot rush enough MOAB-damaging towers before round 40, except for a niche strategy that I thought of and haven't tested.
+
+If you spread double-gun deconstruction engineers across the map, with their big ranges and MOAB damaging capabilities, you may be able to defeat the 1 star lych, since they are rather inexpensive.
+
+So whatever, you use double cash mode because the boss isn't fair and gives less monkey money than **one** track on hard mode. You can get through it pretty easily, then. Until you reach 5 stars.
+
+If you didn't know, the lych's main ability is that when it takes sufficient damage, it becomes intangible and summons a little lych which in turn drains lives and summons undead MOABs that don't spawn any further bloons. But, starting at 3 stars, it terrifies towers across the map into becoming inactive for a while and regenerating health. At three stars, you'll need to develop a sniper battery of full-auto, high-caliber, jungle-drum, elite-sniper snipers to barrage the lych with bullets. Only then will it fall. *Until you reach 5 stars.*
+
+Upon reaching 5 stars, the lych regenerates way too much health to be defeated under any circumstances, the terrify ability happens too consistently **and** it can terrify **E V E R Y  T O W E R** on the map. I don't have to waste words on how ungodly stupid and broken this ability is. It has 2.1 million health and can regenerate over 100,000 of it every few seconds. Homeland Defense, Monkey Boost, Pop and Awe, nothing can scratch it hard enough for it to **not** regenerate.
