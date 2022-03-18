@@ -163,5 +163,6 @@ def raceinfo(name, update):
             else:
                 categorized[3].append(output)
     for index, category in enumerate(categorized):
-        embed.add_field(name=tower_categories[index], value=', '.join(category), inline=False)
+        if category:
+            embed.add_field(name=tower_categories[index], value=', '.join(category), inline=False)
     return embed
