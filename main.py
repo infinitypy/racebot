@@ -293,11 +293,11 @@ async def rank(ctx, *args):
     else:
         identifier = ' '.join(args)
     user_id = sheets.known(identifier)
-    output = leaderboards.get_rank(len(sheets.all_ids), user_id[0])
+    output = leaderboards.get_rank(None, user_id[0])
     if not output:
         await reply(ctx, ROF, True)
         return
-    await reply(ctx, f'**{user_id[1]}**\'s current rank in race {len(sheets.all_ids)}: {output[0]}\n'
+    await reply(ctx, f'**{user_id[1]}**\'s current rank in newest race: {output[0]}\n'
                      f'Current time: {output[1]}')
 
 
