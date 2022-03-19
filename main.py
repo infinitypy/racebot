@@ -193,18 +193,19 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
         first = race_num
         begin_end = [first, last]
         race_num = len(sheets.all_ids)
-    if not race_num:
-        race_num = len(sheets.all_ids)
     if not first and not last:
         begin_end = [1, 10]
         nbegin_end = [45, 55]
-    if int(race_num) < 0:
+    if race_num and int(race_num) < 0:
         race_num = int(race_num) % len(sheets.all_ids)
-    try:
-        title = f'Race #{race_num}: **{sheets.race(race_num)}**'
-    except APIError:
-        await reply(ctx, get_error('leaderboard', 0), True)
-        return
+    if not race_num:
+        title = f'Newest race: **{newracedecode.events()[0]}**'
+    else:
+        try:
+            title = f'Race #{race_num}: **{sheets.race(race_num)}**'
+        except APIError:
+            await reply(ctx, get_error('leaderboard', 0), True)
+            return
     output = leaderboards.get_leaderboard(race_num)
     if output:
         for entry in output:

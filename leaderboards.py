@@ -51,16 +51,16 @@ def get_api_lb(race_num):
     return complete
 
 
-def get_leaderboard(race_num: int):
-    try:
-        race_num = int(race_num)
-    except TypeError:
-        return list()
-    if race_num is len(sheets.all_ids):
+def get_leaderboard(race_num):
+    if not race_num:
         output = get_api_lb(race_num)
         if not output:
             return list()
     else:
+        try:
+            race_num = int(race_num)
+        except TypeError:
+            return list()
         global full_data
         if int(race_num) == len(sheets.all_ids) - 1 and writelbtosheet.load_race(race_num):
             full_data = writelbtosheet.fulldata.get_values(f'B2:{column(race_num)}101', major_dimension='COLUMNS')
