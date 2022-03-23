@@ -1,4 +1,5 @@
 import json
+import time
 from json import JSONDecodeError
 import datetime
 
@@ -9,17 +10,9 @@ import sheets
 import writelbtosheet
 
 
-def string_to_tuple(entry):
-    return tuple(map(str, entry.split(',')))
-
-
-def column(num, res=''):
-    return column(num // 26, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[num % 26] + res) if num > 1 else res
-
-
-loaded_races = writelbtosheet.fulldata.row_values(1)
-full_data = writelbtosheet.fulldata.get_values('B2:' + column(writelbtosheet.fulldata.col_count) + '101',
-                                               major_dimension='COLUMNS')
+full_data = writelbtosheet.fulldata.get_all_values(major_dimension='COLUMNS')
+full_data = [col[1:] for col in full_data]
+timestamp = time.time()
 
 
 def get_api_lb(race_num):
@@ -51,23 +44,29 @@ def get_api_lb(race_num):
     return complete
 
 
-def get_leaderboard(race_num):
+def get_leaderboard(race_num, update=False):
+    global full_data, timestamp
+    if update and time.time() - timestamp > 300 and newracedecode.racename() not in sheets.all_names:
+        sheets.add_race()
+        writelbtosheet.load_race(writelbtosheet.fulldata.col_count - 1)
+        full_data = writelbtosheet.fulldata.get_all_values(major_dimension='COLUMNS')
+        full_data = [col[1:] for col in full_data]
+        timestamp = time.time()
     if not race_num:
-        output = get_api_lb(race_num)
-        if not output:
-            return list()
+        race_num = writelbtosheet.fulldata.col_count - 1
+        if update and time.time() - timestamp > 300:
+            writelbtosheet.load_race(race_num)
+            full_data = writelbtosheet.fulldata.get_all_values(major_dimension='COLUMNS')
+            full_data = [col[1:] for col in full_data]
+            timestamp = time.time()
     else:
         try:
             race_num = int(race_num)
         except TypeError:
             return list()
-        global full_data
-        if int(race_num) == len(sheets.all_ids) - 1 and writelbtosheet.load_race(race_num):
-            full_data = writelbtosheet.fulldata.get_values(f'B2:{column(race_num)}101', major_dimension='COLUMNS')
-            full_data[race_num - 1] = [cell.value for cell in
-                                       writelbtosheet.fulldata.range(2, race_num + 1, 101, race_num + 1)]
-        output = full_data[race_num - 1]
+    output = full_data[race_num - 1]
     split_entries = [entry.split(',') for entry in output]
+    print(timestamp)
     return split_entries
 
 

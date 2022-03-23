@@ -25,6 +25,7 @@ def set_link(link: str) -> None:
     f = open('eventlink.txt', 'w')
     f.write(info_url)
     f.close()
+    sheets.add_race()
 
 
 def decode(data_bytes):
@@ -44,6 +45,20 @@ def events():
             if decoded[i]['start'] > newest['start']:
                 newest = decoded[i]
     return newest['name'], newest['id']
+
+
+def racename():
+    data = requests.get(
+        'https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + events()[0],
+        headers={'User-Agent': 'btd6-'})
+    decoded = json.loads(decode(data.content))
+    decoded = json.loads(decoded['data'])
+    try:
+        decoded = json.loads(decoded['races/' + events()[0]])
+    except KeyError:
+        return None
+    decoded = decoded['challenge']
+    return decoded['name']
 
 
 def raceinfo(name, update):

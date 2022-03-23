@@ -206,7 +206,7 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
         except APIError:
             await reply(ctx, get_error('leaderboard', 0), True)
             return
-    output = leaderboards.get_leaderboard(race_num)
+    output = leaderboards.get_leaderboard(race_num, True)
     if output:
         for entry in output:
             res = sheets.known(entry[0])
@@ -381,11 +381,10 @@ async def newrace(ctx):
 
 
 @client.command(aliases=['nk'])
-async def nkinfo(ctx, name=None, update=None):
+async def nkinfo(ctx, name=None):
     if not name:
         name = newracedecode.events()[0]
-    if ctx.message.author.id != 279126808455151628:
-        update = None
+    update = ctx.message.author.id == 279126808455151628
     output = newracedecode.raceinfo(name, update)
     if not output:
         await reply(ctx, ROF)

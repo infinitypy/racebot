@@ -1,6 +1,7 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
+import newracedecode
 import writelbtosheet
 
 scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
@@ -126,3 +127,10 @@ def write_race(race_stats):
     cell_info.append([])
     race_info.update(f'D{row_num}:F{row_num}', cell_info, major_dimension='COLUMNS')
     print('bef')
+
+
+def add_race():
+    race_info.add_rows(1)
+    race_info.update_cell(race_info.row_count + 1, 1, race_info.row_count)
+    race_info.update_cell(race_info.row_count + 1, 2, newracedecode.racename())
+    race_info.update_cell(race_info.row_count + 1, 3, newracedecode.events()[1])

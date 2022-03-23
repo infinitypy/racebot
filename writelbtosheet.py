@@ -9,9 +9,6 @@ sheet = client.open_by_key('16WGnLuUGxalfNEFND-YUfplhXIZMxJ1zzkESc3ISgn4')
 fulldata = sheet.worksheet('main')
 user_data = sheet.worksheet('users')
 
-assoc_ids = user_data.col_values(2)
-assoc_players = user_data.col_values(3)
-
 
 def load_race(race_num):
     import leaderboards
@@ -30,48 +27,3 @@ def load_race(race_num):
             cell.value = lb[i:i + batch_size][index]
         fulldata.update_cells(partial)
     return True
-
-
-def load_all_users():
-    import leaderboards
-    unique_ids = set()
-    for race_lb in leaderboards.full_data:
-        for entry in race_lb:
-            if entry:
-                unique_ids.add(entry[0:entry.index(',')])
-    unique_ids = list(unique_ids)
-    batch_size = 200
-    for i in range(0, len(unique_ids), batch_size):
-        partial = user_data.range(i + 2, 2, i + batch_size + 1, 2)
-        for index, cell in enumerate(partial):
-            if i + index >= len(unique_ids):
-                break
-            cell.value = unique_ids[i + index]
-        user_data.update_cells(partial)
-
-
-def load_nicks(start):
-    import time
-    import leaderboards
-    batch_size = 10
-    while True:
-        try:
-            partial = user_data.range(start, 2, start + batch_size - 1, 3)
-        except Exception:
-            time.sleep(5)
-            continue
-        for i in range(0, batch_size * 2, 2):
-            nicks = leaderboards.get_nicks(partial[i].value)
-            if not nicks:
-                continue
-            else:
-                most_used = nicks[0][0]
-                max_use = nicks[0][1]
-                for entry in nicks[1:]:
-                    if entry[1] == max_use:
-                        most_used += ',' + entry[0]
-                    else:
-                        break
-            partial[i + 1].value = most_used
-        user_data.update_cells(partial)
-        start += batch_size
