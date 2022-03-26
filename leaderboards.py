@@ -48,13 +48,12 @@ def get_leaderboard(race_num, update=False):
     global full_data, timestamp
     if update and time.time() - timestamp > 300 and newracedecode.racename() not in sheets.all_names:
         sheets.add_race()
-        writelbtosheet.load_race(writelbtosheet.fulldata.col_count - 1)
+        writelbtosheet.load_race(writelbtosheet.fulldata.col_count)
         full_data = writelbtosheet.fulldata.get_all_values(major_dimension='COLUMNS')[1:]
         full_data = [col[1:] for col in full_data]
         timestamp = time.time()
     if not race_num:
         race_num = writelbtosheet.fulldata.col_count - 1
-        print(race_num)
         if update and time.time() - timestamp > 300:
             writelbtosheet.load_race(race_num)
             full_data = writelbtosheet.fulldata.get_all_values(major_dimension='COLUMNS')[1:]
