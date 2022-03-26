@@ -14,10 +14,9 @@ def load_race(race_num):
     import leaderboards
     global fulldata
     fulldata = sheet.worksheet('main')
-    if race_num < fulldata.col_count:
-        return False
+    if race_num == fulldata.col_count:
+        fulldata.add_cols(1)
     sheet.worksheet('main')
-    fulldata.add_cols(1)
     batch_size = 100
     fulldata.update_cell(1, race_num + 1, str(race_num))
     lb = leaderboards.get_api_lb(race_num)
