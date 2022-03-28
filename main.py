@@ -571,6 +571,11 @@ async def bestguess(ctx):
                      f'```{misc.best_str[0]} ```')
 
 
+@client.command(aliases=['racism'])
+async def racist(ctx):
+    await ctx.reply(file=discord.File('racist.png'), mention_author=False)
+
+
 async def reply(ctx, message, mention=False):
     await ctx.reply(message, mention_author=mention)
 
