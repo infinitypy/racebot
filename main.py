@@ -167,7 +167,11 @@ async def rtime(ctx, start, end, stime=None, abr=None):
         if 0 <= int(start) <= 140 and 0 < int(end) <= 141 and \
                 int(start) < int(end) and float(stime) >= 0:
             longest, longest_round = sheets.rtime(int(start), int(end), float(stime), abr)
-            final_time = str(datetime.timedelta(seconds=longest))[3:-4]
+            final_time = str(datetime.timedelta(seconds=longest))
+            if final_time[-4:] == '0000':
+                final_time = final_time[3:-4]
+            else:
+                final_time = final_time[3:] + '.00'
             await reply(ctx, f'You will get **{final_time}** if you perfect clean round {longest_round}')
         else:
             await reply(ctx, get_error('rtime', 0), True)
@@ -219,10 +223,10 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
             curr_index = i + int(begin_end[0]) - 1
             adj = 0 if len(output[0]) == 3 else 1
             if curr_index + 1 != 50:
-                output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj].strip()} ' \
+                output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj]} ' \
                               f'{output[curr_index][1 - adj]}'
             else:
-                output_str += f'\n50< {output[curr_index][2 - adj].strip()} ' \
+                output_str += f'\n50< {output[curr_index][2 - adj]} ' \
                               f'{output[curr_index][1 - adj]}'
         if nbegin_end:
             output_str += '\n...'
@@ -230,10 +234,10 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
                 curr_index = i + int(nbegin_end[0]) - 1
                 adj = 0 if len(output[0]) == 3 else 1
                 if curr_index + 1 != 50:
-                    output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj].strip()} ' \
+                    output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj]} ' \
                                   f'{output[curr_index][1 - adj]}'
                 else:
-                    output_str += f'\n50< {output[curr_index][2 - adj].strip()} ' \
+                    output_str += f'\n50< {output[curr_index][2 - adj]} ' \
                                   f'{output[curr_index][1 - adj]}'
     else:
         output_str = 'No data'
