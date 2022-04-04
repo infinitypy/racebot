@@ -212,9 +212,11 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
             return
     output = leaderboards.get_leaderboard(race_num, True)
     if output:
-        for entry in output:
+        for i, entry in enumerate(output):
             res = sheets.known(entry[0])
-            if not res[1] or res[0] == res[1]:
+            if i == 0 and begin_end[0] == 1 and (not res[1] or res[0] == res[1]):
+                entry[0] = 'RandyZ524\'s alt'
+            elif not res[1] or res[0] == res[1]:
                 entry[0] = f' ID: {res[0][0:3]}...'
             else:
                 entry[0] = res[1]
@@ -225,11 +227,9 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
             if curr_index + 1 != 50:
                 output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj]} ' \
                               f'{output[curr_index][1 - adj]}'
-            elif curr_index +1 != 1:
+            else:
                 output_str += f'\n50< {output[curr_index][2 - adj]} ' \
                               f'{output[curr_index][1 - adj]}'
-            else:
-                output_str += f'\n1   {output[curr_index][2 - adj]} RandyZ524\'s alt'
         if nbegin_end:
             output_str += '\n...'
             for i in range(int(nbegin_end[1]) - int(nbegin_end[0]) + 1):
