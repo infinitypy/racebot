@@ -225,9 +225,11 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
             if curr_index + 1 != 50:
                 output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj]} ' \
                               f'{output[curr_index][1 - adj]}'
-            else:
+            elif curr_index +1 != 1:
                 output_str += f'\n50< {output[curr_index][2 - adj]} ' \
                               f'{output[curr_index][1 - adj]}'
+            else:
+                output_str += f'\n1   {output[curr_index][2 - adj]} RandyZ524\'s alt'
         if nbegin_end:
             output_str += '\n...'
             for i in range(int(nbegin_end[1]) - int(nbegin_end[0]) + 1):
