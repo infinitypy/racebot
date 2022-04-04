@@ -214,7 +214,7 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
     if output:
         for i, entry in enumerate(output):
             res = sheets.known(entry[0])
-            if i == 0 and begin_end[0] == 1 and (not res[1] or res[0] == res[1]):
+            if i == 0 and int(begin_end[0]) == 1 and (not res[1] or res[0] == res[1]):
                 entry[0] = 'RandyZ524\'s alt'
             elif not res[1] or res[0] == res[1]:
                 entry[0] = f' ID: {res[0][0:3]}...'
