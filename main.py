@@ -578,6 +578,19 @@ async def racist(ctx):
     await ctx.reply(file=discord.File('racist.png'), mention_author=False)
 
 
+@client.command()
+async def cnick(ctx, new):
+    server_name = ctx.guild.name
+    if (server_name == 'BTD6 Index' or server_name == 'test') and ctx.message.author.id != 217726724752932864:
+        await ctx.message.author.edit(nick=new)
+        await reply(ctx, '#8 - Anti-RoF Rhetoric\n'
+                         '- Rhetoric, whether in written, verbal, or artistic form, that disputes, minimizes, '
+                         'challenges, and/or denies the strength of the Ring of Fire is strictly forbidden. Violators '
+                         'are subject to immediate bans.')
+    else:
+        await reply(ctx, ROF, True)
+
+
 async def reply(ctx, message, mention=False):
     await ctx.reply(message, mention_author=mention)
 
