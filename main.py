@@ -291,20 +291,32 @@ async def nicks(ctx, *args):
 
 @client.command(aliases=['rk'])
 async def rank(ctx, *args):
+    race_num = None
     if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
             await reply(ctx, NO_ID, True)
             return
     else:
-        identifier = ' '.join(args)
+        if args[0].isdigit():
+            race_num = int(args[0])
+            if len(args) == 1:
+                identifier = discorduserids.get_id(ctx.message.author.id)
+                if not identifier:
+                    await reply(ctx, NO_ID, True)
+                    return
+            else:
+                identifier = ' '.join(args[1:])
+        else:
+            identifier = ' '.join(args)
     user_id = sheets.known(identifier)
-    output = leaderboards.get_rank(None, user_id[0])
+    output = leaderboards.get_rank(race_num, user_id[0])
     if not output:
         await reply(ctx, ROF, True)
         return
-    await reply(ctx, f'**{user_id[1]}**\'s current rank in newest race: {output[0]}\n'
-                     f'Current time: {output[1]}')
+    output_str = f'race {race_num}' if race_num else 'newest race'
+    await reply(ctx, f'**{user_id[1]}**\'s rank in {output_str}: {output[0]}\n'
+                     f'Time: {output[1]}')
 
 
 @client.command(aliases=['rks'])
@@ -578,10 +590,11 @@ async def racist(ctx):
     await ctx.reply(file=discord.File('racist.png'), mention_author=False)
 
 
-@client.command()
-async def cnick(ctx, new):
+@client.command(aliases=['cn'])
+async def cnick(ctx, *args):
     server_name = ctx.guild.name
     if (server_name == 'BTD6 Index' or server_name == 'test') and ctx.message.author.id != 217726724752932864:
+        new = ' '.join(args)
         await ctx.message.author.edit(nick=new)
         await reply(ctx, '#8 - Anti-RoF Rhetoric\n'
                          '- Rhetoric, whether in written, verbal, or artistic form, that disputes, minimizes, '

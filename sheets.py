@@ -18,7 +18,6 @@ all_ids = race_info.col_values(3)[1:]
 
 known_players = players.col_values(1)
 known_ids = players.col_values(2)
-player_aliases = players.col_values(3)
 
 assoc_ids = writelbtosheet.user_data.col_values(2)
 assoc_players = writelbtosheet.user_data.col_values(3)
@@ -27,32 +26,16 @@ assoc_players = writelbtosheet.user_data.col_values(3)
 def known(identifier):
     identifier = str(identifier)
     ids_to_names = {}
-    more_ids_to_names = {}
-    for i in range(len(known_players)):
-        ids_to_names[known_ids[i]] = [known_players[i], *(player_aliases[i].split(','))]
     for i in range(min(len(assoc_ids), len(assoc_players))):
-        more_ids_to_names[assoc_ids[i]] = assoc_players[i]
+        ids_to_names[assoc_ids[i]] = assoc_players[i]
     if identifier in ids_to_names:
-        return identifier, ids_to_names[identifier][0]
-    elif identifier in more_ids_to_names:
-        return identifier, more_ids_to_names[identifier]
+        return identifier, ids_to_names[identifier].split(',')[0]
     else:
         for id, aliases in ids_to_names.items():
-            if identifier.lower() in [alias.lower() for alias in aliases]:
-                return id, aliases[0]
-        for id, alias in more_ids_to_names.items():
-            if identifier.lower() in alias.lower().split(','):
-                return id, alias
+            split_aliases = aliases.lower().split(',')
+            if identifier.lower() in split_aliases:
+                return id, aliases.split(',')[0]
     return identifier, identifier
-
-
-def from_discord_id(disc_id: int) -> (str, str):
-    disc_id = str(disc_id)
-    disc_ids = players.col_values(4)
-    if disc_id not in disc_ids:
-        return None
-    index = disc_ids.index(disc_id)
-    return known_ids[index], known_players[index]
 
 
 def race(num, display_race_id=None):
@@ -68,7 +51,7 @@ def race(num, display_race_id=None):
     return race_info.cell(num + 1, col).value
 
 
-def race_range(start: int, end: int, display_race_id: str = None) -> str:
+def race_range(start, end, display_race_id=None):
     try:
         start = int(start)
         end = int(end)

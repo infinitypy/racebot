@@ -118,7 +118,10 @@ def get_rank(race_num, user_id):
         return None
     for index, entry in enumerate(full_lb):
         if entry[0] == user_id:
-            return index + 1, entry[1]
+            if len(entry) == 3:
+                return index + 1, entry[2]
+            else:
+                return index + 1, entry[1]
 
 
 def get_all_rank(user_id):
