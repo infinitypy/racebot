@@ -1,5 +1,6 @@
 import datetime
 import os
+import random
 
 import discord
 from discord import HTTPException
@@ -588,6 +589,11 @@ async def bestguess(ctx):
 @client.command(aliases=['racism'])
 async def racist(ctx):
     await ctx.reply(file=discord.File('racist.png'), mention_author=False)
+
+
+@client.command(aliases=['1984'])
+async def nineteeneightyfour(ctx):
+    await ctx.reply(file=discord.File(random.choice(('1984.png', 'memento.png'))), mention_author=False)
 
 
 @client.command(aliases=['cn'])
