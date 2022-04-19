@@ -12,7 +12,7 @@ import writelbtosheet
 
 full_data = writelbtosheet.fulldata.get_all_values(major_dimension='COLUMNS')[1:]
 full_data = [col[1:] for col in full_data]
-timestamp = time.time()
+timestamp = 0
 
 
 def get_api_lb(race_num):

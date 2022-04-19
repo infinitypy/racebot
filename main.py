@@ -197,7 +197,6 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
         last = first
         first = race_num
         begin_end = [first, last]
-        race_num = len(sheets.all_ids)
     if not first and not last:
         begin_end = [1, 10]
         nbegin_end = [45, 55]
