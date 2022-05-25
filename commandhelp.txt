@@ -13,6 +13,9 @@ length
 rtime
     start_round end_round [start_time=0] [abr=any]
     Returns finish time assuming perfect cleanup. If not sending from beginning of race, start_round is one round before current displayed round.
+rrtime
+    start_round end_round goal_time [abr=any]
+    Returns full send time to get exactly goal_time assuming perfectly cleanup. If not sending from beginning of race, start_round is one round before current displayed round.
 info
     race_number
     Returns brief information on the race.

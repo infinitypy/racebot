@@ -20,6 +20,9 @@ length
 rtime
     INVALID
 
+rrtime
+    INVALID
+
 info
     BAD_RACE_NUM
 

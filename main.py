@@ -180,6 +180,34 @@ async def rtime(ctx, start, end, stime=None, abr=None):
         await reply(ctx, get_error('rtime', 0), True)
 
 
+@client.command(aliases=['rrt'])
+async def rrtime(ctx, start, end, gtime, abr=None):
+    try:
+        if 0 <= int(start) <= 140 and 0 < int(end) <= 141 and \
+                int(start) < int(end) and float(gtime) >= 0:
+            longest, longest_round = sheets.rtime(int(start), int(end), 0, abr)
+            send_time = float(gtime) - longest
+            if send_time < 0:
+                await reply(ctx, ROF, True)
+                return
+            send_time = str(datetime.timedelta(seconds=send_time))
+            if send_time[-4:] == '0000':
+                send_time = send_time[3:-4]
+            else:
+                send_time = send_time[3:] + '.00'
+            goal_time = str(datetime.timedelta(seconds=float(gtime)))
+            if goal_time[-4:] == '0000':
+                goal_time = goal_time[3:-4]
+            else:
+                goal_time = goal_time[3:] + '.00'
+            await reply(ctx, f'You need to send at **{send_time}** to get **{goal_time}** if you perfect clean round '
+                             f'{longest_round}')
+        else:
+            await reply(ctx, get_error('rrtime', 0), True)
+    except ValueError:
+        await reply(ctx, get_error('rrtime', 0), True)
+
+
 @client.command(aliases=['i'])
 async def info(ctx, num):
     try:
