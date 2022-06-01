@@ -209,7 +209,7 @@ async def rrtime(ctx, start, end, gtime, abr=None):
 
 
 @client.command(aliases=['i'])
-async def info(ctx, name):
+async def info(ctx, name=None):
     if not name:
         name = newracedecode.events()[0]
     elif name.isdigit():
