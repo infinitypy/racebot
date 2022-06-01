@@ -24,7 +24,6 @@ rrtime
     INVALID
 
 info
-    BAD_RACE_NUM
 
 leaderboard
     BAD_RACE_NUM
@@ -56,8 +55,6 @@ profile
     No profile found for given player.
 
 newrace
-
-nkinfo
 
 setid
     MISSING

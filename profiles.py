@@ -49,7 +49,7 @@ def generate_badge_lb():
     output_str = '\n``{:<18}``<:BlackDiamondMedal:896548315548762133>``{:<3}``' \
                  '<:RedDiamondMedal:896548361321201764>``{:<3}``' \
                  '<:DiamondMedal:896548376164843540>``{:<3}{:<3}``' \
-        .format('RandyZ524', len(sheets.all_ids) - 1, 0, 0, len(sheets.all_ids))
+        .format('RandyZ524', len(sheets.all_ids) - 1, 0, 0, len(sheets.all_ids) - 1)
     for i in range(10):
         output_str += '\n``{:<18}``<:BlackDiamondMedal:896548315548762133>``{:<3}``' \
                       '<:RedDiamondMedal:896548361321201764>``{:<3}``' \

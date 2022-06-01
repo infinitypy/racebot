@@ -14,7 +14,8 @@ round_info = sheet.worksheet('rounds')
 players = sheet.worksheet('Player Info')
 
 all_names = race_info.col_values(2)[1:]
-all_ids = race_info.col_values(3)[1:]
+all_cnames = race_info.col_values(3)[1:]
+all_ids = race_info.col_values(4)[1:]
 
 known_players = players.col_values(1)
 known_ids = players.col_values(2)
@@ -38,20 +39,19 @@ def known(identifier):
     return identifier, identifier
 
 
-def race(num, display_race_id=None):
+def race(num, display_col=0):
     try:
         num = int(num)
     except TypeError:
         return ''
     if num <= 0:
         return ''
-    if num == 129 and display_race_id is None:
+    if num == 129 and display_col == 0:
         return ':corn::tada:'
-    col = 3 if display_race_id is not None else 2
-    return race_info.cell(num + 1, col).value
+    return race_info.cell(num + 1, display_col + 2).value
 
 
-def race_range(start, end, display_race_id=None):
+def race_range(start, end, display_col=0):
     try:
         start = int(start)
         end = int(end)
@@ -59,8 +59,7 @@ def race_range(start, end, display_race_id=None):
         return ''
     if start <= 0 or end <= 0 or start > end:
         return ''
-    col = 3 if display_race_id is not None else 2
-    names = race_info.col_values(col)
+    names = race_info.col_values(display_col + 2)
     output = '```'
     for i in range(start, end + 1):
         output += f'{i:>2}. {names[i]}\n'
@@ -85,22 +84,6 @@ def rtime(start, end, stime, abr):
     return round(longest + stime + bonus_delay + 0.0167 - 0.2, 2), longest_round + start
 
 
-def info(num):
-    stats = [c.value for c in race_info.range(num + 1, 4, num + 1, 20)]
-    output = ['Name: ' + race(num, None), 'Map: ' + stats[0], 'Mode: ' + stats[1] + ", " + stats[2],
-              'Rounds: ' + stats[3], 'Starting cash: ' + stats[4], 'Starting lives: ' + stats[5]]
-    modifiers = ''
-    for i in range(6, 11):
-        if stats[i]:
-            modifiers += race_info.cell(1, i + 4).value + ', '
-    if modifiers:
-        output.append(modifiers[0:-2])
-    for i in range(11, 15):
-        if stats[i]:
-            output.append(race_info.cell(1, i + 4).value + ': ' + stats[i])
-    return output
-
-
 def write_race(race_stats):
     row_num = [name.lower() for name in all_names].index(race_stats['name'].lower()) + 2
     cell_info = []
@@ -108,7 +91,7 @@ def write_race(race_stats):
     cell_info.append([race_stats['difficulty']])
     cell_info.append([race_stats['mode']])
     cell_info.append([])
-    race_info.update(f'D{row_num}:F{row_num}', cell_info, major_dimension='COLUMNS')
+    race_info.update(f'E{row_num}:G{row_num}', cell_info, major_dimension='COLUMNS')
     print('bef')
 
 
@@ -116,4 +99,4 @@ def add_race():
     race_info.add_rows(1)
     race_info.update_cell(race_info.row_count + 1, 1, race_info.row_count)
     race_info.update_cell(race_info.row_count + 1, 2, newracedecode.racename())
-    race_info.update_cell(race_info.row_count + 1, 3, newracedecode.events()[1])
+    race_info.update_cell(race_info.row_count + 1, 4, newracedecode.events()[1])

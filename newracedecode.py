@@ -61,7 +61,7 @@ def racename():
     return decoded['name']
 
 
-def raceinfo(name, update):
+def raceinfo(update, name):
     data = requests.get(
         'https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + name,
         headers={'User-Agent': 'btd6-'})
@@ -122,8 +122,12 @@ def raceinfo(name, update):
 
     if race_info['map'] == 'Tutorial':
         race_info['map'] = 'Monkey Meadow'
+    elif race_info['map'] == 'Town Centre':
+        race_info['map'] = 'Town Center'
     if race_info['mode'] == 'Clicks':
         race_info['mode'] = 'CHIMPS'
+    if hero == 'ChosenPrimaryHero':
+        hero = 'Any hero'
 
     if update:
         sheets.write_race(race_info)
@@ -147,7 +151,7 @@ def raceinfo(name, update):
         if race_info['object cost multi'] == 12.0:
             bloon_modifiers.append('Obstacles not removable')
         else:
-            bloon_modifiers.append(f'{race_info["object cost multi"] :.0f}x removable cost multiplier')
+            bloon_modifiers.append(f'{race_info["object cost multi"]}x removable cost multiplier')
     description = ', '.join((race_info['map'], race_info['difficulty'], race_info['mode']))
     description += f'\n{game_modifiers}' if game_modifiers else ''
     description += f'\n{", ".join(bloon_modifiers)}' if bloon_modifiers else ''

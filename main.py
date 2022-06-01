@@ -133,11 +133,11 @@ async def invite(ctx) -> None:
 async def race(ctx, num, num_end=None, race_id=None):
     if not race_id:
         if not num_end:
-            output = sheets.race(num, None)
+            output = sheets.race(num)
         elif num_end.isdigit():
-            output = sheets.race_range(num, num_end, None)
+            output = sheets.race_range(num, num_end)
         else:
-            output = sheets.race(num, num_end)
+            output = sheets.race(num, 2)
     else:
         output = sheets.race_range(num, num_end, race_id)
     if not output:
@@ -209,12 +209,17 @@ async def rrtime(ctx, start, end, gtime, abr=None):
 
 
 @client.command(aliases=['i'])
-async def info(ctx, num):
-    try:
-        if int(num) > 0:
-            await reply(ctx, '\n'.join(sheets.info(int(num))))
-    except (ValueError, APIError):
-        await reply(ctx, get_error('info', 0), True)
+async def info(ctx, name):
+    if not name:
+        name = newracedecode.events()[0]
+    elif name.isdigit():
+        name = sheets.race(name, 1)
+    update = ctx.message.author.id == 279126808455151628
+    output = newracedecode.raceinfo(update, name)
+    if not output:
+        await reply(ctx, ROF, True)
+        return
+    await ctx.send(embed=output, mention_author=False)
 
 
 @client.command(aliases=['lb'])
@@ -425,18 +430,6 @@ async def profile(ctx, *args):
 async def newrace(ctx):
     race_info = newracedecode.events()
     await reply(ctx, f'**Name:** {race_info[0]}\n**ID:** {race_info[1]}')
-
-
-@client.command(aliases=['nk'])
-async def nkinfo(ctx, name=None):
-    if not name:
-        name = newracedecode.events()[0]
-    update = ctx.message.author.id == 279126808455151628
-    output = newracedecode.raceinfo(name, update)
-    if not output:
-        await reply(ctx, ROF)
-        return
-    await ctx.send(embed=output, mention_author=False)
 
 
 @client.command(aliases=['gi'])
