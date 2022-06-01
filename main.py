@@ -329,7 +329,7 @@ async def rank(ctx, *args):
     if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await reply(ctx, NO_ID, True)
+            await reply(ctx, get_error('rank', 0), True)
             return
     else:
         if args[0].isdigit():
@@ -337,7 +337,7 @@ async def rank(ctx, *args):
             if len(args) == 1:
                 identifier = discorduserids.get_id(ctx.message.author.id)
                 if not identifier:
-                    await reply(ctx, NO_ID, True)
+                    await reply(ctx, get_error('rank', 0), True)
                     return
             else:
                 identifier = ' '.join(args[1:])
@@ -346,7 +346,7 @@ async def rank(ctx, *args):
     user_id = sheets.known(identifier)
     output = leaderboards.get_rank(race_num, user_id[0])
     if not output:
-        await reply(ctx, ROF, True)
+        await reply(ctx, get_error('rank', 1), True)
         return
     output_str = f'race {race_num}' if race_num else 'newest race'
     await reply(ctx, f'**{user_id[1]}**\'s rank in {output_str}: {output[0]}\n'
@@ -358,7 +358,7 @@ async def ranks(ctx, *args):
     if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await reply(ctx, NO_ID, True)
+            await reply(ctx, get_error('ranks', 0), True)
             return
     else:
         identifier = ' '.join(args)
@@ -414,14 +414,14 @@ async def profile(ctx, *args):
     if not args:
         identifier = discorduserids.get_id(ctx.message.author.id)
         if not identifier:
-            await reply(ctx, NO_ID, True)
+            await reply(ctx, get_error('profile', 0), True)
             return
     else:
         identifier = ' '.join(args)
     user_id = sheets.known(identifier)
     output = profiles.get_profile(user_id[0])
     if not output:
-        await reply(ctx, ROF, True)
+        await reply(ctx, get_error('profile', 1), True)
         return
     await reply(ctx, f'Race stats for **{user_id[1]}**\n{output}')
 
@@ -436,20 +436,17 @@ async def newrace(ctx):
 async def getid(ctx):
     output = discorduserids.get_id(ctx.message.author.id)
     if not output:
-        await reply(ctx, NO_ID, True)
+        await reply(ctx, get_error('getid', 0), True)
         return
     await reply(ctx, 'User ID:')
     await ctx.send(output)
 
 
 @client.command(aliases=['si'])
-async def setid(ctx, u_id=None):
-    if not u_id:
-        await reply(ctx, ROF, True)
-        return
+async def setid(ctx, u_id):
     res = discorduserids.set_id(u_id, ctx.message.author.id)
     if res is None:
-        await reply(ctx, ROF, True)
+        await reply(ctx, get_error('setid', 0), True)
         return
     text = 'Replacement' if res else 'New'
     await reply(ctx, f'{text} user ID: {u_id}')
@@ -489,6 +486,21 @@ async def pasta(ctx, *args):
     await reply(ctx, misc.random_pasta(misc.strip_to_words(args) if args else None))
 
 
+@client.command(aliases=['ptm, pastamenu'])
+async def menu(ctx, *args):
+    if not args:
+        await reply(ctx, get_error('menu', 0), True)
+        return
+    identifier = misc.strip_to_words(args)
+    matching = misc.matching_pastas(identifier)
+    if not matching:
+        await reply(ctx, get_error('menu', 2), True)
+        return
+    output = f'List of matching pastas for **{identifier}**:```\n> '
+    output += '\n> '.join(matching)
+    await reply(ctx, f'{output}```')
+
+
 @client.command(aliases=['d'])
 async def diagnosis(ctx, *args):
     name = ' '.join(args) if args else None
@@ -499,7 +511,7 @@ async def diagnosis(ctx, *args):
     await reply(ctx, header + misc.random_issue(args))
 
 
-@client.command(aliases=['ntwica'])
+@client.command(aliases=['ntwica', 'now thats what I call'])
 async def ntwic(ctx):
     try:
         await ctx.message.delete()

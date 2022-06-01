@@ -71,6 +71,11 @@ badgelb
 
 pasta
 
+menu
+    INVALID
+    ILLEGAL
+    No matching pastas. Go complain to RandyZ129#8918 you loser.
+
 diagnosis
     INVALID
 

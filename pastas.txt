@@ -293,7 +293,7 @@ literally just do not say it. you went almost your entire life pre-btd6 not sayi
 A friendly reminder that, per rule 5, phrases like "skill issue" and any phrases which carry the same meaning as such are not allowed, and going forward we will be stricter in enforcing this. Anyone who continues to say it will face increasingly long mutes.
 
 "Skill issue" is a phrase which is generally rude to less experienced players and is not consistent with the environment we want to create in this server. The staff's decision to forbid it is final, and excessive protests will lead to mutes/bans per rule 4.
-~underdrive,underdriveop,cubegrats,cubegratulations,cliche,cliché,fenix,fenixkillah,egregore,whore,whoreofanegregore,ttz,tackzone,thetackzone,babel,towerofbabel
+~ud,underdriveop,cubegrats,cubegratulations,cliche,cliché,fenix,fenixkillah,egregore,whore,whoreofanegregore,ttz,tackzone,thetackzone,babel,towerofbabel
 "underdrive op" or "cubegrats" is not an adequate excuse for being a cliché. Last week when I was racing I had to ask fenixkillah what the strat was. I felt deep remorse because I knew that fenix had answered that question dozens of times in the last 30 minutes. When you partake in simping for underdrive, you are the whore of an egregore. When you use the tower that billions of other skillless racists have used (for example, the tower "the tack zone" or anything else choc simps for) and enjoy it, you are a whore, because you are allowing this tower to influence your strat in the same way as it has influenced billions of other racists. We must strive to have unique experiences. We must strive to build a new Tower of Babel, not to reach god, but so that we may have our tongues scattered again, and prevent the explosive manifestation of new mind-viruses.
 ~choc,chocbox,chocolate,chocolatebox,chocolatier,ourstory
 **Our Story.**
@@ -332,3 +332,11 @@ THIS TIER LIST IS BAD BECAUSE 1.GLAIVE LORD IS IN C 2.ELITE DEFENDER, SUPER MAEL
 |          '---'            |
 \      /  / /  /     /
      /           /
+~ud,underdrive,underdrivepulley,underdrivepulleys
+**Underdrive** is the slowing of the rate of rotation in a system, achieved by either making the crank or main (drive) pulley smaller or making the accessory (driven) pulley larger than the original diameter pulleys.
+
+Underdrive pulleys increase engine output by reducing the draw of the engine's accessories by slowing them down and reducing the horsepower (HP) they use. Horsepower gains from underdrive pulleys can vary by vehicle, engine, number of accessories and the amount of underdrive (improvements of up to 5–15 HP at the wheels have been seen). Additional and significant performance improvements can be seen by reducing the weight of the pulley versus the original pulley. Gains can range from 3 to 6 HP per pound of weight reduced.
+
+Poorly engineered underdrive pulleys can cause unwanted side effects; this is due to not spinning the alternator, power steering, and/or air conditioning fast enough. This leads to low alternator voltage, weak or no power steering assist, and weak or no air conditioning effectiveness, especially at idle or low RPM. The most commonly seen result is lighting may dim, or the stereo may cut out. Too much underdrive for a race car is not much of a concern due to the high RPMs they run at, but for daily driven vehicles it can lead to a dead battery if too much time is spent at idle or low RPM. Additionally, an underdrive pulley will not reduce the power consumed by the alternator, as the alternator's load is automatically adjusted by its control circuit to match the electrical load regardless of input speed.
+
+Changing the original crankshaft pulley can also have negative effects if the replacement pulley is not manufactured properly. A crankshaft or accessory pulley not machined or balanced properly can cause severe damage leading to thousands of dollars in repairs.

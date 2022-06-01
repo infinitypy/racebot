@@ -69,6 +69,16 @@ def random_pasta(identifier=None):
     return random.choice(pastas)
 
 
+def matching_pastas(identifier):
+    if identifier not in label_to_pasta:
+        return None
+    matching = []
+    for pasta_index in label_to_pasta[identifier]:
+        noodle = pastas[pasta_index][0: 25].replace('\n', ' ')
+        matching.append(f'{noodle} ...')
+    return matching
+
+
 def random_issue(args):
     if args:
         s = strip_to_words(args)
