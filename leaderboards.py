@@ -37,7 +37,7 @@ def get_api_lb(race_num):
         else:
             times.append(str(stuff[i][0]))
 
-    times = [str(datetime.timedelta(milliseconds=999999999 - int(time)))[3:-3] for time in times]
+    times = [str(datetime.timedelta(milliseconds=1000000000 - int(time)))[3:-3] for time in times]
     for i in range(len(stuff)):
         complete.append(f'{stuff[i][1]}, {times[i]}')
 

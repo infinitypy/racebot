@@ -168,7 +168,7 @@ async def rtime(ctx, start, end, stime=None, abr=None):
         if 0 <= int(start) <= 140 and 0 < int(end) <= 141 and \
                 int(start) < int(end) and float(stime) >= 0:
             longest, longest_round = sheets.rtime(int(start), int(end), float(stime), abr)
-            final_time = str(datetime.timedelta(seconds=longest))
+            final_time = str(datetime.timedelta(seconds=float(int(longest * 100) / 100.0)))
             if final_time[-4:] == '0000':
                 final_time = final_time[3:-4]
             else:
@@ -186,7 +186,7 @@ async def rrtime(ctx, start, end, gtime, abr=None):
         if 0 <= int(start) <= 140 and 0 < int(end) <= 141 and \
                 int(start) < int(end) and float(gtime) >= 0:
             longest, longest_round = sheets.rtime(int(start), int(end), 0, abr)
-            send_time = float(gtime) - longest
+            send_time = float(gtime) - round(longest, 2)
             if send_time < 0:
                 await reply(ctx, ROF, True)
                 return
@@ -215,7 +215,7 @@ async def info(ctx, name=None):
     elif name.isdigit():
         name = sheets.race(name, 1)
     update = ctx.message.author.id == 279126808455151628
-    output = newracedecode.raceinfo(update, name)
+    output = newracedecode.infotoembed(*newracedecode.raceinfo(update, name))
     if not output:
         await reply(ctx, ROF, True)
         return
@@ -237,7 +237,7 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
     if race_num and int(race_num) < 0:
         race_num = int(race_num) % len(sheets.all_ids)
     if not race_num:
-        title = f'Newest race: **{newracedecode.events()[0]}**'
+        title = f'Newest race: **{newracedecode.racename()}**'
     else:
         try:
             title = f'Race #{race_num}: **{sheets.race(race_num)}**'
@@ -248,7 +248,7 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
     if output:
         for i, entry in enumerate(output):
             res = sheets.known(entry[0])
-            if i == 0 and int(begin_end[0]) == 1 and (not res[1] or res[0] == res[1]):
+            if i == 0 and int(begin_end[0]) <= 1 and (not res[1] or res[0] == res[1]):
                 entry[0] = 'RandyZ524\'s alt'
             elif not res[1] or res[0] == res[1]:
                 entry[0] = f' ID: {res[0][0:3]}...'
@@ -258,7 +258,18 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
         for i in range(int(begin_end[1]) - int(begin_end[0]) + 1):
             curr_index = i + int(begin_end[0]) - 1
             adj = 0 if len(output[0]) == 3 else 1
-            if curr_index + 1 != 50:
+            if curr_index + 1 == 0:
+                race_info = newracedecode.raceinfo(False, sheets.race(race_num, 1))[0]
+                rounds = race_info['rounds']
+                longest = sheets.rtime(int(rounds[0]) - 1, int(rounds[1]), 0,
+                                       None if race_info['mode'] != 'Alternate Bloons Rounds' else True)[0]
+                final_time = str(datetime.timedelta(seconds=float(int(longest * 1000) / 1000.0)))
+                if final_time[-3:] == '000':
+                    final_time = final_time[3:-3]
+                else:
+                    final_time = final_time[3:] + '.000'
+                output_str += f'\n0   {final_time} RandyZ524\'s alt'
+            elif curr_index + 1 != 50:
                 output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj]} ' \
                               f'{output[curr_index][1 - adj]}'
             else:

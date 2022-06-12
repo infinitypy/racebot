@@ -40,6 +40,8 @@ def known(identifier):
 
 
 def race(num, display_col=0):
+    if not num:
+        num = writelbtosheet.fulldata.col_count - 1
     try:
         num = int(num)
     except TypeError:
@@ -81,7 +83,9 @@ def rtime(start, end, stime, abr):
     rounds_adj = [float(r.value) + ((i + 1) * 0.2) for i, r in enumerate(rounds)]
     longest = max(rounds_adj)
     longest_round = rounds_adj.index(longest) + 1
-    return round(longest + stime + bonus_delay + 0.0167 - 0.2, 2), longest_round + start
+    time = longest + stime + bonus_delay + 0.0333 - 0.2
+    time = round(time * 60) / 60
+    return time, longest_round + start
 
 
 def write_race(race_stats):
@@ -92,7 +96,6 @@ def write_race(race_stats):
     cell_info.append([race_stats['mode']])
     cell_info.append([])
     race_info.update(f'E{row_num}:G{row_num}', cell_info, major_dimension='COLUMNS')
-    print('bef')
 
 
 def add_race():

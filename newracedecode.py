@@ -92,10 +92,10 @@ def raceinfo(update, name):
                 count = f'\[{tower["max"]}\]'
             formatted_towers[tower['tower']] = (count, avail_tiers)
     # always display
-    race_info = {'name': decoded['name'], 'map': misc.space_by_caps(decoded['map']),
+    race_info = {'name': decoded['name'], 'canonname': name, 'map': misc.space_by_caps(decoded['map']),
                  'difficulty': decoded['difficulty'], 'mode': misc.space_by_caps(decoded['mode']),
                  'rounds': [decoded['startRules']['round'], decoded['startRules']['endRound']],
-                 'startcash': decoded['startRules']['cash'], 'maxtowers': decoded['maxTowers']}
+                 'startcash': decoded['startRules']['cash'], 'maxtowers': decoded['maxTowers'], 'hero': hero}
     if race_info['startcash'] == -1:
         race_info['startcash'] = 325 if race_info['mode'] == 'HalfCash' else 650
     race_info['lives'] = decoded['startRules']['lives']
@@ -126,12 +126,16 @@ def raceinfo(update, name):
         race_info['map'] = 'Town Center'
     if race_info['mode'] == 'Clicks':
         race_info['mode'] = 'CHIMPS'
-    if hero == 'ChosenPrimaryHero':
-        hero = 'Any hero'
+    if race_info['hero'] == 'ChosenPrimaryHero':
+        race_info['hero'] = 'Any hero'
 
     if update:
         sheets.write_race(race_info)
 
+    return race_info, formatted_towers
+
+
+def infotoembed(race_info, formatted_towers):
     game_modifiers = f'{"No MK " if race_info["mk"] else ""}{"All camo " if race_info["camo"] else ""}' \
                      f'{"All regrow " if race_info["regrow"] else ""}{"No selling " if race_info["selling"] else ""}'
     bloon_modifiers = []
@@ -155,7 +159,7 @@ def raceinfo(update, name):
     description = ', '.join((race_info['map'], race_info['difficulty'], race_info['mode']))
     description += f'\n{game_modifiers}' if game_modifiers else ''
     description += f'\n{", ".join(bloon_modifiers)}' if bloon_modifiers else ''
-    description += f'\n{misc.space_by_caps(hero)}'
+    description += f'\n{misc.space_by_caps(race_info["hero"])}'
     max_towers = race_info['maxtowers']
     description += f'\n{f"{max_towers} towers only" if max_towers != -1 else ""}'
 
@@ -163,7 +167,7 @@ def raceinfo(update, name):
         title=f'Full info for {race_info["name"]}',
         description=description,
         colour=discord.Colour.orange(),
-        url=('https://fast-static-api.nkstatic.com/storage/static/appdocs/11/races/' + name)
+        url=('https://fast-static-api.nkstatic.com/storage/static/appdocs/11/races/' + race_info['canonname'])
     )
 
     embed.add_field(name='Rounds', value='{}-{}'.format(*race_info['rounds']))
