@@ -64,7 +64,10 @@ def get_leaderboard(race_num, update=False):
             race_num = int(race_num)
         except TypeError:
             return list()
-    output = full_data[race_num - 1]
+    try:
+        output = full_data[race_num - 1]
+    except IndexError:
+        return list()
     split_entries = [[x.strip() for x in entry.split(',')] for entry in output]
     return split_entries
 

@@ -492,6 +492,42 @@ async def setlink(ctx, link):
     await reply(ctx, 'minecool is the second longest intermediate map')
 
 
+have_phones = {'5f07c726c5f5be3155024a23', '5b2845abfcd0f8d9745e6cfe', '57d779f72437b18d0db5a16a'}
+
+
+@client.command(aliases=['cuplb', 'clb'])
+async def cupleaderboard(ctx, mobile=None):
+    cuplb = {}
+    end = 185
+    output = leaderboards.get_leaderboard(182, True)
+    for position, entry in enumerate(output):
+        cuplb[entry[0]] = position + 1
+    for i in range(183, 186):
+        output = leaderboards.get_leaderboard(i, True)
+        if not output:
+            end = i - 1
+            break
+        output = [entry[0] for entry in output]
+        for player in list(cuplb):
+            if player not in output:
+                del cuplb[player]
+            else:
+                cuplb[player] += output.index(player) + 1
+    cuplb = dict(sorted(cuplb.items(), key=lambda item: item[1]))
+    if mobile:
+        for player in list(cuplb):
+            if player not in have_phones:
+                del cuplb[player]
+    output_str = f'Cup Race {"Mobile " if mobile else ""}Leaderboard (races 182 - {end})```'
+    for player, position in cuplb.items():
+        res = sheets.known(player)
+        if not res[1] or res[0] == res[1]:
+            output_str += f'\n{position:<3}  ID: {res[0][0:3]}...'
+        else:
+            output_str += f'\n{position:<3} {res[1]}'
+    await reply(ctx, f'{output_str}```')
+
+
 @client.command(aliases=['pt'])
 async def pasta(ctx, *args):
     await reply(ctx, misc.random_pasta(misc.strip_to_words(args) if args else None))
