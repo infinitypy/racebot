@@ -497,34 +497,41 @@ have_phones = {'5f07c726c5f5be3155024a23', '5b2845abfcd0f8d9745e6cfe', '57d779f7
 
 @client.command(aliases=['cuplb', 'clb'])
 async def cupleaderboard(ctx, mobile=None):
+    def string_to_time(time_str):
+        time_str = time_str.split(':')
+        total = 60000 * int(time_str[0])
+        time_str = time_str[1].split('.')
+        total += 1000 * int(time_str[0]) + int(time_str[1])
+        return total
     cuplb = {}
     end = 185
     output = leaderboards.get_leaderboard(182, True)
     for position, entry in enumerate(output):
-        cuplb[entry[0]] = position + 1
+        cuplb[entry[0]] = string_to_time(entry[1])
     for i in range(183, 186):
         output = leaderboards.get_leaderboard(i, True)
         if not output:
             end = i - 1
             break
-        output = [entry[0] for entry in output]
+        output = dict(output)
         for player in list(cuplb):
             if player not in output:
                 del cuplb[player]
             else:
-                cuplb[player] += output.index(player) + 1
+                cuplb[player] += string_to_time(output[player])
     cuplb = dict(sorted(cuplb.items(), key=lambda item: item[1]))
     if mobile:
         for player in list(cuplb):
             if player not in have_phones:
                 del cuplb[player]
     output_str = f'Cup Race {"Mobile " if mobile else ""}Leaderboard (races 182 - {end})```'
-    for player, position in cuplb.items():
+    for player, time in cuplb.items():
+        time = str(datetime.timedelta(milliseconds=time))[3:-3]
         res = sheets.known(player)
         if not res[1] or res[0] == res[1]:
-            output_str += f'\n{position:<3}  ID: {res[0][0:3]}...'
+            output_str += f'\n{time:<3}  ID: {res[0][0:3]}...'
         else:
-            output_str += f'\n{position:<3} {res[1]}'
+            output_str += f'\n{time:<3} {res[1]}'
     await reply(ctx, f'{output_str}```')
 
 
