@@ -1,6 +1,7 @@
 import datetime
 import os
 import random
+from io import StringIO
 
 import discord
 from discord import HTTPException
@@ -543,16 +544,21 @@ async def pasta(ctx, *args):
 @client.command(aliases=['ptm, pastamenu'])
 async def menu(ctx, *args):
     if not args:
-        await reply(ctx, get_error('menu', 0), True)
-        return
-    identifier = misc.strip_to_words(args)
+        identifier = None
+    else:
+        identifier = misc.strip_to_words(args)
     matching = misc.matching_pastas(identifier)
     if not matching:
         await reply(ctx, get_error('menu', 2), True)
         return
-    output = f'List of matching pastas for **{identifier}**:```\n> '
-    output += '\n> '.join(matching)
-    await reply(ctx, f'{output}```')
+    output = '\n> '.join(matching)
+    if identifier:
+        output = f'List of matching pastas for **{identifier}**:```\n> {output}'
+        await reply(ctx, f'{output}```')
+    else:
+        buffer = StringIO(f'> {output}')
+        temp = discord.File(buffer, filename='olivegarden.txt')
+        await ctx.send('List of matching pastas:', file=temp)
 
 
 @client.command(aliases=['d'])

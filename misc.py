@@ -70,9 +70,14 @@ def random_pasta(identifier=None):
 
 
 def matching_pastas(identifier):
+    matching = []
+    if not identifier:
+        for noodle in pastas:
+            noodle = noodle[0: 25].replace('\n', ' ')
+            matching.append(f'{noodle} ...')
+        return matching
     if identifier not in label_to_pasta:
         return None
-    matching = []
     for pasta_index in label_to_pasta[identifier]:
         noodle = pastas[pasta_index][0: 25].replace('\n', ' ')
         matching.append(f'{noodle} ...')
