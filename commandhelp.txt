@@ -38,7 +38,7 @@ compare
     [identifiers=self]...
     Returns graphical comparison of one or more player rankings within top 100. Pass in "self" to include yourself via Discord ID to in-game ID mapping (see r!setid). If given no argument, compares with only self.
 gaps
-    identifier1=self, identifier2=self
+    identifier1=self identifier2=self
     Returns Player 1's best race relative to player 2, and vice versa. Pass in "self" to include yourself via Discord ID to in-game ID mapping (see r!setid).
 profile
     [identifier=self]
@@ -62,8 +62,8 @@ pasta
     [label]
     Returns pasta matching label, or random pasta otherwise.
 menu
-    label
-    Returns list of pastas matching label.
+    [menu_number] label
+    Returns list of pastas matching label. If given menu_number, returns corresponding pasta in list.
 diagnosis
     [name=self]
     Diagnoses given player.

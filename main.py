@@ -72,7 +72,10 @@ async def help(ctx, command_name=None):
     elif command_name in command_help:
         embed.set_author(name=f'Help for "{command_name}" command')
         embed.add_field(name='Usage', value=command_help[command_name][0], inline=False)
-        embed.add_field(name='Function', value=command_help[command_name][1])
+        embed.add_field(name='Function', value=command_help[command_name][1], inline=False)
+        aliases = commands.Bot.get_command(client, command_name).aliases
+        if aliases:
+            embed.add_field(name='Aliases', value=aliases[0], inline=False)
     else:
         embed.set_author(name='Help')
         embed.add_field(name=command_name, value='Not a valid command, use r!help for a list of commands', inline=False)
@@ -87,12 +90,12 @@ NO_ID = 'No associated ID. Set using r!setid <BTD6 ID>'
 
 
 @client.event
-async def on_ready() -> None:
+async def on_ready():
     print(f'{client.user} is online')
 
 
 @client.command()
-async def hello(ctx, *args) -> None:
+async def hello(ctx, *args):
     if not args:
         args = [str(ctx.message.author.id)]
         name = f'<@!{args[0]}>'
@@ -125,7 +128,7 @@ async def hellо(ctx, *args):
 
 
 @client.command()
-async def invite(ctx) -> None:
+async def invite(ctx):
     await reply(ctx, 'https://discord.com/oauth2/authorize?'
                      'client_id=893291225568919562&permissions=3072&scope=bot')
 
@@ -324,7 +327,12 @@ async def nicks(ctx, *args):
             return
     else:
         identifier = ' '.join(args)
-    user_id = sheets.known(identifier)
+    user_id = None
+    if identifier[0: 2] == '<@' and identifier[-1:] == '>':
+        user_id = discorduserids.get_id(identifier[2: -1])
+        user_id = sheets.known(user_id)
+    if not user_id:
+        user_id = sheets.known(identifier)
     output = leaderboards.get_nicks(user_id[0])
     if not output:
         await reply(ctx, get_error('nicks', 1), True)
@@ -355,7 +363,12 @@ async def rank(ctx, *args):
                 identifier = ' '.join(args[1:])
         else:
             identifier = ' '.join(args)
-    user_id = sheets.known(identifier)
+    user_id = None
+    if identifier[0: 2] == '<@' and identifier[-1:] == '>':
+        user_id = discorduserids.get_id(identifier[2: -1])
+        user_id = sheets.known(user_id)
+    if not user_id:
+        user_id = sheets.known(identifier)
     output = leaderboards.get_rank(race_num, user_id[0])
     if not output:
         await reply(ctx, get_error('rank', 1), True)
@@ -397,13 +410,24 @@ async def gaps(ctx, *args):
         return
     identifiers = [discorduserids.get_id(ctx.message.author.id) if x == 'self' else x for x in args]
     pair_ranks = []
-    user_id_1 = sheets.known(identifiers[0])
+    user_id_1 = None
+    if identifiers[0][0: 2] == '<@' and identifiers[0][-1:] == '>':
+        user_id_1 = discorduserids.get_id(identifiers[0][2: -1])
+        user_id_1 = sheets.known(user_id_1)
+    if not user_id_1:
+        user_id_1 = sheets.known(identifiers[0])
     all_ranks_1 = leaderboards.get_all_rank(user_id_1[0])
     if not all_ranks_1:
         await reply(ctx, get_error('gaps', 1), True)
         return
     all_ranks_1 = {x[0]: x[1] for x in all_ranks_1}
-    user_id_2 = sheets.known(identifiers[1])
+
+    user_id_2 = None
+    if identifiers[1][0: 2] == '<@' and identifiers[1][-1:] == '>':
+        user_id_2 = discorduserids.get_id(identifiers[1][2: -1])
+        user_id_2 = sheets.known(user_id_2)
+    if not user_id_2:
+        user_id_2 = sheets.known(identifiers[1])
     all_ranks_2 = leaderboards.get_all_rank(user_id_2[0])
     if not all_ranks_2:
         await reply(ctx, get_error('gaps', 1), True)
@@ -430,7 +454,12 @@ async def profile(ctx, *args):
             return
     else:
         identifier = ' '.join(args)
-    user_id = sheets.known(identifier)
+    user_id = None
+    if identifier[0: 2] == '<@' and identifier[-1:] == '>':
+        user_id = discorduserids.get_id(identifier[2: -1])
+        user_id = sheets.known(user_id)
+    if not user_id:
+        user_id = sheets.known(identifier)
     output = profiles.get_profile(user_id[0])
     if not output:
         await reply(ctx, get_error('profile', 1), True)
@@ -543,22 +572,34 @@ async def pasta(ctx, *args):
 
 @client.command(aliases=['ptm, pastamenu'])
 async def menu(ctx, *args):
+    identifier = None
+    select = None
     if not args:
-        identifier = None
+        matching = misc.matching_pastas(None)
     else:
+        if args[0].isdigit() and len(args) >= 2:
+            select = int(args[0])
+            args = args[1:]
         identifier = misc.strip_to_words(args)
-    matching = misc.matching_pastas(identifier)
+        matching = misc.matching_pastas(identifier, select)
     if not matching:
         await reply(ctx, get_error('menu', 2), True)
         return
-    output = '\n> '.join(matching)
-    if identifier:
-        output = f'List of matching pastas for **{identifier}**:```\n> {output}'
-        await reply(ctx, f'{output}```')
-    else:
+    if not identifier:
+        output = '\n> '.join(matching)
         buffer = StringIO(f'> {output}')
         temp = discord.File(buffer, filename='olivegarden.txt')
-        await ctx.send('List of matching pastas:', file=temp)
+        await ctx.send('List of pastas:', file=temp)
+    elif select:
+        await reply(ctx, matching)
+    else:
+        output = ''
+        line_num = 1
+        while matching:
+            output += f'{line_num:<2} {matching[0]}\n'
+            matching = matching[1:]
+            line_num += 1
+        await reply(ctx, f'List of matching pastas for **{identifier}**:```{output}```')
 
 
 @client.command(aliases=['d'])

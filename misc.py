@@ -9,6 +9,7 @@ import os
 import numpy as np
 from Levenshtein import distance as levenshtein_distance
 
+import discorduserids
 import sheets
 import leaderboards
 
@@ -32,8 +33,8 @@ for line in lines[1:]:
     if line[0] == '~':
         for label in labels:
             if label not in label_to_pasta:
-                label_to_pasta[label] = set()
-            label_to_pasta[label].add(pasta_count)
+                label_to_pasta[label] = []
+            label_to_pasta[label].append(pasta_count)
         pastas.append(running)
         running = ''
         pasta_count += 1
@@ -42,8 +43,8 @@ for line in lines[1:]:
         running += line
 for label in labels:
     if label not in label_to_pasta:
-        label_to_pasta[label] = set()
-    label_to_pasta[label].add(pasta_count)
+        label_to_pasta[label] = []
+    label_to_pasta[label].append(pasta_count)
 pastas.append(running)
 
 curr_str = 'choc can\'t micro rof'
@@ -69,7 +70,7 @@ def random_pasta(identifier=None):
     return random.choice(pastas)
 
 
-def matching_pastas(identifier):
+def matching_pastas(identifier, select=None):
     matching = []
     if not identifier:
         for noodle in pastas:
@@ -79,15 +80,17 @@ def matching_pastas(identifier):
     if identifier not in label_to_pasta:
         return None
     for pasta_index in label_to_pasta[identifier]:
-        noodle = pastas[pasta_index][0: 25].replace('\n', ' ')
-        matching.append(f'{noodle} ...')
+        matching.append(pastas[pasta_index])
+    if select:
+        return matching[select - 1]
+    matching = [f'{pasta[0: 25].replace(chr(10), " ")} ...' for pasta in matching]
     return matching
 
 
 def random_issue(args):
     if args:
         s = strip_to_words(args)
-        hash_val = int(hashlib.sha1(s.encode("utf-8")).hexdigest(), 16)
+        hash_val = int(hashlib.sha1(s.encode('utf-8')).hexdigest(), 16)
         return skill_issues[hash_val % len(skill_issues)]
     global issue_index
     if issue_index >= len(skill_issues):
@@ -110,7 +113,12 @@ def ranks_embed(stats, *identifiers):
     cmap = plot.get_cmap('gist_heat')
     colors = [cmap(i / num_identifiers) for i in range(num_identifiers)]
     for index, identifier in enumerate(identifiers):
-        user_id = sheets.known(identifier)
+        user_id = None
+        if identifier[0: 2] == '<@' and identifier[-1:] == '>':
+            user_id = discorduserids.get_id(identifier[2: -1])
+            user_id = sheets.known(user_id)
+        if not user_id:
+            user_id = sheets.known(identifier)
         all_ranks = leaderboards.get_all_rank(user_id[0])
         if not all_ranks:
             continue
