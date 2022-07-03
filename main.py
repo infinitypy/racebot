@@ -730,6 +730,11 @@ async def nineteeneightyfour(ctx):
     await ctx.reply(file=discord.File(random.choice(('1984.png', 'memento.png'))), mention_author=False)
 
 
+@client.command()
+async def who(ctx):
+    await reply(ctx, 'asked')
+
+
 @client.command(aliases=['cn'])
 async def cnick(ctx, *args):
     server_name = ctx.guild.name
