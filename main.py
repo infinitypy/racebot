@@ -1,6 +1,7 @@
 import datetime
 import os
 import random
+import time
 from io import StringIO
 
 import discord
@@ -732,7 +733,14 @@ async def nineteeneightyfour(ctx):
 
 @client.command()
 async def who(ctx):
-    await reply(ctx, 'asked')
+    def check(m):
+        return m.channel == ctx.channel and (m.author.id not in [893966690768007178, 893291225568919562])
+    try:
+        await ctx.message.delete()
+    except discord.errors.Forbidden:
+        pass
+    next_message = await client.wait_for('message', check=check)
+    await ctx.send('who asked', reference=next_message, mention_author=False)
 
 
 @client.command(aliases=['cn'])
