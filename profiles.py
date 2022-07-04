@@ -1,3 +1,4 @@
+import aiohttp
 import requests
 import sheets
 from json import JSONDecodeError
@@ -24,10 +25,12 @@ def get_profile(user_id):
         .format(*medal_counts, sum(medal_counts))
 
 
-def get_medal_counts(user_id):
+async def get_medal_counts(user_id):
     user_url = f'https://priority-static-api.nkstatic.com/storage/static/11/{user_id}/public-stats'
     try:
-        data = requests.get(user_url, headers={'User-Agent': 'btd6-'}).json()
+        async with aiohttp.ClientSession() as session:
+            async with session.get(user_url, headers={'User-Agent': 'btd6-'}) as response:
+                data = await response.json(content_type=None)
     except JSONDecodeError:
         return [0, 0, 0, 0]
     medals = data['raceMedals']
@@ -39,10 +42,10 @@ def get_medal_counts(user_id):
     return medal_counts
 
 
-def generate_badge_lb():
+async def generate_badge_lb():
     blb = {}
     for i in range(len(sheets.known_ids) - 1):
-        blb[sheets.known_players[i + 1]] = get_medal_counts(sheets.known_ids[i + 1])
+        blb[sheets.known_players[i + 1]] = await get_medal_counts(sheets.known_ids[i + 1])
 
     sortedbytotal = sorted(blb.items(), key=lambda x: x[1][-1], reverse=True)
 

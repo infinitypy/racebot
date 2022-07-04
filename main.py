@@ -1,7 +1,6 @@
 import datetime
 import os
 import random
-import time
 from io import StringIO
 
 import discord
@@ -21,6 +20,7 @@ import sheets
 
 client = commands.Bot(command_prefix=['r!', 'R!', 'rof!', 'ROF!', 'rof🔥', 'ROF🔥', '🌽🎉'], case_insensitive=True)
 client.remove_command('help')
+ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
 
 command_help = {}
 f = open('commandhelp.txt', 'r', encoding='utf8')
@@ -85,13 +85,9 @@ async def help(ctx, command_name=None):
     await ctx.reply(embed=embed)
 
 
-ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
-BIG_ERROR = 'Too much text. Please select a smaller range.'
-NO_ID = 'No associated ID. Set using r!setid <BTD6 ID>'
-
-
 @client.event
 async def on_ready():
+    await client.change_presence(activity=discord.Game(name='Race Event: 🌽🎉'))
     print(f'{client.user} is online')
 
 
@@ -216,7 +212,7 @@ async def rrtime(ctx, start, end, gtime, abr=None):
 @client.command(aliases=['i'])
 async def info(ctx, name=None):
     if not name:
-        name = newracedecode.events()[0]
+        name = await newracedecode.events()[0]
     elif name.isdigit():
         name = sheets.race(name, 1)
     update = ctx.message.author.id == 279126808455151628
@@ -239,6 +235,7 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
     if not first and not last:
         begin_end = [1, 10]
         nbegin_end = [45, 55]
+    begin_end = [abs(int(r)) for r in begin_end]
     if race_num and int(race_num) < 0:
         race_num = int(race_num) % len(sheets.all_ids)
     if not race_num:
@@ -249,19 +246,19 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
         except APIError:
             await reply(ctx, get_error('leaderboard', 0), True)
             return
-    output = leaderboards.get_leaderboard(race_num, True)
+    output = await leaderboards.get_leaderboard(race_num, True)
     if output:
         for i, entry in enumerate(output):
             res = sheets.known(entry[0])
-            if i == 0 and int(begin_end[0]) <= 1 and (not res[1] or res[0] == res[1]):
+            if i == 0 and begin_end[0] <= 1 and (not res[1] or res[0] == res[1]):
                 entry[0] = 'RandyZ524\'s alt'
             elif not res[1] or res[0] == res[1]:
                 entry[0] = f' ID: {res[0][0:3]}...'
             else:
                 entry[0] = res[1]
         output_str = ''
-        for i in range(int(begin_end[1]) - int(begin_end[0]) + 1):
-            curr_index = i + int(begin_end[0]) - 1
+        for i in range(begin_end[1] - begin_end[0] + 1):
+            curr_index = i + begin_end[0] - 1
             adj = 0 if len(output[0]) == 3 else 1
             if curr_index + 1 == 0:
                 race_info = newracedecode.raceinfo(False, sheets.race(race_num, 1))[0]
@@ -282,8 +279,8 @@ async def leaderboard(ctx, race_num=None, first=None, last=None):
                               f'{output[curr_index][1 - adj]}'
         if nbegin_end:
             output_str += '\n...'
-            for i in range(int(nbegin_end[1]) - int(nbegin_end[0]) + 1):
-                curr_index = i + int(nbegin_end[0]) - 1
+            for i in range(nbegin_end[1] - nbegin_end[0] + 1):
+                curr_index = i + nbegin_end[0] - 1
                 adj = 0 if len(output[0]) == 3 else 1
                 if curr_index + 1 != 50:
                     output_str += f'\n{curr_index + 1:<3} {output[curr_index][2 - adj]} ' \
@@ -308,7 +305,7 @@ async def id(ctx, race_num=None, user_rank=None):
         if not user_rank:
             user_rank = race_num
             race_num = len(sheets.all_ids)
-        output = leaderboards.get_id(race_num, user_rank)
+        output = await leaderboards.get_id(race_num, user_rank)
     if not output:
         await reply(ctx, get_error('id', 0), True)
         return
@@ -334,7 +331,7 @@ async def nicks(ctx, *args):
         user_id = sheets.known(user_id)
     if not user_id:
         user_id = sheets.known(identifier)
-    output = leaderboards.get_nicks(user_id[0])
+    output = await leaderboards.get_nicks(user_id[0])
     if not output:
         await reply(ctx, get_error('nicks', 1), True)
         return
@@ -370,7 +367,7 @@ async def rank(ctx, *args):
         user_id = sheets.known(user_id)
     if not user_id:
         user_id = sheets.known(identifier)
-    output = leaderboards.get_rank(race_num, user_id[0])
+    output = await leaderboards.get_rank(race_num, user_id[0])
     if not output:
         await reply(ctx, get_error('rank', 1), True)
         return
@@ -388,7 +385,7 @@ async def ranks(ctx, *args):
             return
     else:
         identifier = ' '.join(args)
-    file, embed = misc.ranks_embed(True, identifier)
+    file, embed = await misc.ranks_embed(True, identifier)
     await ctx.reply(file=file, embed=embed, mention_author=False)
     os.remove('output.png')
 
@@ -399,7 +396,7 @@ async def compare(ctx, *args):
         await reply(ctx, get_error('compare', 0), True)
         return
     identifiers = [discorduserids.get_id(ctx.message.author.id) if x == 'self' else x for x in args]
-    file, embed = misc.ranks_embed(False, *identifiers)
+    file, embed = await misc.ranks_embed(False, *identifiers)
     await ctx.reply(file=file, embed=embed, mention_author=False)
     os.remove('output.png')
 
@@ -417,7 +414,7 @@ async def gaps(ctx, *args):
         user_id_1 = sheets.known(user_id_1)
     if not user_id_1:
         user_id_1 = sheets.known(identifiers[0])
-    all_ranks_1 = leaderboards.get_all_rank(user_id_1[0])
+    all_ranks_1 = await leaderboards.get_all_rank(user_id_1[0])
     if not all_ranks_1:
         await reply(ctx, get_error('gaps', 1), True)
         return
@@ -429,7 +426,7 @@ async def gaps(ctx, *args):
         user_id_2 = sheets.known(user_id_2)
     if not user_id_2:
         user_id_2 = sheets.known(identifiers[1])
-    all_ranks_2 = leaderboards.get_all_rank(user_id_2[0])
+    all_ranks_2 = await leaderboards.get_all_rank(user_id_2[0])
     if not all_ranks_2:
         await reply(ctx, get_error('gaps', 1), True)
         return
@@ -508,7 +505,7 @@ async def badgelb(ctx, update=None):
     global blb
     if update == 'update':
         await reply(ctx, 'updating (this takes about 30 seconds)')
-        blb = profiles.generate_badge_lb()
+        blb = await profiles.generate_badge_lb()
         await ctx.send('updated')
     else:
         await reply(ctx, blb, blb == 'None, run ``r!badgelb update`` to populate')
@@ -536,11 +533,13 @@ async def cupleaderboard(ctx, mobile=None):
         return total
     cuplb = {}
     end = 185
-    output = leaderboards.get_leaderboard(182, True)
+    output = await leaderboards.get_leaderboard(182, True)
     for position, entry in enumerate(output):
         cuplb[entry[0]] = string_to_time(entry[1])
     for i in range(183, 186):
-        output = leaderboards.get_leaderboard(i, True)
+        if i == 185:
+            i = None
+        output = await leaderboards.get_leaderboard(i, True)
         if not output:
             end = i - 1
             break
@@ -734,7 +733,8 @@ async def nineteeneightyfour(ctx):
 @client.command()
 async def who(ctx):
     def check(m):
-        return m.channel == ctx.channel and (m.author.id not in [893966690768007178, 893291225568919562])
+        return m.channel == ctx.channel and \
+               m.author.id not in [ctx.message.author.id, 893966690768007178, 893291225568919562]
     try:
         await ctx.message.delete()
     except discord.errors.Forbidden:

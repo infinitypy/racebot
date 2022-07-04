@@ -10,7 +10,7 @@ fulldata = sheet.worksheet('main')
 user_data = sheet.worksheet('users')
 
 
-def load_race(race_num):
+async def load_race(race_num):
     import leaderboards
     global fulldata
     fulldata = sheet.worksheet('main')
@@ -19,7 +19,7 @@ def load_race(race_num):
     sheet.worksheet('main')
     batch_size = 100
     fulldata.update_cell(1, race_num + 1, str(race_num))
-    lb = leaderboards.get_api_lb(race_num)
+    lb = await leaderboards.get_api_lb(race_num)
     for i in range(0, len(lb), batch_size):
         partial = fulldata.range(i + 2, race_num + 1, i + batch_size + 1, race_num + 1)
         for index, cell in enumerate(partial):

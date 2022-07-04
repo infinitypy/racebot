@@ -1,17 +1,17 @@
 import hashlib
+import os
 import random
 import re
 import statistics
 import string
 
 import discord
-import os
 import numpy as np
 from Levenshtein import distance as levenshtein_distance
 
 import discorduserids
-import sheets
 import leaderboards
+import sheets
 
 os.environ['MPLCONFIGDIR'] = os.getcwd() + '/configs/'
 
@@ -101,7 +101,7 @@ def random_issue(args):
     return issue
 
 
-def ranks_embed(stats, *identifiers):
+async def ranks_embed(stats, *identifiers):
     import matplotlib.pyplot as plot
     num_races = len(sheets.all_ids)
     plot.clf()
@@ -119,7 +119,7 @@ def ranks_embed(stats, *identifiers):
             user_id = sheets.known(user_id)
         if not user_id:
             user_id = sheets.known(identifier)
-        all_ranks = leaderboards.get_all_rank(user_id[0])
+        all_ranks = await leaderboards.get_all_rank(user_id[0])
         if not all_ranks:
             continue
         if user_id[0] == '5b2845abfcd0f8d9745e6cfe':
