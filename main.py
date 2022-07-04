@@ -656,10 +656,6 @@ async def rofify(ctx, img_link=None):
 @client.command(aliases=['ce'])
 async def cheatengine(ctx):
     replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
-    try:
-        await ctx.message.delete()
-    except discord.errors.Forbidden:
-        pass
     img_link = replied.attachments[0].url
     misc.nceis(img_link)
     await ctx.reply(file=discord.File('temp.png'), mention_author=False)

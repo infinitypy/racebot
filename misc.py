@@ -206,10 +206,10 @@ def nceis(img_url):
     with open('temp.png', 'wb') as out_img:
         out_img.write(r.content)
     img = Image.open('temp.png')
-    cheatengine = Image.open('cheatengine.png')
+    cheatengine = Image.open(random.choice(['cheatengine.png', 'gameguardian.png']))
     small_cheatengine = cheatengine.resize((20, 20), Image.LANCZOS)
     aspect_ratio = img.size[0] / img.size[1]
-    if aspect_ratio < 0.5 or aspect_ratio > 2:
+    if aspect_ratio < 0.25 or aspect_ratio > 4:
         return
     if img.size[0] > img.size[1]:
         ratio = 1000 / img.size[1]
