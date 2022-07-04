@@ -102,7 +102,7 @@ def raceinfo(update, name):
     if race_info['lives'] == -1:
         race_info['lives'] = 100 if race_info['difficulty'] == 'Hard' else \
             150 if race_info['difficulty'] == 'Medium' else \
-                200
+            200
 
     # display if not default
     race_info['mk'] = decoded['disableMK']

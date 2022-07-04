@@ -630,9 +630,13 @@ async def rofify(ctx, img_link=None):
         except IndexError:
             try:
                 replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
-                img_link = replied.attachments[0].url
-            except Exception:
+                try:
+                    img_link = replied.attachments[0].url
+                except IndexError:
+                    img_link = replied.author.avatar_url
+            except AttributeError:
                 img_link = ctx.author.avatar_url
+
     elif img_link[:2] == '<:':
         img_link = client.get_emoji(int(img_link.split(":")[-1][:-1])).url
     else:
@@ -730,6 +734,9 @@ async def nineteeneightyfour(ctx):
     await ctx.reply(file=discord.File(random.choice(('1984.png', 'memento.png'))), mention_author=False)
 
 
+who_bombs = set()
+
+
 @client.command()
 async def who(ctx):
     def check(m):
@@ -739,8 +746,12 @@ async def who(ctx):
         await ctx.message.delete()
     except discord.errors.Forbidden:
         pass
+    if ctx.channel in who_bombs:
+        return
+    who_bombs.add(ctx.channel)
     next_message = await client.wait_for('message', check=check)
     await ctx.send('who asked', reference=next_message, mention_author=False)
+    who_bombs.remove(ctx.channel)
 
 
 @client.command(aliases=['cn'])
