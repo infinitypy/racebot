@@ -1,6 +1,7 @@
 import datetime
 import os
 import random
+import re
 from io import StringIO
 
 import discord
@@ -623,7 +624,6 @@ async def ntwic(ctx):
 
 @client.command(aliases=['rf'])
 async def rofify(ctx, img_link=None):
-    import re
     if not img_link:
         try:
             img_link = ctx.message.attachments[0].url
@@ -649,6 +649,15 @@ async def rofify(ctx, img_link=None):
         except HTTPException:
             pass
     misc.rofify(img_link)
+    await ctx.reply(file=discord.File('temp.png'), mention_author=False)
+    os.remove('temp.png')
+
+
+@client.command(aliases=['ce'])
+async def cheatengine(ctx):
+    replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+    img_link = replied.attachments[0].url
+    misc.nceis(img_link)
     await ctx.reply(file=discord.File('temp.png'), mention_author=False)
     os.remove('temp.png')
 

@@ -7,7 +7,9 @@ import string
 
 import discord
 import numpy as np
+import requests
 from Levenshtein import distance as levenshtein_distance
+from PIL import Image, ImageDraw
 
 import discorduserids
 import leaderboards
@@ -171,8 +173,6 @@ def space_by_caps(name):
 
 
 def rofify(img_url):
-    import requests
-    from PIL import Image
     r = requests.get(img_url)
     with open('temp.png', 'wb') as out_img:
         out_img.write(r.content)
@@ -191,6 +191,47 @@ def rofify(img_url):
     rof = Image.open('ring.png')
     rof.paste(to_rof, offset, to_rof.convert('RGBA'))
     rof.save('temp.png')
+
+
+def nceis(img_url):
+    def draw_square(draw, c, dim):
+        h = dim / 2
+        white = (255, 255, 255)
+        xys = [(c[0] - h, c[1] - h, c[0] + h + 5, c[1] - h), (c[0] + h, c[1] - h, c[0] + h, c[1] + h + 5),
+               (c[0] + h, c[1] + h, c[0] - h - 5, c[1] + h), (c[0] - h, c[1] + h, c[0] - h, c[1] - h - 5)]
+        for xy in xys:
+            draw.line(xy=xy, fill=white, width=11)
+        return xys
+    r = requests.get(img_url)
+    with open('temp.png', 'wb') as out_img:
+        out_img.write(r.content)
+    img = Image.open('temp.png')
+    cheatengine = Image.open('cheatengine.png')
+    small_cheatengine = cheatengine.resize((20, 20), Image.LANCZOS)
+    aspect_ratio = img.size[0] / img.size[1]
+    if aspect_ratio < 0.5 or aspect_ratio > 2:
+        return
+    if img.size[0] > img.size[1]:
+        ratio = 1000 / img.size[1]
+        img = img.resize((int(img.size[0] * ratio), 1000), Image.LANCZOS)
+    else:
+        ratio = 1000 / img.size[0]
+        img = img.resize((1000, int(img.size[1] * ratio)), Image.LANCZOS)
+    center = (random.randint(0, img.size[0] - 400) + 200, random.randint(0, img.size[1] - 400) + 200)
+    zoomed = img.crop((center[0] - 50, center[1] - 50, center[0] + 49, center[1] + 49))
+    zoomed = zoomed.resize((zoomed.size[0] * 4, zoomed.size[1] * 4), Image.LANCZOS)
+    img.paste(small_cheatengine, (center[0] - 10, center[1] - 10), small_cheatengine.convert('RGBA'))
+    img_draw = ImageDraw.Draw(img)
+    corners = draw_square(img_draw, center, 111)
+    far_corner = [img.size[0] if center[0] < img.size[0] / 2 else 0,
+                  img.size[1] if center[1] < img.size[1] / 2 else 0]
+    big_center = [int((center[0] + far_corner[0]) / 2), int((center[1] + far_corner[1]) / 2)]
+    big_corners = draw_square(img_draw, big_center, 411)
+    for i in range(4):
+        img_draw.line(xy=(*(corners[i][0: 2]), *(big_corners[i][0: 2])), fill=(255, 255, 255), width=10)
+    img.paste(zoomed, (big_center[0] - 200, big_center[1] - 200))
+    img.paste(cheatengine, (big_center[0] - 40, big_center[1] - 40), cheatengine.convert('RGBA'))
+    img.save('temp.png')
 
 
 def str_check(test_str):
