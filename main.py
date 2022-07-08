@@ -538,8 +538,6 @@ async def cupleaderboard(ctx, mobile=None):
     for position, entry in enumerate(output):
         cuplb[entry[0]] = string_to_time(entry[1])
     for i in range(183, 186):
-        if i == 185:
-            i = None
         output = await leaderboards.get_leaderboard(i, True)
         if not output:
             end = i - 1
