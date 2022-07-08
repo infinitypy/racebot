@@ -213,7 +213,7 @@ async def rrtime(ctx, start, end, gtime, abr=None):
 @client.command(aliases=['i'])
 async def info(ctx, name=None):
     if not name:
-        name = await newracedecode.events()[0]
+        name = newracedecode.events()[0]
     elif name.isdigit():
         name = sheets.race(name, 1)
     update = ctx.message.author.id == 279126808455151628

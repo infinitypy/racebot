@@ -208,9 +208,6 @@ def nceis(img_url):
     img = Image.open('temp.png')
     cheatengine = Image.open(random.choice(['cheatengine.png', 'gameguardian.png']))
     small_cheatengine = cheatengine.resize((20, 20), Image.LANCZOS)
-    aspect_ratio = img.size[0] / img.size[1]
-    if aspect_ratio < 0.25 or aspect_ratio > 4:
-        return
     if img.size[0] > img.size[1]:
         ratio = 1000 / img.size[1]
         img = img.resize((int(img.size[0] * ratio), 1000), Image.LANCZOS)
@@ -219,7 +216,7 @@ def nceis(img_url):
         img = img.resize((1000, int(img.size[1] * ratio)), Image.LANCZOS)
     center = (random.randint(0, img.size[0] - 400) + 200, random.randint(0, img.size[1] - 400) + 200)
     zoomed = img.crop((center[0] - 50, center[1] - 50, center[0] + 49, center[1] + 49))
-    zoomed = zoomed.resize((zoomed.size[0] * 4, zoomed.size[1] * 4), Image.LANCZOS)
+    zoomed = zoomed.resize((400, 400), Image.LANCZOS)
     img.paste(small_cheatengine, (center[0] - 10, center[1] - 10), small_cheatengine.convert('RGBA'))
     img_draw = ImageDraw.Draw(img)
     corners = draw_square(img_draw, center, 111)
