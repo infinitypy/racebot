@@ -652,9 +652,31 @@ async def rofify(ctx, img_link=None):
 
 
 @client.command(aliases=['ce'])
-async def cheatengine(ctx):
-    replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
-    img_link = replied.attachments[0].url
+async def cheatengine(ctx, img_link=None):
+    if not img_link:
+        try:
+            img_link = ctx.message.attachments[0].url
+        except IndexError:
+            try:
+                replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+                try:
+                    img_link = replied.attachments[0].url
+                except IndexError:
+                    img_link = replied.author.avatar_url
+            except AttributeError:
+                img_link = ctx.author.avatar_url
+
+    elif img_link[:2] == '<:':
+        img_link = client.get_emoji(int(img_link.split(":")[-1][:-1])).url
+    else:
+        try:
+            user_id = int(re.sub('[^0-9]', '', img_link))
+            user = client.get_user(user_id)
+            if not user:
+                user = await client.fetch_user(user_id)
+            img_link = user.avatar_url
+        except HTTPException:
+            pass
     misc.nceis(img_link)
     await ctx.reply(file=discord.File('temp.png'), mention_author=False)
     os.remove('temp.png')
