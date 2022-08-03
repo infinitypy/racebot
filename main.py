@@ -402,46 +402,17 @@ async def compare(ctx, *args):
     os.remove('output.png')
 
 
-@client.command(aliases=['gp'])
-async def gaps(ctx, *args):
+@client.command(aliases=['df, gaps, diffs, skilldiff, skilldiffs'])
+async def diff(ctx, *args):
     if len(args) != 2:
-        await reply(ctx, get_error('gaps', 0), True)
+        await reply(ctx, get_error('diff', 0), True)
         return
     identifiers = [discorduserids.get_id(ctx.message.author.id) if x == 'self' else x for x in args]
-    pair_ranks = []
-    user_id_1 = None
-    if identifiers[0][0: 2] == '<@' and identifiers[0][-1:] == '>':
-        user_id_1 = discorduserids.get_id(identifiers[0][2: -1])
-        user_id_1 = sheets.known(user_id_1)
-    if not user_id_1:
-        user_id_1 = sheets.known(identifiers[0])
-    all_ranks_1 = await leaderboards.get_all_rank(user_id_1[0])
-    if not all_ranks_1:
-        await reply(ctx, get_error('gaps', 1), True)
+    embed = await misc.diff_embed(*identifiers)
+    if not embed:
+        await reply(ctx, get_error('diff', 1), True)
         return
-    all_ranks_1 = {x[0]: x[1] for x in all_ranks_1}
-
-    user_id_2 = None
-    if identifiers[1][0: 2] == '<@' and identifiers[1][-1:] == '>':
-        user_id_2 = discorduserids.get_id(identifiers[1][2: -1])
-        user_id_2 = sheets.known(user_id_2)
-    if not user_id_2:
-        user_id_2 = sheets.known(identifiers[1])
-    all_ranks_2 = await leaderboards.get_all_rank(user_id_2[0])
-    if not all_ranks_2:
-        await reply(ctx, get_error('gaps', 1), True)
-        return
-    all_ranks_2 = {x[0]: x[1] for x in all_ranks_2}
-    for race_rank in all_ranks_2:
-        if race_rank in all_ranks_1:
-            pair_ranks.append((race_rank, all_ranks_1[race_rank] - all_ranks_2[race_rank]))
-    one_best = min(pair_ranks, key=lambda x: x[1])
-    two_best = max(pair_ranks, key=lambda x: x[1])
-    output = f'Race #{one_best[0]}: {user_id_1[1]} ranked {all_ranks_1[one_best[0]]}, ' \
-             f'{user_id_2[1]} ranked {all_ranks_2[one_best[0]]}\n'
-    output += f'Race #{two_best[0]}: {user_id_2[1]} ranked {all_ranks_2[two_best[0]]}, ' \
-              f'{user_id_1[1]} ranked {all_ranks_1[two_best[0]]}\n'
-    await reply(ctx, output)
+    await ctx.reply(embed=embed, mention_author=False)
 
 
 @client.command(aliases=['p'])

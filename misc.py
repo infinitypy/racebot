@@ -103,6 +103,65 @@ def random_issue(args):
     return issue
 
 
+async def diff_embed(identifier1, identifier2):
+    pair_ranks = []
+    user_id_1 = None
+    if identifier1[0: 2] == '<@' and identifier1[-1:] == '>':
+        user_id_1 = discorduserids.get_id(identifier1[2: -1])
+        user_id_1 = sheets.known(user_id_1)
+    if not user_id_1:
+        user_id_1 = sheets.known(identifier1)
+    all_ranks_1 = await leaderboards.get_all_rank(user_id_1[0])
+    if not all_ranks_1:
+        return None
+    if user_id_1[0] == '5b2845abfcd0f8d9745e6cfe':
+        all_ranks_1 = [(entry[0], (entry[1] - 1) % 20 + 81) for entry in all_ranks_1]
+    elif user_id_1[0] == '5b7f82e318c7cbe32fa01e4e':
+        all_ranks_1 = [(entry[0], (entry[1] - 1) % 20 + 1) for entry in all_ranks_1]
+    all_ranks_1 = {x[0]: x[1] for x in all_ranks_1}
+
+    user_id_2 = None
+    if identifier2[0: 2] == '<@' and identifier2[-1:] == '>':
+        user_id_2 = discorduserids.get_id(identifier2[2: -1])
+        user_id_2 = sheets.known(user_id_2)
+    if not user_id_2:
+        user_id_2 = sheets.known(identifier2)
+    all_ranks_2 = await leaderboards.get_all_rank(user_id_2[0])
+    if not all_ranks_2:
+        return None
+    if user_id_2[0] == '5b2845abfcd0f8d9745e6cfe':
+        all_ranks_2 = [(entry[0], (entry[1] - 1) % 20 + 81) for entry in all_ranks_2]
+    elif user_id_2[0] == '5b7f82e318c7cbe32fa01e4e':
+        all_ranks_2 = [(entry[0], (entry[1] - 1) % 20 + 1) for entry in all_ranks_2]
+    all_ranks_2 = {x[0]: x[1] for x in all_ranks_2}
+    for race_rank in all_ranks_2:
+        if race_rank in all_ranks_1:
+            pair_ranks.append((race_rank, all_ranks_1[race_rank] - all_ranks_2[race_rank]))
+    one_best = ()
+    two_best = ()
+    if pair_ranks:
+        one_best = min(pair_ranks, key=lambda x: x[1])
+        two_best = max(pair_ranks, key=lambda x: x[1])
+
+    embed = discord.Embed(
+        colour=discord.Colour.orange()
+    )
+
+    embed.set_author(name=f'Skilldiff between {user_id_1[1]} and {user_id_2[1]}')
+    if one_best:
+        embed.add_field(name=f'{user_id_1[1]}\'s best race',
+                        value=f'Race {one_best[0]}: rank {all_ranks_1[one_best[0]]} vs {all_ranks_2[one_best[0]]}',
+                        inline=False)
+        embed.add_field(name=f'{user_id_2[1]}\'s best race',
+                        value=f'Race {two_best[0]}: rank {all_ranks_2[two_best[0]]} vs {all_ranks_1[two_best[0]]}',
+                        inline=False)
+    embed.add_field(name=f'{user_id_1[1]}\'s median rank across {len(all_ranks_1)} tracked races',
+                    value=str(round(statistics.median(list(all_ranks_1.values())))), inline=False)
+    embed.add_field(name=f'{user_id_2[1]}\'s median rank across {len(all_ranks_2)} tracked races',
+                    value=str(round(statistics.median(list(all_ranks_2.values())))), inline=False)
+    return embed
+
+
 async def ranks_embed(stats, *identifiers):
     import matplotlib.pyplot as plot
     num_races = len(sheets.all_ids)
@@ -154,7 +213,7 @@ async def ranks_embed(stats, *identifiers):
         embed.set_author(name=f'Stats for {first_identifier} across {len(first_ranks)} tracked races')
         embed.add_field(name='Best tracked performance', value=f'Rank {best[1]} in race {best[0]}', inline=False)
         embed.add_field(name='Worst tracked performance', value=f'Rank {worst[1]} in race {worst[0]}', inline=False)
-        embed.add_field(name='Average rank', value=str(round(statistics.median([entry[1] for entry in first_ranks]))),
+        embed.add_field(name='Median rank', value=str(round(statistics.median([entry[1] for entry in first_ranks]))),
                         inline=False)
         embed.add_field(name=f'Predicted ranking in race {num_races + 1}', value=str(round(first_bestfit(num_races))),
                         inline=False)
