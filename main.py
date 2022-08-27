@@ -537,7 +537,22 @@ async def cupleaderboard(ctx, mobile=None):
 
 @client.command(aliases=['pt'])
 async def pasta(ctx, *args):
-    await reply(ctx, misc.random_pasta(misc.strip_to_words(args) if args else None))
+    output = misc.random_pasta(misc.strip_to_words(args) if args else None)
+    cont = False
+    while True:
+        if len(output) <= 2000:
+            if cont:
+                await ctx.send(output)
+            else:
+                await reply(ctx, output)
+            return
+        if cont:
+            await ctx.send(output[0: 2000])
+        else:
+            await reply(ctx, output[0: 2000])
+        output = output[2000:]
+        cont = True
+
 
 
 @client.command(aliases=['ptm, pastamenu'])
