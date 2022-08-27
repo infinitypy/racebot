@@ -16,6 +16,7 @@ import misc
 import newracedecode
 import profiles
 import sheets
+from private.config import TOKEN
 
 # from webserver import keep_alive
 
@@ -792,6 +793,4 @@ def get_error(command_name, error_num):
 
 
 # keep_alive()
-# my_secret = os.environ['TOKEN']
-my_secret = 'ODkzOTY2NjkwNzY4MDA3MTc4.YVjJXA.Az511XCUNfFgEDdciex3s3pHzVw'
-client.run(my_secret)
+client.run(TOKEN)
