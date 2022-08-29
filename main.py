@@ -43,8 +43,10 @@ while command := f.readline().strip():
 
 
 @client.before_invoke
-async def common(message):
-  print(message.channel, message.guild)
+async def common(ctx):
+    print(ctx.message.content)
+    print(f'\tFrom {ctx.guild} #{ctx.channel}')
+
 
 
 @client.event
