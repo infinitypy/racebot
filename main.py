@@ -42,6 +42,11 @@ while command := f.readline().strip():
         error_messages[command].append(error)
 
 
+@client.before_invoke
+async def common(message):
+  print(message.channel, message.guild)
+
+
 @client.event
 async def on_command_error(ctx, err):
     import difflib
@@ -58,6 +63,7 @@ async def on_command_error(ctx, err):
     if isinstance(err, MissingRequiredArgument):
         await reply(ctx, error_messages['macros']['MISSING'])
         return
+    print(ctx.message.content)
     raise err
 
 
