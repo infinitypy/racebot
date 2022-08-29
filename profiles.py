@@ -1,13 +1,18 @@
-import aiohttp
-import requests
-import sheets
+import json
 from json import JSONDecodeError
+
+import aiohttp
+import urllib3
+
+import sheets
 
 
 def get_profile(user_id):
     user_url = f'https://priority-static-api.nkstatic.com/storage/static/11/{user_id}/public-stats'
+    http = urllib3.PoolManager()
     try:
-        data = requests.get(user_url, headers={'User-Agent': 'btd6-'}).json()
+        r = http.request('GET', user_url)
+        data = json.loads(r.data.decode('utf-8'))
     except JSONDecodeError:
         return None
     medals = data['raceMedals']

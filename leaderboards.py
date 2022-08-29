@@ -4,6 +4,7 @@ import time
 from json import JSONDecodeError
 
 import aiohttp
+import urllib3
 
 import newracedecode
 import sheets
@@ -18,12 +19,12 @@ async def get_api_lb(race_num):
     try:
         race_id = sheets.all_ids[race_num - 1]
     except Exception:
-        race_id = await newracedecode.events()[1]
+        race_id = newracedecode.events()[1]
     race_url = f'https://priority-static-api.nkstatic.com/storage/static/appdocs/11/leaderboards/Race_{race_id}.json'
+    http = urllib3.PoolManager()
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(race_url, headers={'User-Agent': 'btd6-'}) as response:
-                data = await response.json(content_type=None)
+        r = http.request('GET', race_url)
+        data = json.loads(r.data)
     except JSONDecodeError:
         return None
     entries = json.loads(data["data"])['scores']['equal']
@@ -47,7 +48,7 @@ async def get_api_lb(race_num):
 
 async def get_leaderboard(race_num, update=False):
     global full_data, timestamp
-    if update and time.time() - timestamp > 300 and newracedecode.racename() not in sheets.all_names:
+    if update and time.time() - timestamp > 300 and False:# and newracedecode.racename() not in sheets.all_names:
         sheets.add_race()
         await writelbtosheet.load_race(writelbtosheet.fulldata.col_count)
         full_data = writelbtosheet.fulldata.get_all_values(major_dimension='COLUMNS')[1:]

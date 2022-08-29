@@ -1,7 +1,9 @@
 import json
+from json import JSONDecodeError
 
 import discord
 import requests
+import urllib3
 
 import misc
 import sheets
@@ -36,8 +38,12 @@ def decode(data_bytes):
 
 
 def events():
-    data = requests.get(info_url, headers={'User-Agent': 'btd6-'})
-    decoded = json.loads(decode(data.content))
+    http = urllib3.PoolManager()
+    try:
+        r = http.request('GET', info_url)
+    except JSONDecodeError:
+        return None
+    decoded = json.loads(decode(r.data))
     decoded = json.loads(decoded['data'])['settings']['events']
     newest = {'start': 0}
     for i in range(len(decoded)):
@@ -48,10 +54,17 @@ def events():
 
 
 def racename():
-    data = requests.get(
-        'https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + events()[0],
-        headers={'User-Agent': 'btd6-'})
-    decoded = json.loads(decode(data.content))
+    http = urllib3.PoolManager()
+    try:
+        r = http.request('GET',
+                         'https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/'
+                         + events()[0],
+                         headers={'User-Agent': 'btd6-'})
+        decoded = json.loads(decode(r.data))
+    except JSONDecodeError:
+        return None
+    print(r.data)
+    decoded = json.loads(decode(r.data))
     decoded = json.loads(decoded['data'])
     try:
         decoded = json.loads(decoded['races/' + events()[0]])
@@ -62,10 +75,13 @@ def racename():
 
 
 def raceinfo(update, name):
-    data = requests.get(
-        'https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + name,
-        headers={'User-Agent': 'btd6-'})
-    decoded = json.loads(decode(data.content))
+    http = urllib3.PoolManager()
+    try:
+        r = http.request('GET', 'https://priority-static-api.nkstatic.com/storage/static/multi?appid=11&files=races/' + name)
+    except JSONDecodeError:
+        return None
+    print(r.data)
+    decoded = json.loads(decode(r.data))
     decoded = json.loads(decoded['data'])
     try:
         decoded = json.loads(decoded['races/' + name])
