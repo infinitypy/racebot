@@ -309,7 +309,8 @@ def sucks(img_url, name):
         font_size += 1
     out_draw.text((90 - width / 2, 5), name, font=ImageFont.truetype('impact.ttf', font_size),
                   stroke_width=2, stroke_fill='#000000', align='center')
-    out_draw.text((35, 130), 'SUCKS', font=ImageFont.truetype('impact.ttf', 40),
+    size = out_draw.textsize('SUCKS', font=ImageFont.truetype('impact.ttf', font_size), stroke_width=2)
+    out_draw.text((90 - size[0] / 2, 175 - size[1]), 'SUCKS', font=ImageFont.truetype('impact.ttf', font_size),
                   stroke_width=2, stroke_fill='#000000', align='center')
     img.save('temp.png')
 
