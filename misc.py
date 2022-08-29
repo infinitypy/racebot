@@ -9,7 +9,7 @@ import discord
 import numpy as np
 import requests
 from Levenshtein import distance as levenshtein_distance
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 import discorduserids
 import leaderboards
@@ -287,6 +287,30 @@ def nceis(img_url):
         img_draw.line(xy=(*(corners[i][0: 2]), *(big_corners[i][0: 2])), fill=(255, 255, 255), width=10)
     img.paste(zoomed, (big_center[0] - 200, big_center[1] - 200))
     img.paste(cheatengine, (big_center[0] - 40, big_center[1] - 40), cheatengine.convert('RGBA'))
+    img.save('temp.png')
+
+
+def sucks(img_url, name):
+    r = requests.get(img_url)
+    with open('temp.png', 'wb') as out_img:
+        out_img.write(r.content)
+    avatar = Image.open('temp.png').resize((180, 180), Image.LANCZOS)
+    img = Image.new('RGB', (180, 180), '#000000')
+    img.paste(avatar, (0, 0), avatar.convert('RGBA'))
+    out_draw = ImageDraw.Draw(img)
+    font_size = 1
+    width = 180
+    while True:
+        new_size = out_draw.textsize(name, font=ImageFont.truetype('impact.ttf', font_size), stroke_width=2)
+        if new_size[0] > 170 or new_size[1] > 80:
+            font_size -= 1
+            break
+        width = new_size[0]
+        font_size += 1
+    out_draw.text((90 - width / 2, 5), name, font=ImageFont.truetype('impact.ttf', font_size),
+                  stroke_width=2, stroke_fill='#000000', align='center')
+    out_draw.text((35, 130), 'SUCKS', font=ImageFont.truetype('impact.ttf', 40),
+                  stroke_width=2, stroke_fill='#000000', align='center')
     img.save('temp.png')
 
 

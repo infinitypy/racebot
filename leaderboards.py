@@ -48,7 +48,7 @@ async def get_api_lb(race_num):
 
 async def get_leaderboard(race_num, update=False):
     global full_data, timestamp
-    if update and time.time() - timestamp > 300 and False:# and newracedecode.racename() not in sheets.all_names:
+    if update and time.time() - timestamp > 300 and newracedecode.racename() not in sheets.all_names:
         sheets.add_race()
         await writelbtosheet.load_race(writelbtosheet.fulldata.col_count)
         full_data = writelbtosheet.fulldata.get_all_values(major_dimension='COLUMNS')[1:]

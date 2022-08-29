@@ -504,6 +504,7 @@ async def cupleaderboard(ctx, mobile=None):
         time_str = time_str[1].split('.')
         total += 1000 * int(time_str[0]) + int(time_str[1])
         return total
+
     cuplb = {}
     end = 185
     output = await leaderboards.get_leaderboard(182, True)
@@ -739,11 +740,6 @@ async def bestguess(ctx):
                      f'```{misc.best_str[0]} ```')
 
 
-@client.command(aliases=['racism'])
-async def racist(ctx):
-    await ctx.reply(file=discord.File('racist.png'), mention_author=False)
-
-
 @client.command(aliases=['1984'])
 async def nineteeneightyfour(ctx):
     await ctx.reply(file=discord.File(random.choice(('1984.png', 'memento.png'))), mention_author=False)
@@ -757,6 +753,7 @@ async def who(ctx):
     def check(m):
         return m.channel == ctx.channel and \
                m.author.id not in [ctx.message.author.id, 893966690768007178, 893291225568919562]
+
     try:
         await ctx.message.delete()
     except discord.errors.Forbidden:
@@ -767,6 +764,33 @@ async def who(ctx):
     next_message = await client.wait_for('message', check=check)
     await ctx.send('who asked', reference=next_message, mention_author=False)
     who_bombs.remove(ctx.channel)
+
+
+@client.command()
+async def sucks(ctx, user=None):
+    img_link = None
+    name = None
+    if user:
+        try:
+            user_id = int(re.sub('[^0-9]', '', user))
+            user = client.get_user(user_id)
+            if not user:
+                user = await client.fetch_user(user_id)
+            img_link = user.avatar_url
+            name = user.name
+        except HTTPException:
+            pass
+    if not img_link:
+        try:
+            replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+            img_link = replied.author.avatar_url
+            name = replied.author.name
+        except AttributeError:
+            img_link = ctx.author.avatar_url
+            name = ctx.author.name
+    misc.sucks(img_link, name.upper())
+    await ctx.reply(file=discord.File('temp.png'), mention_author=False)
+    os.remove('temp.png')
 
 
 @client.command(aliases=['cn'])
