@@ -18,8 +18,6 @@ import profiles
 import sheets
 from private.config import TOKEN
 
-# from webserver import keep_alive
-
 client = commands.Bot(command_prefix=['r!', 'R!', 'rof!', 'ROF!', 'rof🔥', 'ROF🔥', '🌽🎉'], case_insensitive=True)
 client.remove_command('help')
 ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
@@ -44,9 +42,10 @@ while command := f.readline().strip():
 
 @client.before_invoke
 async def common(ctx):
-    print(ctx.message.content)
-    print(f'\tFrom {ctx.guild} #{ctx.channel}')
-
+    f = open('./private/log.txt', 'a', encoding='utf8')
+    f.write(ctx.message.content)
+    f.write(f'\n\tFrom {ctx.guild} #{ctx.channel}\n')
+    f.close()
 
 
 @client.event
@@ -823,5 +822,6 @@ def get_error(command_name, error_num):
     return error_messages[command_name][error_num]
 
 
+# from webserver import keep_alive
 # keep_alive()
 client.run(TOKEN)
