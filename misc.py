@@ -8,7 +8,6 @@ import string
 import discord
 import numpy as np
 import requests
-from Levenshtein import distance as levenshtein_distance
 from PIL import Image, ImageDraw, ImageFont
 
 import discorduserids
@@ -313,18 +312,3 @@ def sucks(img_url, name):
     out_draw.text((90 - size[0] / 2, 175 - size[1]), 'SUCKS', font=ImageFont.truetype('impact.ttf', font_size),
                   stroke_width=2, stroke_fill='#000000', align='center')
     img.save('temp.png')
-
-
-def str_check(test_str):
-    global best_str
-
-    dist = levenshtein_distance(test_str, curr_str)
-    if test_str != curr_str and test_str in curr_str.split(' '):
-        return 'Your response is part of the correct answer'
-    if dist == 0:
-        return 'Correct, notifying <@!279126808455151628>'
-    if test_str in curr_str.split(' '):
-        return 'Your response is part of the correct answer'
-    if dist < best_str[1]:
-        best_str = (test_str, dist)
-    return f'You\'re off by {dist}'

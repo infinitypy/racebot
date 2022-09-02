@@ -18,7 +18,8 @@ import profiles
 import sheets
 from private.config import TOKEN
 
-client = commands.Bot(command_prefix=['r!', 'R!', 'rof!', 'ROF!', 'rof🔥', 'ROF🔥', '🌽🎉'], case_insensitive=True)
+intents=discord.Intents.all()
+client = commands.Bot(command_prefix=['r!', 'R!', 'rof!', 'ROF!', 'rof🔥', 'ROF🔥', '🌽🎉'], case_insensitive=True, intents=intents)
 client.remove_command('help')
 ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
 
@@ -49,6 +50,19 @@ async def common(ctx):
 
 
 @client.event
+async def on_member_join(member):
+    if member.guild.id == 661812833771847700:
+        channel = client.get_channel(730546613277425674)
+    elif member.guild.id == 893657565441970186:
+        channel = client.get_channel(893657565441970189)
+    else:
+        return
+    misc.sucks(member.avatar_url, member.name.upper())
+    await channel.send(file=discord.File('temp.png'))
+    os.remove('temp.png')
+
+
+@client.event
 async def on_command_error(ctx, err):
     import difflib
     if isinstance(err, CommandNotFound):
@@ -71,7 +85,7 @@ async def on_command_error(ctx, err):
 @client.command(pass_context=True)
 async def help(ctx, command_name=None):
     embed = discord.Embed(
-        colour=discord.Colour.orange()
+        color=discord.Colour.orange()
     )
 
     if not command_name:
@@ -115,22 +129,6 @@ async def hello(ctx, *args):
         await reply(ctx, f'All the homies hate {name}')
     else:
         await reply(ctx, f'hello {name}')
-
-
-@client.command()
-async def hеllo(ctx, *args):
-    if ctx.message.author.id != 279126808455151628:
-        await hello(ctx, args)
-    name = ' '.join(args)
-    await reply(ctx, f'All the homies hate {name}')
-
-
-@client.command()
-async def hellо(ctx, *args):
-    if ctx.message.author.id != 279126808455151628:
-        await hello(ctx, args)
-    name = ' '.join(args)
-    await reply(ctx, f'hello {name}')
 
 
 @client.command()
@@ -731,20 +729,6 @@ async def firecredits(ctx, diff, *users: discord.Member):
         else:
             await ctx.message.delete()
             await ctx.send(output_str, reference=replied, mention_author=False)
-
-
-@client.command(aliases=['g'])
-async def guess(ctx, *args):
-    test_str = ' '.join(args)
-    if ctx.message.author.id == 279126808455151628 or \
-            (ctx.guild.name == 'BTD6 Index' and ctx.channel.name == 'bot-commands'):
-        await reply(ctx, misc.str_check(test_str))
-
-
-@client.command(aliases=['bg'])
-async def bestguess(ctx):
-    await reply(ctx, f'Current best guess with distance {misc.best_str[1]}:\n'
-                     f'```{misc.best_str[0]} ```')
 
 
 @client.command(aliases=['1984'])
