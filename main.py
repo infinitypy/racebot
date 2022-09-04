@@ -16,9 +16,8 @@ import misc
 import newracedecode
 import profiles
 import sheets
-from private.config import TOKEN
 
-intents=discord.Intents.all()
+intents = discord.Intents.all()
 client = commands.Bot(command_prefix=['r!', 'R!', 'rof!', 'ROF!', 'rof🔥', 'ROF🔥', '🌽🎉'], case_insensitive=True, intents=intents)
 client.remove_command('help')
 ROF = 'https://cdn.discordapp.com/emojis/859285402749632522.png?size=96'
@@ -808,4 +807,6 @@ def get_error(command_name, error_num):
 
 # from webserver import keep_alive
 # keep_alive()
+# TOKEN = os.environ['TOKEN']
+from private.config import TOKEN
 client.run(TOKEN)
