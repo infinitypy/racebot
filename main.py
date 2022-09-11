@@ -56,7 +56,7 @@ async def on_member_join(member):
         channel = client.get_channel(893657565441970189)
     else:
         return
-    misc.sucks(member.avatar_url, member.name.upper())
+    misc.sucks(member.avatar.url, member.name.upper())
     await channel.send(file=discord.File('temp.png'))
     os.remove('temp.png')
 
@@ -622,9 +622,9 @@ async def rofify(ctx, img_link=None):
                 try:
                     img_link = replied.attachments[0].url
                 except IndexError:
-                    img_link = replied.author.avatar_url
+                    img_link = replied.author.avatar.url
             except AttributeError:
-                img_link = ctx.author.avatar_url
+                img_link = ctx.author.avatar.url
 
     elif img_link[:2] == '<:':
         img_link = client.get_emoji(int(img_link.split(":")[-1][:-1])).url
@@ -634,7 +634,7 @@ async def rofify(ctx, img_link=None):
             user = client.get_user(user_id)
             if not user:
                 user = await client.fetch_user(user_id)
-            img_link = user.avatar_url
+            img_link = user.avatar.url
         except HTTPException:
             pass
     misc.rofify(img_link)
@@ -653,9 +653,9 @@ async def cheatengine(ctx, img_link=None):
                 try:
                     img_link = replied.attachments[0].url
                 except IndexError:
-                    img_link = replied.author.avatar_url
+                    img_link = replied.author.avatar.url
             except AttributeError:
-                img_link = ctx.author.avatar_url
+                img_link = ctx.author.avatar.url
 
     elif img_link[:2] == '<:':
         img_link = client.get_emoji(int(img_link.split(":")[-1][:-1])).url
@@ -665,7 +665,7 @@ async def cheatengine(ctx, img_link=None):
             user = client.get_user(user_id)
             if not user:
                 user = await client.fetch_user(user_id)
-            img_link = user.avatar_url
+            img_link = user.avatar.url
         except HTTPException:
             pass
     misc.nceis(img_link)
@@ -766,17 +766,17 @@ async def sucks(ctx, user=None):
             user = client.get_user(user_id)
             if not user:
                 user = await client.fetch_user(user_id)
-            img_link = user.avatar_url
+            img_link = user.avatar.url
             name = user.name
         except HTTPException:
             pass
     if not img_link:
         try:
             replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
-            img_link = replied.author.avatar_url
+            img_link = replied.author.avatar.url
             name = replied.author.name
         except AttributeError:
-            img_link = ctx.author.avatar_url
+            img_link = ctx.author.avatar.url
             name = ctx.author.name
     misc.sucks(img_link, name.upper())
     await ctx.reply(file=discord.File('temp.png'), mention_author=False)
