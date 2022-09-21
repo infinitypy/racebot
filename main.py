@@ -56,7 +56,7 @@ async def on_member_join(member):
         channel = client.get_channel(893657565441970189)
     else:
         return
-    misc.sucks(member.avatar.url, member.name.upper())
+    misc.sucks(member.avatar_url, member.name.upper())
     await channel.send(file=discord.File('temp.png'))
     os.remove('temp.png')
 
@@ -611,6 +611,15 @@ async def ntwic(ctx):
         await reply(ctx, '<:ntwica:910284846910308465>')
 
 
+@client.command(aliases=['toxic', 'odxic'])
+async def rofxic(ctx):
+    try:
+        await ctx.message.delete()
+        await ctx.send('<:rofxic:1019374103590866944>')
+    except discord.errors.Forbidden:
+        await reply(ctx, '<:rofxic:1019374103590866944>')
+
+
 @client.command(aliases=['rf'])
 async def rofify(ctx, img_link=None):
     if not img_link:
@@ -622,9 +631,9 @@ async def rofify(ctx, img_link=None):
                 try:
                     img_link = replied.attachments[0].url
                 except IndexError:
-                    img_link = replied.author.avatar.url
+                    img_link = replied.author.avatar_url
             except AttributeError:
-                img_link = ctx.author.avatar.url
+                img_link = ctx.author.avatar_url
 
     elif img_link[:2] == '<:':
         img_link = client.get_emoji(int(img_link.split(":")[-1][:-1])).url
@@ -634,7 +643,7 @@ async def rofify(ctx, img_link=None):
             user = client.get_user(user_id)
             if not user:
                 user = await client.fetch_user(user_id)
-            img_link = user.avatar.url
+            img_link = user.avatar_url
         except HTTPException:
             pass
     misc.rofify(img_link)
@@ -653,9 +662,9 @@ async def cheatengine(ctx, img_link=None):
                 try:
                     img_link = replied.attachments[0].url
                 except IndexError:
-                    img_link = replied.author.avatar.url
+                    img_link = replied.author.avatar_url
             except AttributeError:
-                img_link = ctx.author.avatar.url
+                img_link = ctx.author.avatar_url
 
     elif img_link[:2] == '<:':
         img_link = client.get_emoji(int(img_link.split(":")[-1][:-1])).url
@@ -665,7 +674,7 @@ async def cheatengine(ctx, img_link=None):
             user = client.get_user(user_id)
             if not user:
                 user = await client.fetch_user(user_id)
-            img_link = user.avatar.url
+            img_link = user.avatar_url
         except HTTPException:
             pass
     misc.nceis(img_link)
@@ -766,17 +775,21 @@ async def sucks(ctx, user=None):
             user = client.get_user(user_id)
             if not user:
                 user = await client.fetch_user(user_id)
-            img_link = user.avatar.url
+            img_link = user.avatar_url
             name = user.name
         except HTTPException:
-            pass
+            try:
+                guild = await client.fetch_guild(int(user))
+                img_link = guild.icon_url
+            except Exception:
+                pass
     if not img_link:
         try:
             replied = await ctx.channel.fetch_message(ctx.message.reference.message_id)
-            img_link = replied.author.avatar.url
+            img_link = replied.author.avatar_url
             name = replied.author.name
         except AttributeError:
-            img_link = ctx.author.avatar.url
+            img_link = ctx.author.avatar_url
             name = ctx.author.name
     misc.sucks(img_link, name.upper())
     await ctx.reply(file=discord.File('temp.png'), mention_author=False)

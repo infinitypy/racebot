@@ -12,8 +12,10 @@ def get_profile(user_id):
     http = urllib3.PoolManager()
     try:
         r = http.request('GET', user_url)
+        print(r.status)
         data = json.loads(r.data.decode('utf-8'))
     except JSONDecodeError:
+        print('bef')
         return None
     medals = data['raceMedals']
 

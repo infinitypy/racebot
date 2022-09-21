@@ -299,7 +299,7 @@ def sucks(img_url, name):
     out_draw = ImageDraw.Draw(img)
     font_size = 1
     width = 180
-    while True:
+    while font_size < 50:
         new_size = out_draw.textsize(name, font=ImageFont.truetype('impact.ttf', font_size), stroke_width=2)
         if new_size[0] > 170 or new_size[1] > 80:
             font_size -= 1

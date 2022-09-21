@@ -24,8 +24,10 @@ async def get_api_lb(race_num):
     http = urllib3.PoolManager()
     try:
         r = http.request('GET', race_url)
+        print(r.data)
         data = json.loads(r.data)
     except JSONDecodeError:
+        print(race_url)
         return None
     entries = json.loads(data["data"])['scores']['equal']
     stuff = [(entry['score'], entry['userID']) for entry in entries]
